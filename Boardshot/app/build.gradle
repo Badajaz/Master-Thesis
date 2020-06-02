@@ -1,16 +1,31 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.chaquo.python'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.example.android.boardshot"
+        sourceSets {
+            main{
+                python{
+                    srcDirs = ["src/main/python"]
+                }
+            }
+        }
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+        python{
+            buildPython "/usr/bin/python3"
+        }
     }
     buildTypes {
         release {

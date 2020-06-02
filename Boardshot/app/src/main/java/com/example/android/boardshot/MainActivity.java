@@ -33,6 +33,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -152,6 +155,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        if (!Python.isStarted()){
+            Python.start(new AndroidPlatform(this));
+        }
+
+        if (Python.isStarted()){
+            Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
+        }
+
+        Python py = Python.getInstance();
+        PyObject pyf = py.getModule("parameter");
+        PyObject obj = pyf.callAttr("passParameter","WOW");
+
+        Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
+
+
+
 
         database = FirebaseDatabase.getInstance().getReference("");
         mStorageRef = FirebaseStorage.getInstance().getReference();
