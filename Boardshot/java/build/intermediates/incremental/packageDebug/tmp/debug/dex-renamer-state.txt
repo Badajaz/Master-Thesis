@@ -1,0 +1,4 @@
+#Sun Apr 12 17:27:05 WEST 2020
+base.0=/Users/goncalocardoso/Documents/GitHub/android-OpenCV/Boardshot/java/build/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
