@@ -69,6 +69,8 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import com.chaquo.python.*;
+
 
 
 
@@ -125,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
     private String sequenceDB = "";
     private boolean hasFinal =false;
 
+    private Python py;
+
 
 
 
@@ -157,19 +161,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        if (!Python.isStarted()){
-            Python.start(new AndroidPlatform(this));
-        }
 
-        if (Python.isStarted()){
-            Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
-        }
+        //PyObject pyf = py.getModule("parameter");
+        //PyObject obj = pyf.callAttr("passParameter","WOW");
 
-        Python py = Python.getInstance();
-        PyObject pyf = py.getModule("parameter");
-        PyObject obj = pyf.callAttr("passParameter","WOW");
-
-        Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
 
 
 
@@ -295,6 +291,29 @@ public class MainActivity extends AppCompatActivity {
                         if (outputStream != null)
                             outputStream.close();
                     }
+
+                    if (!Python.isStarted()){
+                        Python.start(new AndroidPlatform(getApplicationContext()));
+                    }
+
+                    if (Python.isStarted()){
+                        Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
+                    }
+
+                    Python py = Python.getInstance();
+                    PyObject cv2 = py.getModule("cv2");
+                    PyObject numpy = py.getModule("numpy");
+
+
+                    PyObject tab = py.getModule("BoardRecognition");
+                    //PyObject obj= cv2.callAttr("imread",file.getPath());
+                    PyObject obj= tab.callAttr("boardRecognition",file.getPath());
+                    //obj.asList().;
+
+                    //cv2.callAttr("imwrite",);
+                    Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
+
+
 
                     if (recPieces == 1) {
                         Toast.makeText(MainActivity.this, "recPieces", Toast.LENGTH_SHORT).show();

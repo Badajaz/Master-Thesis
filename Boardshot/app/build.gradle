@@ -24,6 +24,10 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         python{
+            pip {
+                install "opencv-python"
+                install "numpy"
+            }
             buildPython "/usr/bin/python3"
         }
     }
