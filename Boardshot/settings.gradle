@@ -1,3 +1,4 @@
 include ':app'
 rootProject.name='Boardshot'
 include ':java'
+include ':openCVLibrary349'

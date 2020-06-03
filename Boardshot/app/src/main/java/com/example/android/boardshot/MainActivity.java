@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -24,12 +26,14 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,10 +75,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.chaquo.python.*;
 
-
+import org.opencv.android.OpenCVLoader;
 
 
 public class MainActivity extends AppCompatActivity {
+
 
     private Button btnCapture;
     private Button btnCaptureWithPieces;
@@ -159,6 +164,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (OpenCVLoader.initDebug()){
+
+            Toast.makeText(getApplicationContext(),"sucesso",Toast.LENGTH_LONG).show();
+
+        }else{
+            Toast.makeText(getApplicationContext(),"Insucesso",Toast.LENGTH_LONG).show();
+
+        }
 
 
 
@@ -287,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         outputStream = new FileOutputStream(file);
                         outputStream.write(bytes);
+                        Log.d("Bytes", bytes+"");
                     } finally {
                         if (outputStream != null)
                             outputStream.close();
@@ -308,9 +323,16 @@ public class MainActivity extends AppCompatActivity {
                     PyObject tab = py.getModule("BoardRecognition");
                     //PyObject obj= cv2.callAttr("imread",file.getPath());
                     PyObject obj= tab.callAttr("boardRecognition",file.getPath());
-                    //obj.asList().;
-
-                    //cv2.callAttr("imwrite",);
+                    List<PyObject> matrixAdjusted = obj.asList();
+                /*
+                    Matrix m =(Matrix) matrixAdjusted;
+                    RectF drawableRect = new RectF(0, 0, 1920, 2560);
+                    RectF viewRect = new RectF(0, 0, 1920, 2560);
+                    m.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.CENTER);
+                    ImageView imageView = new ImageView(getApplicationContext());
+                    imageView.setImageMatrix(m);
+                    //printMatrixAdjusted(matrixAdjusted);
+                   // cv2.callAttr("imwrite",file.getPath(),matrixAdjusted);*/
                     Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
 
 
@@ -467,6 +489,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 
     private void createCameraPreview() {
         try{
@@ -727,7 +751,12 @@ public class MainActivity extends AppCompatActivity {
 
         return TopcodeInstructions;
     }
+    private void printMatrixAdjusted(List<PyObject> matrixAdjusted) {
+        for (PyObject py : matrixAdjusted){
+            Log.d("Matrix", py.asList()+"");
+        }
 
+    }
 
 
 

@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from PIL import Image
 
 def adjust_gamma(image, gamma=1.0):
 
@@ -112,5 +113,6 @@ def boardRecognition(file):
 
     gamma = 2  # change the value here to get different result
     adjusted = adjust_gamma(image, gamma=gamma)
+
 
     return adjusted
