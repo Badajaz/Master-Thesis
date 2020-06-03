@@ -51,10 +51,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -76,6 +78,16 @@ import androidx.core.app.ActivityCompat;
 import com.chaquo.python.*;
 
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -293,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             if(image != null)
                                 image.close();
+
                         }
                     }
                 }
@@ -301,11 +314,13 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         outputStream = new FileOutputStream(file);
                         outputStream.write(bytes);
-                        Log.d("Bytes", bytes+"");
+
+
                     } finally {
                         if (outputStream != null)
                             outputStream.close();
                     }
+
 
                     if (!Python.isStarted()){
                         Python.start(new AndroidPlatform(getApplicationContext()));
@@ -315,6 +330,67 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
                     }
 
+
+                    Mat matrix = Imgcodecs.imread(file.getPath());
+
+
+                    //hsv
+                    Imgproc.cvtColor(matrix,matrix,Imgproc.COLOR_BGR2HSV);
+
+                    Core.inRange(matrix,new Scalar(36, 25, 25),new Scalar(70, 255, 255),matrix);
+
+                    List<MatOfPoint> contours = new ArrayList<>();
+
+                    Imgproc.findContours(matrix, contours, matrix, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+
+                    int index = 0;
+                    double maxim = Imgproc.contourArea(contours.get(0));
+
+                    for (int contourIdx = 1; contourIdx < contours.size();contourIdx++)
+                    {
+                        double temp;
+                        temp=Imgproc.contourArea(contours.get(contourIdx));
+                        if(maxim<temp)
+                        {
+                            maxim=temp;
+                            index=contourIdx;
+                        }
+                    }
+                    Mat drawing = Mat.zeros(matrix.size(), CvType.CV_8UC1);
+                   // Log.d("","number of contours " +contours.get(index));
+                    Toast.makeText(getApplicationContext(),"number of contours " +contours.get(index),Toast.LENGTH_LONG);
+
+
+                    Imgproc.drawContours(drawing, contours, index, new Scalar(255), 1);
+
+                    /*
+                    Imgproc.line (
+                            matrix,                    //Matrix obj of the image
+                            new Point(10, 200),        //p1
+                            new Point(600, 200),       //p2
+                            new Scalar(0, 0, 255),     //Scalar object for color
+                            5                          //Thickness of the line
+                    );*/
+
+                    MatOfByte matOfByte = new MatOfByte();
+                    Imgcodecs.imencode(".jpg", drawing, matOfByte);
+                    byte[] byteArray = matOfByte.toArray();
+
+                    //save method
+                    OutputStream outputStream2 = null;
+                    try {
+                        outputStream2 = new FileOutputStream(file);
+                        outputStream2.write(byteArray);
+
+
+                    } finally {
+                        if (outputStream2 != null)
+                            outputStream2.close();
+                    }
+
+
+
+
                     Python py = Python.getInstance();
                     PyObject cv2 = py.getModule("cv2");
                     PyObject numpy = py.getModule("numpy");
@@ -323,17 +399,9 @@ public class MainActivity extends AppCompatActivity {
                     PyObject tab = py.getModule("BoardRecognition");
                     //PyObject obj= cv2.callAttr("imread",file.getPath());
                     PyObject obj= tab.callAttr("boardRecognition",file.getPath());
-                    List<PyObject> matrixAdjusted = obj.asList();
-                /*
-                    Matrix m =(Matrix) matrixAdjusted;
-                    RectF drawableRect = new RectF(0, 0, 1920, 2560);
-                    RectF viewRect = new RectF(0, 0, 1920, 2560);
-                    m.setRectToRect(drawableRect, viewRect, Matrix.ScaleToFit.CENTER);
-                    ImageView imageView = new ImageView(getApplicationContext());
-                    imageView.setImageMatrix(m);
-                    //printMatrixAdjusted(matrixAdjusted);
-                   // cv2.callAttr("imwrite",file.getPath(),matrixAdjusted);*/
-                    Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
+                    //List<PyObject> matrixAdjusted = obj.asList();
+
+                    //Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
 
 
 
