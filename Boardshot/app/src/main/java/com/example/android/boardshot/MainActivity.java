@@ -330,50 +330,63 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
                     }
 
+                    Python py = Python.getInstance();
+                    PyObject cv2 = py.getModule("cv2");
+                    PyObject numpy = py.getModule("numpy");
+
+
+                    PyObject tab = py.getModule("BoardRecognition");
+                    PyObject obj= tab.callAttr("boardRecognition",file.getPath());
+                    List<PyObject> fourCorners = obj.asList();
+
+                    int x1 = fourCorners.get(0).asList().get(0).toInt();
+                    int y1 = fourCorners.get(0).asList().get(1).toInt();
+                    int x2 = fourCorners.get(0).asList().get(2).toInt();
+                    int y2 = fourCorners.get(0).asList().get(3).toInt();
 
                     Mat matrix = Imgcodecs.imread(file.getPath());
 
 
                     //hsv
-                    Imgproc.cvtColor(matrix,matrix,Imgproc.COLOR_BGR2HSV);
-
-                    Core.inRange(matrix,new Scalar(36, 25, 25),new Scalar(70, 255, 255),matrix);
+                    //Imgproc.cvtColor(matrix,matrix,Imgproc.COLOR_BGR2HSV);
 
                     List<MatOfPoint> contours = new ArrayList<>();
 
-                    Imgproc.findContours(matrix, contours, matrix, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+                    //Mat hierachy = new Mat();
+                    //Imgproc.findContours(matrix, contours, matrix, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+                    Imgproc.rectangle(matrix,new Point(x1, y1),new Point(x2, y2),new Scalar(0, 0, 255),10);
 
-                    int index = 0;
-                    double maxim = Imgproc.contourArea(contours.get(0));
+                    PyObject vhlines = py.getModule("verticalAndHorizontal");
+                    PyObject obj1= vhlines.callAttr("boardRecognition",file.getPath());
+                    List<PyObject> Horizontal = obj1.asList();
 
-                    for (int contourIdx = 1; contourIdx < contours.size();contourIdx++)
-                    {
-                        double temp;
-                        temp=Imgproc.contourArea(contours.get(contourIdx));
-                        if(maxim<temp)
-                        {
-                            maxim=temp;
-                            index=contourIdx;
-                        }
+
+                    for (int i = 0;i < Horizontal.size();i++){
+
+
+                        int Hy1 = Horizontal.get(i).toInt();
+
+                        Imgproc.rectangle(matrix,new Point(x1, Hy1),new Point(x2, Hy1),new Scalar(0, 0, 255),10);
+                        //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
                     }
-                    Mat drawing = Mat.zeros(matrix.size(), CvType.CV_8UC1);
-                   // Log.d("","number of contours " +contours.get(index));
-                    Toast.makeText(getApplicationContext(),"number of contours " +contours.get(index),Toast.LENGTH_LONG);
 
 
-                    Imgproc.drawContours(drawing, contours, index, new Scalar(255), 1);
+                    PyObject obj2= vhlines.callAttr("verticalLines",file.getPath());
+                    List<PyObject> vertical = obj2.asList();
 
-                    /*
-                    Imgproc.line (
-                            matrix,                    //Matrix obj of the image
-                            new Point(10, 200),        //p1
-                            new Point(600, 200),       //p2
-                            new Scalar(0, 0, 255),     //Scalar object for color
-                            5                          //Thickness of the line
-                    );*/
+
+                    for (int i = 0;i < vertical.size();i++){
+
+
+                        int Hx1 = vertical.get(i).toInt();
+
+                        Imgproc.rectangle(matrix,new Point(Hx1, y1),new Point(Hx1, y2),new Scalar(0, 0, 255),10);
+                        //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
+                    }
+
 
                     MatOfByte matOfByte = new MatOfByte();
-                    Imgcodecs.imencode(".jpg", drawing, matOfByte);
+                    Imgcodecs.imencode(".jpg", matrix, matOfByte);
                     byte[] byteArray = matOfByte.toArray();
 
                     //save method
@@ -390,15 +403,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-                    Python py = Python.getInstance();
-                    PyObject cv2 = py.getModule("cv2");
-                    PyObject numpy = py.getModule("numpy");
-
-
-                    PyObject tab = py.getModule("BoardRecognition");
                     //PyObject obj= cv2.callAttr("imread",file.getPath());
-                    PyObject obj= tab.callAttr("boardRecognition",file.getPath());
+                    //PyObject obj= tab.callAttr("boardRecognition",file.getPath());
                     //List<PyObject> matrixAdjusted = obj.asList();
 
                     //Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
