@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/textoo"
         android:layout_width="382dp"
         android:layout_height="552dp"
         android:layout_alignParentStart="true"

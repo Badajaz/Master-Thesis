@@ -387,17 +387,27 @@ public class MainActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
                     }
 
-
+                    TextView tv = findViewById(R.id.textoo);
                     PyObject obj3= vhlines.callAttr("squares",file.getPath());
                     List<PyObject> squares = obj3.asList();
 
                     Mat cropped= null;
+                    String rec = "";
+                    int count = 0;
+                    Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
+
                     for (int i = 0;i < squares.size();i++){
+                        if (count  == 5){
+                            rec+="\n";
+                            count = 0;
+                        }
+
                         int a = squares.get(i).asList().get(0).toInt();
                         int b = squares.get(i).asList().get(1).toInt();
                         int c = squares.get(i).asList().get(2).toInt();
                         int d = squares.get(i).asList().get(3).toInt();
-                        Toast.makeText(getApplicationContext(),"("+a+","+b+","+c+","+d+")",Toast.LENGTH_LONG).show();
+
+
                         Rect roi = new Rect(a, b,c - a , d - b);
                         cropped = new Mat(matrix, roi);
 
@@ -418,28 +428,43 @@ public class MainActivity extends AppCompatActivity {
                                 int color = bmp.getPixel(x, y);
                                 pixelCount++;
                                 redColors += Color.red(color);
+
                                 greenColors += Color.green(color);
                                 blueColors += Color.blue(color);
+                                //Toast.makeText(getApplicationContext(),redColors+","+greenColors+","+blueColors,Toast.LENGTH_LONG).show();
                             }
                         }
+
 
                         int red = (redColors/pixelCount);
                         int green = (greenColors/pixelCount);
                         int blue = (blueColors/pixelCount);
 
-                        if (red >= green && red >= blue){
+                        if (redColors >= greenColors && redColors >= blueColors){
+                            rec+="X ";
 
                             Toast.makeText(getApplicationContext(),"Red",Toast.LENGTH_LONG).show();
 
-                        }else if(green >= red && green >= blue){
+                        }else if(greenColors >= redColors && greenColors >= blueColors){
                             Toast.makeText(getApplicationContext(),"Green",Toast.LENGTH_LONG).show();
+                            rec+="O ";
 
-                        }else if(blue >= red && blue >= green){
+                        }else if(blueColors >= redColors && blueColors >= greenColors){
                             Toast.makeText(getApplicationContext(),"Blue",Toast.LENGTH_LONG).show();
+                            rec+="F ";
                         }
 
-                        break;
+                         redColors = 0;
+                         greenColors = 0;
+                         blueColors = 0;
+                         pixelCount = 0;
+
+
+                        count++;
+
                     }
+
+                    tv.setText(rec);
 
 
                     MatOfByte matOfByte = new MatOfByte();
