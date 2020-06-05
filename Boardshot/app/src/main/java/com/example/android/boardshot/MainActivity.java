@@ -395,9 +395,8 @@ public class MainActivity extends AppCompatActivity {
                         int c = squares.get(i).asList().get(2).toInt();
                         int d = squares.get(i).asList().get(3).toInt();
                         Toast.makeText(getApplicationContext(),"("+a+","+b+","+c+","+d+")",Toast.LENGTH_LONG).show();
-                        Rect roi = new Rect(a,b,c, d);
+                        Rect roi = new Rect(a, b,c - a , d - b);
                         cropped = new Mat(matrix, roi);
-                        break;
                     }
 
 
@@ -416,6 +415,11 @@ public class MainActivity extends AppCompatActivity {
                         if (outputStream2 != null)
                             outputStream2.close();
                     }
+
+
+
+
+
 
 
 
