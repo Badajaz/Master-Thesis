@@ -85,6 +85,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -354,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //Mat hierachy = new Mat();
                     //Imgproc.findContours(matrix, contours, matrix, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-                    Imgproc.rectangle(matrix,new Point(x1, y1),new Point(x2, y2),new Scalar(0, 0, 255),10);
+                    //Imgproc.rectangle(matrix,new Point(x1, y1),new Point(x2, y2),new Scalar(0, 0, 255),10);
 
                     PyObject vhlines = py.getModule("verticalAndHorizontal");
                     PyObject obj1= vhlines.callAttr("boardRecognition",file.getPath());
@@ -366,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
 
                         int Hy1 = Horizontal.get(i).toInt();
 
-                        Imgproc.rectangle(matrix,new Point(x1, Hy1),new Point(x2, Hy1),new Scalar(0, 0, 255),10);
+                        //Imgproc.rectangle(matrix,new Point(x1, Hy1),new Point(x2, Hy1),new Scalar(0, 0, 255),10);
                         //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
                     }
 
@@ -380,13 +381,28 @@ public class MainActivity extends AppCompatActivity {
 
                         int Hx1 = vertical.get(i).toInt();
 
-                        Imgproc.rectangle(matrix,new Point(Hx1, y1),new Point(Hx1, y2),new Scalar(0, 0, 255),10);
+                        //Imgproc.rectangle(matrix,new Point(Hx1, y1),new Point(Hx1, y2),new Scalar(0, 0, 255),10);
                         //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
                     }
 
 
+                    PyObject obj3= vhlines.callAttr("squares",file.getPath());
+                    List<PyObject> squares = obj3.asList();
+                    Mat cropped= null;
+                    for (int i = 0;i < squares.size();i++){
+                        int a = squares.get(i).asList().get(0).toInt();
+                        int b = squares.get(i).asList().get(1).toInt();
+                        int c = squares.get(i).asList().get(2).toInt();
+                        int d = squares.get(i).asList().get(3).toInt();
+                        Toast.makeText(getApplicationContext(),"("+a+","+b+","+c+","+d+")",Toast.LENGTH_LONG).show();
+                        Rect roi = new Rect(a,b,c, d);
+                        cropped = new Mat(matrix, roi);
+                        break;
+                    }
+
+
                     MatOfByte matOfByte = new MatOfByte();
-                    Imgcodecs.imencode(".jpg", matrix, matOfByte);
+                    Imgcodecs.imencode(".jpg", cropped, matOfByte);
                     byte[] byteArray = matOfByte.toArray();
 
                     //save method
@@ -400,14 +416,6 @@ public class MainActivity extends AppCompatActivity {
                         if (outputStream2 != null)
                             outputStream2.close();
                     }
-
-
-
-                    //PyObject obj= cv2.callAttr("imread",file.getPath());
-                    //PyObject obj= tab.callAttr("boardRecognition",file.getPath());
-                    //List<PyObject> matrixAdjusted = obj.asList();
-
-                    //Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
 
 
 
