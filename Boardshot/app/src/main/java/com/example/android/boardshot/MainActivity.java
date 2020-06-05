@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.RectF;
@@ -388,6 +390,7 @@ public class MainActivity extends AppCompatActivity {
 
                     PyObject obj3= vhlines.callAttr("squares",file.getPath());
                     List<PyObject> squares = obj3.asList();
+
                     Mat cropped= null;
                     for (int i = 0;i < squares.size();i++){
                         int a = squares.get(i).asList().get(0).toInt();
@@ -397,6 +400,45 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"("+a+","+b+","+c+","+d+")",Toast.LENGTH_LONG).show();
                         Rect roi = new Rect(a, b,c - a , d - b);
                         cropped = new Mat(matrix, roi);
+
+                        int w = c - a, h = d - b;
+
+                        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+                        Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
+                        Canvas canvas = new Canvas(bmp);
+                        Utils.matToBitmap(cropped,bmp);
+                        int redColors = 0;
+                        int greenColors = 0;
+                        int blueColors = 0;
+                        int pixelCount = 0;
+                        for (int y = 0; y < bmp.getHeight(); y++)
+                        {
+                            for (int x = 0; x < bmp.getWidth(); x++)
+                            {
+                                int color = bmp.getPixel(x, y);
+                                pixelCount++;
+                                redColors += Color.red(color);
+                                greenColors += Color.green(color);
+                                blueColors += Color.blue(color);
+                            }
+                        }
+
+                        int red = (redColors/pixelCount);
+                        int green = (greenColors/pixelCount);
+                        int blue = (blueColors/pixelCount);
+
+                        if (red >= green && red >= blue){
+
+                            Toast.makeText(getApplicationContext(),"Red",Toast.LENGTH_LONG).show();
+
+                        }else if(green >= red && green >= blue){
+                            Toast.makeText(getApplicationContext(),"Green",Toast.LENGTH_LONG).show();
+
+                        }else if(blue >= red && blue >= green){
+                            Toast.makeText(getApplicationContext(),"Blue",Toast.LENGTH_LONG).show();
+                        }
+
+                        break;
                     }
 
 
