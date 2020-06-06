@@ -391,13 +391,19 @@ public class MainActivity extends AppCompatActivity {
                     PyObject obj3= vhlines.callAttr("squares",file.getPath());
                     List<PyObject> squares = obj3.asList();
 
+                    //brigth image
+                    Mat matrixBright = new Mat();
+                    matrix.convertTo(matrixBright, -1, 1, 200);
+
+
+
                     Mat cropped= null;
                     String rec = "";
                     int count = 0;
                     Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
 
                     for (int i = 0;i < squares.size();i++){
-                        if (count  == 5){
+                        if (count == 6){
                             rec+="\n";
                             count = 0;
                         }
@@ -409,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         Rect roi = new Rect(a, b,c - a , d - b);
-                        cropped = new Mat(matrix, roi);
+                        cropped = new Mat(matrixBright, roi);
 
                         int w = c - a, h = d - b;
 
@@ -421,6 +427,8 @@ public class MainActivity extends AppCompatActivity {
                         int greenColors = 0;
                         int blueColors = 0;
                         int pixelCount = 0;
+                        int blackColors = 0;
+
                         for (int y = 0; y < bmp.getHeight(); y++)
                         {
                             for (int x = 0; x < bmp.getWidth(); x++)
@@ -428,47 +436,51 @@ public class MainActivity extends AppCompatActivity {
                                 int color = bmp.getPixel(x, y);
                                 pixelCount++;
                                 redColors += Color.red(color);
-
                                 greenColors += Color.green(color);
                                 blueColors += Color.blue(color);
-                                //Toast.makeText(getApplicationContext(),redColors+","+greenColors+","+blueColors,Toast.LENGTH_LONG).show();
+                                if(Color.rgb(Color.red(Color.BLACK), Color.green(Color.BLACK), Color.blue(Color.BLACK))
+                                        == Color.rgb(Color.red(color), Color.green(color), Color.blue(color))) {
+
+                                    blackColors++;
+                                }
+
+
+
                             }
                         }
-
 
                         int red = (redColors/pixelCount);
                         int green = (greenColors/pixelCount);
                         int blue = (blueColors/pixelCount);
+                        int black = (blackColors/pixelCount);
 
-                        if (redColors >= greenColors && redColors >= blueColors){
-                            rec+="X ";
+                        if (black >= red && black >= blue && black >= green ){
+                            rec+="R ";
+                        }
 
-                            Toast.makeText(getApplicationContext(),"Red",Toast.LENGTH_LONG).show();
-
-                        }else if(greenColors >= redColors && greenColors >= blueColors){
-                            Toast.makeText(getApplicationContext(),"Green",Toast.LENGTH_LONG).show();
+                        else if(green >= red && green >=  blue){
                             rec+="O ";
+                        }
 
-                        }else if(blueColors >= redColors && blueColors >= greenColors){
-                            Toast.makeText(getApplicationContext(),"Blue",Toast.LENGTH_LONG).show();
+                        else if (red >= green && red >= blue){
                             rec+="F ";
                         }
 
-                         redColors = 0;
-                         greenColors = 0;
-                         blueColors = 0;
-                         pixelCount = 0;
 
+                        else if(blue >= red && blue >= green){
+                            rec+="X ";
+                        }
 
                         count++;
 
                     }
 
                     tv.setText(rec);
-
+                    Mat gray = new Mat();
+                    Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
 
                     MatOfByte matOfByte = new MatOfByte();
-                    Imgcodecs.imencode(".jpg", cropped, matOfByte);
+                    Imgcodecs.imencode(".jpg", gray, matOfByte);
                     byte[] byteArray = matOfByte.toArray();
 
                     //save method
