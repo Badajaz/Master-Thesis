@@ -417,17 +417,21 @@ public class MainActivity extends AppCompatActivity {
                         Rect roi = new Rect(a, b,c - a , d - b);
                         cropped = new Mat(matrixBright, roi);
 
+
+
                         int w = c - a, h = d - b;
+
 
                         Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
                         Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
                         Canvas canvas = new Canvas(bmp);
                         Utils.matToBitmap(cropped,bmp);
+
+
                         int redColors = 0;
                         int greenColors = 0;
                         int blueColors = 0;
                         int pixelCount = 0;
-                        int blackColors = 0;
 
                         for (int y = 0; y < bmp.getHeight(); y++)
                         {
@@ -438,27 +442,17 @@ public class MainActivity extends AppCompatActivity {
                                 redColors += Color.red(color);
                                 greenColors += Color.green(color);
                                 blueColors += Color.blue(color);
-                                if(Color.rgb(Color.red(Color.BLACK), Color.green(Color.BLACK), Color.blue(Color.BLACK))
-                                        == Color.rgb(Color.red(color), Color.green(color), Color.blue(color))) {
-
-                                    blackColors++;
-                                }
-
-
 
                             }
                         }
 
+
                         int red = (redColors/pixelCount);
                         int green = (greenColors/pixelCount);
                         int blue = (blueColors/pixelCount);
-                        int black = (blackColors/pixelCount);
 
-                        if (black >= red && black >= blue && black >= green ){
-                            rec+="R ";
-                        }
 
-                        else if(green >= red && green >=  blue){
+                        if(green >= red && green >=  blue){
                             rec+="O ";
                         }
 
@@ -473,14 +467,17 @@ public class MainActivity extends AppCompatActivity {
 
                         count++;
 
+
                     }
 
                     tv.setText(rec);
+
+
                     Mat gray = new Mat();
                     Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
 
                     MatOfByte matOfByte = new MatOfByte();
-                    Imgcodecs.imencode(".jpg", gray, matOfByte);
+                    Imgcodecs.imencode(".jpg", matrixBright, matOfByte);
                     byte[] byteArray = matOfByte.toArray();
 
                     //save method
