@@ -395,18 +395,20 @@ public class MainActivity extends AppCompatActivity {
                     Mat matrixBright = new Mat();
                     matrix.convertTo(matrixBright, -1, 1, 200);
 
+                    Mat matrixRobot = new Mat();
+                    matrix.convertTo(matrixRobot, -1, 1, 35);
+
 
 
                     Mat cropped= null;
+                    Mat croppedNormal= null;
                     String rec = "";
                     int count = 0;
-                    Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
+                    Map<String,Integer> blackareas = new HashMap();
 
+                    Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
+                    int linha = 0;
                     for (int i = 0;i < squares.size();i++){
-                        if (count == 6){
-                            rec+="\n";
-                            count = 0;
-                        }
 
                         int a = squares.get(i).asList().get(0).toInt();
                         int b = squares.get(i).asList().get(1).toInt();
@@ -416,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Rect roi = new Rect(a, b,c - a , d - b);
                         cropped = new Mat(matrixBright, roi);
+                        croppedNormal = new Mat(matrixRobot, roi);
 
 
 
@@ -426,6 +429,11 @@ public class MainActivity extends AppCompatActivity {
                         Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
                         Canvas canvas = new Canvas(bmp);
                         Utils.matToBitmap(cropped,bmp);
+
+                        Bitmap.Config conf2 = Bitmap.Config.ARGB_8888; // see other conf types
+                        Bitmap bmp2 = Bitmap.createBitmap(w, h, conf2); // this creates a MUTABLE bitmap
+                        Canvas canvas2 = new Canvas(bmp2);
+                        Utils.matToBitmap(croppedNormal,bmp2);
 
 
                         int redColors = 0;
@@ -443,6 +451,7 @@ public class MainActivity extends AppCompatActivity {
                                 greenColors += Color.green(color);
                                 blueColors += Color.blue(color);
 
+
                             }
                         }
 
@@ -450,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
                         int red = (redColors/pixelCount);
                         int green = (greenColors/pixelCount);
                         int blue = (blueColors/pixelCount);
-
+                        //int yellow = ((redColors+greenColors)/pixelCount);
 
                         if(green >= red && green >=  blue){
                             rec+="O ";
@@ -460,21 +469,48 @@ public class MainActivity extends AppCompatActivity {
                             rec+="F ";
                         }
 
-
                         else if(blue >= red && blue >= green){
                             rec+="X ";
                         }
 
-                        count++;
 
+
+                        MatOfByte matOfByte = new MatOfByte();
+                        Imgcodecs.imencode(".jpg", croppedNormal, matOfByte);
+                        byte[] byteArray = matOfByte.toArray();
+
+                        //save method
+                        OutputStream outputStream2 = null;
+                        try {
+                            outputStream2 = new FileOutputStream(file);
+                            outputStream2.write(byteArray);
+
+
+                        } finally {
+                            if (outputStream2 != null)
+                                outputStream2.close();
+                        }
+
+
+
+
+                        PyObject blackLines = py.getModule("BlackLines");
+                        PyObject blackLinesMod = blackLines.callAttr("getBlackCounts",file.getPath());
+                        int black = blackLinesMod.toInt();
+                        blackareas.put(""+linha+""+count,black);
+                        Log.d("BlackArea","("+linha+","+count+")"+black);
+
+
+                        count++;
+                        if (count == 6){
+                            rec+="\n";
+                            count = 0;
+                            linha++;
+                        }
 
                     }
+                    
 
-                    tv.setText(rec);
-
-
-                    Mat gray = new Mat();
-                    Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
 
                     MatOfByte matOfByte = new MatOfByte();
                     Imgcodecs.imencode(".jpg", matrixBright, matOfByte);
@@ -491,6 +527,18 @@ public class MainActivity extends AppCompatActivity {
                         if (outputStream2 != null)
                             outputStream2.close();
                     }
+
+
+
+
+
+
+                    tv.setText(rec);
+
+
+                    Mat gray = new Mat();
+                    Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
+
 
 
 
