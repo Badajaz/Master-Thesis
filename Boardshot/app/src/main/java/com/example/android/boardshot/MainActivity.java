@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.renderscript.Sampler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
@@ -405,6 +406,8 @@ public class MainActivity extends AppCompatActivity {
                     String rec = "";
                     int count = 0;
                     Map<String,Integer> blackareas = new HashMap();
+                    Map<String,String> tabuleiro = new HashMap();
+
 
                     Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
                     int linha = 0;
@@ -418,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Rect roi = new Rect(a, b,c - a , d - b);
                         cropped = new Mat(matrixBright, roi);
-                        croppedNormal = new Mat(matrixRobot, roi);
+                        croppedNormal = new Mat(matrix, roi);
 
 
 
@@ -462,15 +465,15 @@ public class MainActivity extends AppCompatActivity {
                         //int yellow = ((redColors+greenColors)/pixelCount);
 
                         if(green >= red && green >=  blue){
-                            rec+="O ";
+                            tabuleiro.put(""+linha+""+count,"O");
                         }
 
                         else if (red >= green && red >= blue){
-                            rec+="F ";
+                            tabuleiro.put(""+linha+""+count,"F");
                         }
 
                         else if(blue >= red && blue >= green){
-                            rec+="X ";
+                            tabuleiro.put(""+linha+""+count,"X");
                         }
 
 
@@ -498,7 +501,7 @@ public class MainActivity extends AppCompatActivity {
                         PyObject blackLinesMod = blackLines.callAttr("getBlackCounts",file.getPath());
                         int black = blackLinesMod.toInt();
                         blackareas.put(""+linha+""+count,black);
-                        Log.d("BlackArea","("+linha+","+count+")"+black);
+
 
 
                         count++;
@@ -509,7 +512,24 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     }
-                    
+                    String robotCoordenates = getRobotCoordenates(blackareas);
+                    Log.d("BlackArea",robotCoordenates);
+                    tabuleiro.put(robotCoordenates,"R");
+                    rec= "";
+                        for (int i = 0;i < 8;i++){
+
+                            for (int j = 0;j < 6;j++){
+                                rec+= tabuleiro.get(""+i+""+j)+" ";
+
+
+                            }
+                            rec+="\n";
+
+                        }
+
+
+
+
 
 
                     MatOfByte matOfByte = new MatOfByte();
@@ -527,8 +547,6 @@ public class MainActivity extends AppCompatActivity {
                         if (outputStream2 != null)
                             outputStream2.close();
                     }
-
-
 
 
 
@@ -699,7 +717,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 
 
     private void createCameraPreview() {
@@ -968,7 +985,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private String getRobotCoordenates(Map<String, Integer> blackareas) {
 
+        List<Integer> list = new ArrayList<>(blackareas.values());
+        Collections.sort(list);
+        int value = list.get(list.size() - 1);
+        for (Map.Entry<String, Integer> entry : blackareas.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+
+        }
+        return "";
+
+    }
 
 
 }

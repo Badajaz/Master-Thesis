@@ -8,7 +8,7 @@ def getBlackCounts(image):
 
     lower_yellow = np.array([22, 93, 0])
     upper_yellow = np.array([45, 255, 255])
-    mask_black = cv2.inRange(hsv, black_lower, black_upper)
+    mask_black = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
     areaBlacks = -1
     # mask2 = cv2.inRange (hsv, black_upper,black_upper)
