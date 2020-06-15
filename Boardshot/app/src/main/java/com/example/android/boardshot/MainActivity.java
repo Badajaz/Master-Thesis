@@ -2,6 +2,7 @@ package com.example.android.boardshot;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -149,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean hasFinal =false;
 
     private Python py;
+    private String rec;
 
 
 
@@ -348,6 +350,8 @@ public class MainActivity extends AppCompatActivity {
                     int x2 = fourCorners.get(0).asList().get(2).toInt();
                     int y2 = fourCorners.get(0).asList().get(3).toInt();
 
+                    Log.d("corners",x1+" "+y1+" "+x2+" "+y2);
+
                     Mat matrix = Imgcodecs.imread(file.getPath());
 
 
@@ -403,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Mat cropped= null;
                     Mat croppedNormal= null;
-                    String rec = "";
+                    rec = "";
                     int count = 0;
                     Map<String,Integer> blackareas = new HashMap();
                     Map<String,String> tabuleiro = new HashMap();
@@ -417,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
                         int b = squares.get(i).asList().get(1).toInt();
                         int c = squares.get(i).asList().get(2).toInt();
                         int d = squares.get(i).asList().get(3).toInt();
+                        //Log.d("Tag",a+" "+b+" "+c+" "+d);
 
 
                         Rect roi = new Rect(a, b,c - a , d - b);
@@ -497,10 +502,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                        PyObject blackLines = py.getModule("BlackLines");
-                        PyObject blackLinesMod = blackLines.callAttr("getBlackCounts",file.getPath());
-                        int black = blackLinesMod.toInt();
-                        blackareas.put(""+linha+""+count,black);
+                        //PyObject blackLines = py.getModule("BlackLines");
+                        //PyObject blackLinesMod = blackLines.callAttr("getBlackCounts",file.getPath());
+                        //int black = blackLinesMod.toInt();
+                        //Log.d("BlackArea",""+linha+""+count+","+black+"");
+                        //blackareas.put(""+linha+""+count,black);
 
 
 
@@ -512,9 +518,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     }
-                    String robotCoordenates = getRobotCoordenates(blackareas);
-                    Log.d("BlackArea",robotCoordenates);
-                    tabuleiro.put(robotCoordenates,"R");
+                    //String robotCoordenates = getRobotCoordenates(blackareas);
+                    //tabuleiro.put(robotCoordenates,"R");
                     rec= "";
                         for (int i = 0;i < 8;i++){
 
@@ -533,7 +538,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     MatOfByte matOfByte = new MatOfByte();
-                    Imgcodecs.imencode(".jpg", matrixBright, matOfByte);
+                    Imgcodecs.imencode(".jpg", matrix, matOfByte);
                     byte[] byteArray = matOfByte.toArray();
 
                     //save method
@@ -679,6 +684,18 @@ public class MainActivity extends AppCompatActivity {
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+
+
+                        Handler mHandler = new Handler(getMainLooper());
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                intent.putExtra("message", rec);
+                                startActivity(intent);
+                            }
+                        });
+
 
 
                     }
