@@ -32,6 +32,8 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BoardDraw extends AppCompatActivity {
 
@@ -42,6 +44,9 @@ public class BoardDraw extends AppCompatActivity {
 
     private TextView textView;
     private String colorCode;
+    private ValueAnimator colorAnimation = null;
+
+    private int count = 1;
 
 
 
@@ -160,6 +165,23 @@ public class BoardDraw extends AppCompatActivity {
 
 
 
+     /*   Toast.makeText(getApplicationContext(),colormap.get(String.valueOf(colorCode.charAt('K')))+"",Toast.LENGTH_LONG).show();
+
+        Log.d("aaaaaa",""+colorCode);
+        for (int i = 0; i < colorCode.length(); i++) {
+            Log.d("hhhhh",""+colorCode.charAt(i));
+
+
+            textView.setBackgroundColor(Color.parseColor("#ff0000"));
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+*/
+
+
 
         Button b = findViewById(R.id.loadRobot);
 
@@ -167,55 +189,54 @@ public class BoardDraw extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //Toast.makeText(getApplicationContext(),runCall.toString(),Toast.LENGTH_LONG).show();
 
-                Map<String,String> colormap = new HashMap<>();
-                colormap.put("k","#000000");
-                colormap.put("R","#ff0000");
-                colormap.put("G","#00ff00");
-                colormap.put("Y","#ffff00");
-                colormap.put("B","#0000ff");
-                colormap.put("M","#ff00ff");
-                colormap.put("C","#00ffff");
-                colormap.put("W","#ffffff");
-                Toast.makeText(getApplicationContext(),"DEPOIS BUTTON = "+colorCode,Toast.LENGTH_LONG).show();
-                Log.d("COLOR",colorCode);
+                Toast.makeText(getApplicationContext(), "DEPOIS BUTTON = " + colorCode, Toast.LENGTH_LONG).show();
+                Log.d("COLOR", colorCode);
+                TimerTask repeatedTask = null;
+                count = 0;
+                if (count < colorCode.length()) {
+                     repeatedTask = new TimerTask() {
+                        public void run() {
+                            int colorTo = getColor(colorCode.charAt(count));
+                            textView.setBackgroundColor(colorTo);
+                            count+=1;
+                        }
 
-                int colorFrom1 = Color.parseColor("#000000");
-                Log.d("TEST",1+"");
-                int colorFrom2 = Color.parseColor("#ff0000");
-                Log.d("TEST",2+"");
-                int colorFrom3 = Color.parseColor("#00ff00");
-                Log.d("TEST",3+"");
-                int colorFrom4 = Color.parseColor("#ffff00");
-                Log.d("TEST",4+"");
-                int colorFrom5= Color.parseColor("#0000ff");
-                Log.d("TEST",5+"");
-                int colorFrom6= Color.parseColor("#ff00ff");
-                Log.d("TEST",6+"");
-                int colorFrom7= Color.parseColor("#00ffff");
-                Log.d("TEST",7+"");
-                int colorFrom8= Color.parseColor("#ffffff");
-                Log.d("TEST",8+"");
 
-                ValueAnimator colorAnimation =null ;
-                for (int i = 1; i < colorCode.length(); i+=2) {
-                     int colorFrom = Color.parseColor(String.valueOf(colormap.get(colorCode.charAt(i-1))));
-                     int colorTo = Color.parseColor(String.valueOf(colormap.get(colorCode.charAt(i))));
-                     colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                     colorAnimation.setDuration(50); // milliseconds
-                     colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                } ;
+            }else{
+                    repeatedTask.cancel();
+
+                }
+                Timer timer = new Timer("Timer");
+
+                long delay = 0;
+                long period = 50;
+                timer.scheduleAtFixedRate(repeatedTask, delay, period);
+
+
+
+
+
+                    //Log.d("Messs",colorCode.charAt(i-1)+" "+colorFrom );
+                    //Log.d("Messs2",colorCode.charAt(i)+" "+colorTo );
+
+                   /* colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                    colorAnimation.setDuration(50); // milliseconds
+                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                         @Override
                         public void onAnimationUpdate(ValueAnimator animator) {
+
                             textView.setBackgroundColor((int) animator.getAnimatedValue());
                         }
 
                     });
+*/
+
+
                 }
-
-                colorAnimation.start();
-
+               // colorAnimation.start();
 
 
 
@@ -239,13 +260,32 @@ public class BoardDraw extends AppCompatActivity {
 
 
 
-            }
+
         });
 
 
 
     }
+    private int getColor(char color){
 
+        switch (color) {
+            case 'R':
+                return Color.parseColor("#ff0000");
+            case 'G':
+                return Color.parseColor("#00ff00");
+            case 'Y':
+                return  Color.parseColor("#ffff00");
+            case 'B':
+                return Color.parseColor("#0000ff");
+            case 'M':
+                return Color.parseColor("#ff00ff");
+            case 'C':
+                return  Color.parseColor("#00ffff");
+            case 'W':
+                return Color.parseColor("#ffffff");
+        }
+    return 0;
+    }
 
 
 
