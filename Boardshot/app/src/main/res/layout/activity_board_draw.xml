@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BoardDraw">
@@ -9,7 +10,27 @@
     <RelativeLayout
         android:id="@+id/rect"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/loadRobot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:text="load" />
+
+        <TextView
+            android:id="@+id/tvRobot"
+            android:layout_width="391dp"
+            android:layout_height="225dp"
+            android:layout_above="@+id/loadRobot"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="9dp"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/back"
+            android:text=""/>
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

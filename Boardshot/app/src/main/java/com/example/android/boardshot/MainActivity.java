@@ -570,6 +570,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
                     if (recPieces == 1) {
                         Toast.makeText(MainActivity.this, "recPieces", Toast.LENGTH_SHORT).show();
                         List<TopCode> listaTopCodes = recognizeTopcodes(file.getPath());

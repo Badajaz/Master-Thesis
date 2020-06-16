@@ -2,6 +2,7 @@ from ast import *
 
 
 
+
 builtins = [
     'color',
     'wait',
