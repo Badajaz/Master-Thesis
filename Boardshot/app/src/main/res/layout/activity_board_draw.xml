@@ -11,8 +11,8 @@
         android:id="@+id/rect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="41dp"
-        tools:layout_editor_absoluteY="133dp">
+        tools:layout_editor_absoluteX="101dp"
+        tools:layout_editor_absoluteY="130dp">
 
         <Button
             android:id="@+id/loadRobot"
@@ -26,13 +26,16 @@
         <TextView
             android:id="@+id/TextViewID"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="312dp"
+            android:layout_above="@+id/loadRobot"
+            android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
+            android:layout_marginStart="21dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
-            android:layout_marginEnd="105dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/white_circle_drawable"
+            android:layout_marginEnd="17dp"
+            android:layout_marginBottom="7dp"
+            android:background="@drawable/border"
             android:gravity="center"
             android:paddingTop="5dp"
             android:textSize="13sp" />

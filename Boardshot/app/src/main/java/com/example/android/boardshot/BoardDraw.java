@@ -162,7 +162,9 @@ public class BoardDraw extends AppCompatActivity {
         PyObject runCall= initModule.callAttr("test",Environment.getExternalStorageDirectory().toString()+"/Pictures/"+"test.ozopy");
         colorCode = runCall.toString();
         //Toast.makeText(getApplicationContext(),"ANTES BUTTON = "+colorCode,Toast.LENGTH_LONG).show();
-        
+
+
+
 
 
 
