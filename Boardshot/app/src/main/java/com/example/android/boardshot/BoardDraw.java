@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -42,7 +43,7 @@ public class BoardDraw extends AppCompatActivity {
     private int width;
     private int height;
 
-    private TextView textView;
+    private TextView textViewID;
     private String colorCode;
     private ValueAnimator colorAnimation = null;
 
@@ -58,7 +59,7 @@ public class BoardDraw extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String message = bundle.getString("message");
         String[] messageArray = message.split(" ");
-        textView = findViewById(R.id.tvRobot);
+        textViewID = findViewById(R.id.TextViewID);
 
 
          left = 50; // initial start position of rectangles (50 pixels from left)
@@ -126,15 +127,14 @@ public class BoardDraw extends AppCompatActivity {
             FileWriter writer = new FileWriter(file);
             writer.append("def f():\n");
             writer.append("\t move(30,30) \n");
+            writer.append("\t rotate(90,30) \n");
             writer.append("\t move(30,30) \n");
             writer.append("\t wheels(0, 0) \n ");
             writer.append("\n");
             writer.append("i = 0 \n");
-            writer.append("i = 0 \n");
-            writer.append("i = 0 \n");
             writer.append("while i < 1: \n");
             writer.append("\t f()\n");
-            writer.append("i = i + 1 ");
+            writer.append("\t i = i + 1 ");
             writer.flush();
             writer.close();
 
@@ -161,25 +161,8 @@ public class BoardDraw extends AppCompatActivity {
         PyObject initModule = py.getModule("Runnable");
         PyObject runCall= initModule.callAttr("test",Environment.getExternalStorageDirectory().toString()+"/Pictures/"+"test.ozopy");
         colorCode = runCall.toString();
-        Toast.makeText(getApplicationContext(),"ANTES BUTTON = "+colorCode,Toast.LENGTH_LONG).show();
-
-
-
-     /*   Toast.makeText(getApplicationContext(),colormap.get(String.valueOf(colorCode.charAt('K')))+"",Toast.LENGTH_LONG).show();
-
-        Log.d("aaaaaa",""+colorCode);
-        for (int i = 0; i < colorCode.length(); i++) {
-            Log.d("hhhhh",""+colorCode.charAt(i));
-
-
-            textView.setBackgroundColor(Color.parseColor("#ff0000"));
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-*/
+        //Toast.makeText(getApplicationContext(),"ANTES BUTTON = "+colorCode,Toast.LENGTH_LONG).show();
+        
 
 
 
@@ -189,26 +172,33 @@ public class BoardDraw extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
-                Toast.makeText(getApplicationContext(), "DEPOIS BUTTON = " + colorCode, Toast.LENGTH_LONG).show();
+                Timer timer = new Timer("Timer");
+                //Toast.makeText(getApplicationContext(), "DEPOIS BUTTON = " + colorCode, Toast.LENGTH_LONG).show();
                 Log.d("COLOR", colorCode);
                 TimerTask repeatedTask = null;
                 count = 0;
                 if (count < colorCode.length()) {
                      repeatedTask = new TimerTask() {
                         public void run() {
-                            int colorTo = getColor(colorCode.charAt(count));
-                            textView.setBackgroundColor(colorTo);
-                            count+=1;
+                            if (count < colorCode.length()) {
+                                int colorTo = getColor(colorCode.charAt(count));
+
+                                GradientDrawable tvBackground2 = (GradientDrawable) textViewID.getBackground();
+                                tvBackground2.setColor(colorTo);
+
+                                //textView.setBackgroundColor(colorTo);
+                                count += 1;
+                            }
                         }
 
 
-                } ;
-            }else{
+                    } ;
+                }else{
                     repeatedTask.cancel();
+                    timer.cancel();
 
                 }
-                Timer timer = new Timer("Timer");
+
 
                 long delay = 0;
                 long period = 50;
@@ -269,6 +259,8 @@ public class BoardDraw extends AppCompatActivity {
     private int getColor(char color){
 
         switch (color) {
+            case 'K':
+                return Color.parseColor("#000000");
             case 'R':
                 return Color.parseColor("#ff0000");
             case 'G':
@@ -283,10 +275,9 @@ public class BoardDraw extends AppCompatActivity {
                 return  Color.parseColor("#00ffff");
             case 'W':
                 return Color.parseColor("#ffffff");
+
         }
     return 0;
     }
-
-
 
 }

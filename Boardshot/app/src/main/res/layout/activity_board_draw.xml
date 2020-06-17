@@ -10,7 +10,9 @@
     <RelativeLayout
         android:id="@+id/rect"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="41dp"
+        tools:layout_editor_absoluteY="133dp">
 
         <Button
             android:id="@+id/loadRobot"
@@ -20,16 +22,20 @@
             android:layout_marginBottom="5dp"
             android:text="load" />
 
+
         <TextView
-            android:id="@+id/tvRobot"
-            android:layout_width="391dp"
-            android:layout_height="225dp"
-            android:layout_above="@+id/loadRobot"
+            android:id="@+id/TextViewID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="9dp"
-            android:layout_marginBottom="0dp"
-            android:background="@drawable/back"
-            android:text=""/>
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="105dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/white_circle_drawable"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:textSize="13sp" />
     </RelativeLayout>
 
 
