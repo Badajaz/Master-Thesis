@@ -305,9 +305,15 @@ public class BoardDraw extends AppCompatActivity {
                 int it = Integer.parseInt(instructions[countLoop+1]);
                 countLoop++;
                 for (int i = 0;i < it && (!instructions[countLoop].equals("LE"));i++){
-                    robotInstructions.add("\t move(30,30) \n");
-                    robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
-                    countLoop++;
+
+                    if (instructions[countLoop].equals("LB")){
+                        robotInstructions.addAll(loopInstructions(instructions));
+                    }else{
+                        robotInstructions.add("\t move(30,30) \n");
+                        robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
+                        countLoop++;
+                    }
+
                 }
                 countLoop++;
 
