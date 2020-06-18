@@ -114,17 +114,7 @@ public class BoardDraw extends AppCompatActivity {
         ImageView iV = new ImageView(this);
         iV.setImageBitmap(bg);
         ll.addView(iV);
-
-
-        /*Bitmap big = Bitmap.createBitmap(5000, 5000, Bitmap.Config.ARGB_8888);
-        Paint paint = new Paint();
-        Canvas canvas = new Canvas(big);
-        paint.setColor(Color.parseColor("#ff0000"));
-        canvas.drawRect(left, top+1000, left+width, top+height+1000, paint);
-        ImageView iV2 = new ImageView(this);
-        iV2.setImageBitmap(big);
-        ll.addView(iV2);
-        */
+        
 
 
 
@@ -213,25 +203,6 @@ public class BoardDraw extends AppCompatActivity {
                 long period = 50;
                 timer.scheduleAtFixedRate(repeatedTask, delay, period);
 
-
-
-
-
-                    //Log.d("Messs",colorCode.charAt(i-1)+" "+colorFrom );
-                    //Log.d("Messs2",colorCode.charAt(i)+" "+colorTo );
-
-                   /* colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                    colorAnimation.setDuration(50); // milliseconds
-                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animator) {
-
-                            textView.setBackgroundColor((int) animator.getAnimatedValue());
-                        }
-
-                    });
-*/
 
 
                 }
@@ -405,7 +376,7 @@ public class BoardDraw extends AppCompatActivity {
         for (int i = 0;i < it && (!arrayInstructions[countLoop].equals("LE"));i++){
             robotInstructions.add("\t move(30,30) \n");
             robotInstructions.add(turnOverInstruction(arrayInstructions[countLoop],arrayInstructions[countLoop+1]));
-            count++;
+            countLoop++;
         }
         countLoop++;
 
