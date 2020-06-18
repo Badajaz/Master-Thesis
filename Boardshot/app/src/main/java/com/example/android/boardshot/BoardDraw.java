@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -31,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -55,10 +57,13 @@ public class BoardDraw extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_draw);
-
-        Bundle bundle = getIntent().getExtras();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
         String message = bundle.getString("message");
+        HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("map");
         String[] messageArray = message.split(" ");
+        Toast.makeText(getApplicationContext(),hashMap.get("00"),Toast.LENGTH_LONG).show();
+
         textViewID = findViewById(R.id.TextViewID);
 
 
@@ -157,11 +162,11 @@ public class BoardDraw extends AppCompatActivity {
             e.printStackTrace();
 
         }
+
         Python py= Python.getInstance();
         PyObject initModule = py.getModule("Runnable");
         PyObject runCall= initModule.callAttr("test",Environment.getExternalStorageDirectory().toString()+"/Pictures/"+"test.ozopy");
         colorCode = runCall.toString();
-        //Toast.makeText(getApplicationContext(),"ANTES BUTTON = "+colorCode,Toast.LENGTH_LONG).show();
 
 
 
@@ -281,5 +286,95 @@ public class BoardDraw extends AppCompatActivity {
         }
     return 0;
     }
+
+    private ArrayList<String> computationBoard(HashMap board,String sequence){
+        int linha = 0;
+        int coluna = 0;
+        int count = 0;
+
+        String[] instructions = sequence.split("_");
+        ArrayList<String> robotInstructions = new ArrayList<>();
+
+
+        while((!board.get(linha+""+coluna).equals("F")) && (instructions[count].equals("F"))){
+
+            if (instructions[count].equals("C")){
+                robotInstructions.add("");
+
+
+            }else if (instructions[count].equals("B") ){
+
+            }else if (instructions[count].equals("D") ){
+
+            }else if (instructions[count].equals("E") ){
+
+            }
+
+
+
+
+
+            count++;
+        }
+
+        return null;
+    }
+
+
+    private String turnOverInstruction(String currentMovement,String nextMovement){
+
+        String rotacao = "";
+
+        if(currentMovement == "D") {
+
+            if (nextMovement == "B"){
+                rotacao = "    rotate(-90,50) \n";
+            }
+
+            else if (nextMovement =="C"){
+                rotacao = "    rotate(90,50) \n";
+
+            }
+            else if (nextMovement =="E"){
+                rotacao = "    rotate(90,50) \n    rotate(90,50) \n";
+            }
+        }
+
+        elif currentMovement == "E":
+
+        if nextMovement == "B":
+        rotacao = "    rotate(90,50) \n"
+        elif nextMovement == "C":
+        rotacao = "    rotate(-90,50) \n"
+        elif nextMovement == "D":
+        rotacao = "    rotate(90,50) \n    rotate(90,50) \n"
+
+
+        elif currentMovement == "C":
+
+        if nextMovement == "B":
+        rotacao = "    rotate(90,50) \n    rotate(90,50) \n"
+        elif nextMovement == "D":
+        rotacao = "    rotate(-90,50) \n"
+        elif nextMovement == "E":
+        rotacao = "    rotate(90,50) \n"
+
+
+        elif currentMovement == "B":
+
+        if nextMovement == "C":
+        rotacao = "    rotate(90,50) \n    rotate(90,50) \n"
+        elif nextMovement == "D":
+        rotacao = "    rotate(90,50) \n"
+        elif nextMovement == "E":
+        rotacao = "    rotate(-90,50) \n"
+
+
+        return rotacao
+    }
+
+
+
+
 
 }

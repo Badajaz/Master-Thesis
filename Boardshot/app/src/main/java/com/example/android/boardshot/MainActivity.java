@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
     private Python py;
     private String rec;
     private String boardRec;
+    HashMap<String,String> tabuleiro;
 
 
 
@@ -340,13 +341,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
                     if (recPieces == 1) {
                         Toast.makeText(MainActivity.this, "recPieces", Toast.LENGTH_SHORT).show();
                         List<TopCode> listaTopCodes = recognizeTopcodes(file.getPath());
@@ -469,6 +463,7 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 Intent intent = new Intent(MainActivity.this, BoardDraw.class);
                                 intent.putExtra("message", boardRec);
+                                intent.putExtra("map", tabuleiro);
                                 startActivity(intent);
                             }
                         });
@@ -878,7 +873,7 @@ public class MainActivity extends AppCompatActivity {
         rec = "";
         int count = 0;
         Map<String,Integer> blackareas = new HashMap();
-        Map<String,String> tabuleiro = new HashMap();
+        tabuleiro = new HashMap();
 
 
         Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
