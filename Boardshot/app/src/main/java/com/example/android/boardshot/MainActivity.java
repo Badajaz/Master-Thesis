@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Python py;
     private String rec;
+    private String boardRec;
 
 
 
@@ -328,239 +329,14 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    if (!Python.isStarted()){
-                        Python.start(new AndroidPlatform(getApplicationContext()));
-                    }
+                    boardRec = boardRecognition();
 
-                    if (Python.isStarted()){
-                        Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
-                    }
 
-                    Python py = Python.getInstance();
-                    PyObject cv2 = py.getModule("cv2");
-                    PyObject numpy = py.getModule("numpy");
+                    //tv.setText(rec);
 
 
-                    PyObject tab = py.getModule("BoardRecognition");
-                    PyObject obj= tab.callAttr("boardRecognition",file.getPath());
-                    List<PyObject> fourCorners = obj.asList();
-
-                    int x1 = fourCorners.get(0).asList().get(0).toInt();
-                    int y1 = fourCorners.get(0).asList().get(1).toInt();
-                    int x2 = fourCorners.get(0).asList().get(2).toInt();
-                    int y2 = fourCorners.get(0).asList().get(3).toInt();
-
-                    Log.d("corners",x1+" "+y1+" "+x2+" "+y2);
-
-                    Mat matrix = Imgcodecs.imread(file.getPath());
-
-
-                    //hsv
-                    //Imgproc.cvtColor(matrix,matrix,Imgproc.COLOR_BGR2HSV);
-
-                    List<MatOfPoint> contours = new ArrayList<>();
-
-                    //Mat hierachy = new Mat();
-                    //Imgproc.findContours(matrix, contours, matrix, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-                    //Imgproc.rectangle(matrix,new Point(x1, y1),new Point(x2, y2),new Scalar(0, 0, 255),10);
-
-                    PyObject vhlines = py.getModule("verticalAndHorizontal");
-                    PyObject obj1= vhlines.callAttr("boardRecognition",file.getPath());
-                    List<PyObject> Horizontal = obj1.asList();
-
-
-                    for (int i = 0;i < Horizontal.size();i++){
-
-
-                        int Hy1 = Horizontal.get(i).toInt();
-
-                        //Imgproc.rectangle(matrix,new Point(x1, Hy1),new Point(x2, Hy1),new Scalar(0, 0, 255),10);
-                        //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
-                    }
-
-
-                    PyObject obj2= vhlines.callAttr("verticalLines",file.getPath());
-                    List<PyObject> vertical = obj2.asList();
-
-
-                    for (int i = 0;i < vertical.size();i++){
-
-
-                        int Hx1 = vertical.get(i).toInt();
-
-                        //Imgproc.rectangle(matrix,new Point(Hx1, y1),new Point(Hx1, y2),new Scalar(0, 0, 255),10);
-                        //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
-                    }
-
-                    TextView tv = findViewById(R.id.textoo);
-                    PyObject obj3= vhlines.callAttr("squares",file.getPath());
-                    List<PyObject> squares = obj3.asList();
-
-                    //brigth image
-                    Mat matrixBright = new Mat();
-                    matrix.convertTo(matrixBright, -1, 1, 200);
-
-                    Mat matrixRobot = new Mat();
-                    matrix.convertTo(matrixRobot, -1, 1, 35);
-
-
-
-                    Mat cropped= null;
-                    Mat croppedNormal= null;
-                    rec = "";
-                    int count = 0;
-                    Map<String,Integer> blackareas = new HashMap();
-                    Map<String,String> tabuleiro = new HashMap();
-
-
-                    Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
-                    int linha = 0;
-                    for (int i = 0;i < squares.size();i++){
-
-                        int a = squares.get(i).asList().get(0).toInt();
-                        int b = squares.get(i).asList().get(1).toInt();
-                        int c = squares.get(i).asList().get(2).toInt();
-                        int d = squares.get(i).asList().get(3).toInt();
-                        //Log.d("Tag",a+" "+b+" "+c+" "+d);
-
-
-                        Rect roi = new Rect(a, b,c - a , d - b);
-                        cropped = new Mat(matrixBright, roi);
-                        croppedNormal = new Mat(matrix, roi);
-
-
-
-                        int w = c - a, h = d - b;
-
-
-                        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-                        Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
-                        Canvas canvas = new Canvas(bmp);
-                        Utils.matToBitmap(cropped,bmp);
-
-                        Bitmap.Config conf2 = Bitmap.Config.ARGB_8888; // see other conf types
-                        Bitmap bmp2 = Bitmap.createBitmap(w, h, conf2); // this creates a MUTABLE bitmap
-                        Canvas canvas2 = new Canvas(bmp2);
-                        Utils.matToBitmap(croppedNormal,bmp2);
-
-
-                        int redColors = 0;
-                        int greenColors = 0;
-                        int blueColors = 0;
-                        int pixelCount = 0;
-
-                        for (int y = 0; y < bmp.getHeight(); y++)
-                        {
-                            for (int x = 0; x < bmp.getWidth(); x++)
-                            {
-                                int color = bmp.getPixel(x, y);
-                                pixelCount++;
-                                redColors += Color.red(color);
-                                greenColors += Color.green(color);
-                                blueColors += Color.blue(color);
-
-
-                            }
-                        }
-
-
-                        int red = (redColors/pixelCount);
-                        int green = (greenColors/pixelCount);
-                        int blue = (blueColors/pixelCount);
-                        //int yellow = ((redColors+greenColors)/pixelCount);
-
-                        if(green >= red && green >=  blue){
-                            tabuleiro.put(""+linha+""+count,"O");
-                        }
-
-                        else if (red >= green && red >= blue){
-                            tabuleiro.put(""+linha+""+count,"F");
-                        }
-
-                        else if(blue >= red && blue >= green){
-                            tabuleiro.put(""+linha+""+count,"X");
-                        }
-
-
-
-                        MatOfByte matOfByte = new MatOfByte();
-                        Imgcodecs.imencode(".jpg", croppedNormal, matOfByte);
-                        byte[] byteArray = matOfByte.toArray();
-
-                        //save method
-                        OutputStream outputStream2 = null;
-                        try {
-                            outputStream2 = new FileOutputStream(file);
-                            outputStream2.write(byteArray);
-
-
-                        } finally {
-                            if (outputStream2 != null)
-                                outputStream2.close();
-                        }
-
-
-
-
-                        //PyObject blackLines = py.getModule("BlackLines");
-                        //PyObject blackLinesMod = blackLines.callAttr("getBlackCounts",file.getPath());
-                        //int black = blackLinesMod.toInt();
-                        //Log.d("BlackArea",""+linha+""+count+","+black+"");
-                        //blackareas.put(""+linha+""+count,black);
-
-
-
-                        count++;
-                        if (count == 6){
-                            rec+="\n";
-                            count = 0;
-                            linha++;
-                        }
-
-                    }
-                    //String robotCoordenates = getRobotCoordenates(blackareas);
-                    //tabuleiro.put(robotCoordenates,"R");
-                    rec= "";
-                        for (int i = 0;i < 8;i++){
-
-                            for (int j = 0;j < 6;j++){
-                                rec+= tabuleiro.get(""+i+""+j)+" ";
-
-
-                            }
-                            rec+="\n";
-
-                        }
-
-
-
-
-
-
-                    MatOfByte matOfByte = new MatOfByte();
-                    Imgcodecs.imencode(".jpg", matrix, matOfByte);
-                    byte[] byteArray = matOfByte.toArray();
-
-                    //save method
-                    OutputStream outputStream2 = null;
-                    try {
-                        outputStream2 = new FileOutputStream(file);
-                        outputStream2.write(byteArray);
-
-
-                    } finally {
-                        if (outputStream2 != null)
-                            outputStream2.close();
-                    }
-
-
-
-
-                    tv.setText(rec);
-
-
-                    Mat gray = new Mat();
-                    Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
+                    //Mat gray = new Mat();
+                    //Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
 
 
 
@@ -692,7 +468,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 Intent intent = new Intent(MainActivity.this, BoardDraw.class);
-                                intent.putExtra("message", rec);
+                                intent.putExtra("message", boardRec);
                                 startActivity(intent);
                             }
                         });
@@ -1018,5 +794,237 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private String boardRecognition() throws IOException {
+
+        if (!Python.isStarted()){
+            Python.start(new AndroidPlatform(getApplicationContext()));
+        }
+
+        if (Python.isStarted()){
+            Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
+        }
+
+        Python py = Python.getInstance();
+        PyObject cv2 = py.getModule("cv2");
+        PyObject numpy = py.getModule("numpy");
+
+
+        PyObject tab = py.getModule("BoardRecognition");
+        PyObject obj= tab.callAttr("boardRecognition",file.getPath());
+        List<PyObject> fourCorners = obj.asList();
+
+        int x1 = fourCorners.get(0).asList().get(0).toInt();
+        int y1 = fourCorners.get(0).asList().get(1).toInt();
+        int x2 = fourCorners.get(0).asList().get(2).toInt();
+        int y2 = fourCorners.get(0).asList().get(3).toInt();
+
+        Log.d("corners",x1+" "+y1+" "+x2+" "+y2);
+
+        Mat matrix = Imgcodecs.imread(file.getPath());
+
+
+        //hsv
+        //Imgproc.cvtColor(matrix,matrix,Imgproc.COLOR_BGR2HSV);
+
+        List<MatOfPoint> contours = new ArrayList<>();
+
+        //Mat hierachy = new Mat();
+        //Imgproc.findContours(matrix, contours, matrix, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        //Imgproc.rectangle(matrix,new Point(x1, y1),new Point(x2, y2),new Scalar(0, 0, 255),10);
+
+        PyObject vhlines = py.getModule("verticalAndHorizontal");
+        PyObject obj1= vhlines.callAttr("boardRecognition",file.getPath());
+        List<PyObject> Horizontal = obj1.asList();
+
+
+        for (int i = 0;i < Horizontal.size();i++){
+
+
+            int Hy1 = Horizontal.get(i).toInt();
+
+            //Imgproc.rectangle(matrix,new Point(x1, Hy1),new Point(x2, Hy1),new Scalar(0, 0, 255),10);
+            //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
+        }
+
+
+        PyObject obj2= vhlines.callAttr("verticalLines",file.getPath());
+        List<PyObject> vertical = obj2.asList();
+
+
+        for (int i = 0;i < vertical.size();i++){
+
+
+            int Hx1 = vertical.get(i).toInt();
+
+            //Imgproc.rectangle(matrix,new Point(Hx1, y1),new Point(Hx1, y2),new Scalar(0, 0, 255),10);
+            //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
+        }
+
+        TextView tv = findViewById(R.id.textoo);
+        PyObject obj3= vhlines.callAttr("squares",file.getPath());
+        List<PyObject> squares = obj3.asList();
+
+        //brigth image
+        Mat matrixBright = new Mat();
+        matrix.convertTo(matrixBright, -1, 1, 200);
+
+        Mat matrixRobot = new Mat();
+        matrix.convertTo(matrixRobot, -1, 1, 35);
+
+
+
+        Mat cropped= null;
+        Mat croppedNormal= null;
+        rec = "";
+        int count = 0;
+        Map<String,Integer> blackareas = new HashMap();
+        Map<String,String> tabuleiro = new HashMap();
+
+
+        Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
+        int linha = 0;
+        for (int i = 0;i < squares.size();i++){
+
+            int a = squares.get(i).asList().get(0).toInt();
+            int b = squares.get(i).asList().get(1).toInt();
+            int c = squares.get(i).asList().get(2).toInt();
+            int d = squares.get(i).asList().get(3).toInt();
+            //Log.d("Tag",a+" "+b+" "+c+" "+d);
+
+
+            Rect roi = new Rect(a, b,c - a , d - b);
+            cropped = new Mat(matrixBright, roi);
+            croppedNormal = new Mat(matrix, roi);
+
+
+
+            int w = c - a, h = d - b;
+
+
+            Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+            Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
+            Canvas canvas = new Canvas(bmp);
+            Utils.matToBitmap(cropped,bmp);
+
+            Bitmap.Config conf2 = Bitmap.Config.ARGB_8888; // see other conf types
+            Bitmap bmp2 = Bitmap.createBitmap(w, h, conf2); // this creates a MUTABLE bitmap
+            Canvas canvas2 = new Canvas(bmp2);
+            Utils.matToBitmap(croppedNormal,bmp2);
+
+
+            int redColors = 0;
+            int greenColors = 0;
+            int blueColors = 0;
+            int pixelCount = 0;
+
+            for (int y = 0; y < bmp.getHeight(); y++)
+            {
+                for (int x = 0; x < bmp.getWidth(); x++)
+                {
+                    int color = bmp.getPixel(x, y);
+                    pixelCount++;
+                    redColors += Color.red(color);
+                    greenColors += Color.green(color);
+                    blueColors += Color.blue(color);
+
+
+                }
+            }
+
+
+            int red = (redColors/pixelCount);
+            int green = (greenColors/pixelCount);
+            int blue = (blueColors/pixelCount);
+            //int yellow = ((redColors+greenColors)/pixelCount);
+
+            if(green >= red && green >=  blue){
+                tabuleiro.put(""+linha+""+count,"O");
+            }
+
+            else if (red >= green && red >= blue){
+                tabuleiro.put(""+linha+""+count,"F");
+            }
+
+            else if(blue >= red && blue >= green){
+                tabuleiro.put(""+linha+""+count,"X");
+            }
+
+
+
+            MatOfByte matOfByte = new MatOfByte();
+            Imgcodecs.imencode(".jpg", croppedNormal, matOfByte);
+            byte[] byteArray = matOfByte.toArray();
+
+            //save method
+            OutputStream outputStream2 = null;
+            try {
+                outputStream2 = new FileOutputStream(file);
+                outputStream2.write(byteArray);
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (outputStream2 != null)
+                    outputStream2.close();
+            }
+
+
+
+
+            //PyObject blackLines = py.getModule("BlackLines");
+            //PyObject blackLinesMod = blackLines.callAttr("getBlackCounts",file.getPath());
+            //int black = blackLinesMod.toInt();
+            //Log.d("BlackArea",""+linha+""+count+","+black+"");
+            //blackareas.put(""+linha+""+count,black);
+
+
+
+            count++;
+            if (count == 6){
+                rec+="\n";
+                count = 0;
+                linha++;
+            }
+
+        }
+        //String robotCoordenates = getRobotCoordenates(blackareas);
+        //tabuleiro.put(robotCoordenates,"R");
+        rec= "";
+        for (int i = 0;i < 8;i++){
+
+            for (int j = 0;j < 6;j++){
+                rec+= tabuleiro.get(""+i+""+j)+" ";
+
+
+            }
+            rec+="\n";
+
+        }
+
+
+
+
+
+
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".jpg", matrix, matOfByte);
+        byte[] byteArray = matOfByte.toArray();
+
+        //save method
+        OutputStream outputStream2 = null;
+        try {
+            outputStream2 = new FileOutputStream(file);
+            outputStream2.write(byteArray);
+
+
+        } finally {
+            if (outputStream2 != null)
+                outputStream2.close();
+        }
+        return rec;
+    }
 
 }
