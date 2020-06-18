@@ -114,7 +114,7 @@ public class BoardDraw extends AppCompatActivity {
         ImageView iV = new ImageView(this);
         iV.setImageBitmap(bg);
         ll.addView(iV);
-        
+
 
 
 
@@ -278,10 +278,12 @@ public class BoardDraw extends AppCompatActivity {
                 for (int i = 0;i < it && (!instructions[countLoop].equals("LE"));i++){
 
                     if (instructions[countLoop].equals("LB")){
-                        robotInstructions.addAll(loopInstructions(instructions));
+                        robotInstructions.addAll(loopInstructions(instructions)); // Verificar metodo loopInstructions
                     }else{
                         robotInstructions.add("\t move(30,30) \n");
                         robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
+                        linha = getCurrentPosition(instructions[countLoop],linha,coluna)[0];
+                        coluna = getCurrentPosition(instructions[countLoop],linha,coluna)[1];
                         countLoop++;
                     }
 
@@ -292,6 +294,8 @@ public class BoardDraw extends AppCompatActivity {
                 robotInstructions.add("\t move(30,30) \n");
                 robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
                 countLoop++;
+                linha = getCurrentPosition(instructions[countLoop],linha,coluna)[0];
+                coluna = getCurrentPosition(instructions[countLoop],linha,coluna)[1];
             }
 
 
@@ -384,6 +388,26 @@ public class BoardDraw extends AppCompatActivity {
         return  robotInstructions;
     }
 
+
+    private int[] getCurrentPosition(String movement,int linha,int coluna){
+        int l = linha;
+        int c = coluna;
+
+        if (movement.equals("D")){
+            c++;
+        }
+        else if (movement.equals("E")){
+            c--;
+        }
+        else if (movement.equals("C")){
+            l--;
+        }
+        else if (movement.equals("B")){
+            l++;
+        }
+        int[] pos = {l,c};
+        return pos;
+    }
 
 
 
