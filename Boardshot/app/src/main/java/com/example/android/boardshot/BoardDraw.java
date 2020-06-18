@@ -32,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -290,31 +291,32 @@ public class BoardDraw extends AppCompatActivity {
     private ArrayList<String> computationBoard(HashMap board,String sequence){
         int linha = 0;
         int coluna = 0;
-        int count = 0;
+        int countLoop = 0;
 
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
 
 
-        while((!board.get(linha+""+coluna).equals("F")) && (instructions[count].equals("F"))){
+        while((!board.get(linha+""+coluna).equals("F")) && (instructions[countLoop].equals("F"))){
 
-            if (instructions[count].equals("C")){
-                robotInstructions.add("");
+            if(instructions[countLoop].equals("LB")){
 
+                int it = Integer.parseInt(instructions[countLoop+1]);
+                countLoop++;
+                for (int i = 0;i < it && (!instructions[countLoop].equals("LE"));i++){
+                    robotInstructions.add("\t move(30,30) \n");
+                    robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
+                    countLoop++;
+                }
+                countLoop++;
 
-            }else if (instructions[count].equals("B") ){
-
-            }else if (instructions[count].equals("D") ){
-
-            }else if (instructions[count].equals("E") ){
-
+            }else{
+                robotInstructions.add("\t move(30,30) \n");
+                robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
+                countLoop++;
             }
 
 
-
-
-
-            count++;
         }
 
         return null;
@@ -327,52 +329,82 @@ public class BoardDraw extends AppCompatActivity {
 
         if(currentMovement == "D") {
 
-            if (nextMovement == "B"){
-                rotacao = "    rotate(-90,50) \n";
-            }
+            if (nextMovement == "B") {
+                rotacao = "\t rotate(-90,50) \n";
+            } else if (nextMovement == "C") {
+                rotacao = "\t rotate(90,50) \n";
 
-            else if (nextMovement =="C"){
-                rotacao = "    rotate(90,50) \n";
+            } else if (nextMovement == "E") {
+                rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
 
-            }
-            else if (nextMovement =="E"){
-                rotacao = "    rotate(90,50) \n    rotate(90,50) \n";
             }
         }
 
-        elif currentMovement == "E":
 
-        if nextMovement == "B":
-        rotacao = "    rotate(90,50) \n"
-        elif nextMovement == "C":
-        rotacao = "    rotate(-90,50) \n"
-        elif nextMovement == "D":
-        rotacao = "    rotate(90,50) \n    rotate(90,50) \n"
+        else if(currentMovement == "E") {
 
+                if (nextMovement == "B"){
+                    rotacao = "\t rotate(90,50) \n";
+                }
+                else if(nextMovement =="C"){
+                    rotacao = "\t rotate(-90,50) \n";
 
-        elif currentMovement == "C":
-
-        if nextMovement == "B":
-        rotacao = "    rotate(90,50) \n    rotate(90,50) \n"
-        elif nextMovement == "D":
-        rotacao = "    rotate(-90,50) \n"
-        elif nextMovement == "E":
-        rotacao = "    rotate(90,50) \n"
+                }
+                else if(nextMovement =="D"){
+                    rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
 
 
-        elif currentMovement == "B":
+                }
+        }
 
-        if nextMovement == "C":
-        rotacao = "    rotate(90,50) \n    rotate(90,50) \n"
-        elif nextMovement == "D":
-        rotacao = "    rotate(90,50) \n"
-        elif nextMovement == "E":
-        rotacao = "    rotate(-90,50) \n"
+        else if (currentMovement == "C"){
+
+            if (nextMovement == "B"){
+                rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
+            }
+            else if (nextMovement == "D"){
+                rotacao = "\t rotate(-90,50) \n";
+            }
+            else if (nextMovement == "E"){
+                rotacao = "\t rotate(90,50) \n";
+            }
+
+        }
 
 
-        return rotacao
+        else if (currentMovement == "B"){
+
+            if (nextMovement == "C"){
+                rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
+            }
+            else if (nextMovement == "D"){
+                rotacao = "\t rotate(90,50) \n";
+
+            }
+            else if (nextMovement == "E"){
+                rotacao = "\t rotate(-90,50) \n";
+            }
+
+        }
+
+        return rotacao;
     }
 
+    private  ArrayList<String> loopInstructions(int count,String[] arrayInstructions){
+
+        ArrayList<String> robotInstructions = new ArrayList<>();
+        int it = Integer.parseInt(arrayInstructions[count+1]);
+        count++;
+        for (int i = 0;i < it && (!arrayInstructions[count].equals("LE"));i++){
+            robotInstructions.add("\t move(30,30) \n");
+            robotInstructions.add(turnOverInstruction(arrayInstructions[count],arrayInstructions[count+1]));
+            count++;
+        }
+        count++;
+
+
+        return  robotInstructions;
+    }
 
 
 
