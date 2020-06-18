@@ -51,6 +51,7 @@ public class BoardDraw extends AppCompatActivity {
     private ValueAnimator colorAnimation = null;
 
     private int count = 1;
+    private int countLoop;
 
 
 
@@ -291,7 +292,7 @@ public class BoardDraw extends AppCompatActivity {
     private ArrayList<String> computationBoard(HashMap board,String sequence){
         int linha = 0;
         int coluna = 0;
-        int countLoop = 0;
+        countLoop = 0;
 
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
@@ -390,17 +391,17 @@ public class BoardDraw extends AppCompatActivity {
         return rotacao;
     }
 
-    private  ArrayList<String> loopInstructions(int count,String[] arrayInstructions){
+    private  ArrayList<String> loopInstructions(String[] arrayInstructions){
 
         ArrayList<String> robotInstructions = new ArrayList<>();
-        int it = Integer.parseInt(arrayInstructions[count+1]);
-        count++;
-        for (int i = 0;i < it && (!arrayInstructions[count].equals("LE"));i++){
+        int it = Integer.parseInt(arrayInstructions[countLoop+1]);
+        countLoop++;
+        for (int i = 0;i < it && (!arrayInstructions[countLoop].equals("LE"));i++){
             robotInstructions.add("\t move(30,30) \n");
-            robotInstructions.add(turnOverInstruction(arrayInstructions[count],arrayInstructions[count+1]));
+            robotInstructions.add(turnOverInstruction(arrayInstructions[countLoop],arrayInstructions[countLoop+1]));
             count++;
         }
-        count++;
+        countLoop++;
 
 
         return  robotInstructions;
