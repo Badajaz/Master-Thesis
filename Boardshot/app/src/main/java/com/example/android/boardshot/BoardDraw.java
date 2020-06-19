@@ -117,9 +117,7 @@ public class BoardDraw extends AppCompatActivity {
 
 
 
-
-
-        try{
+       /* try{
             File file = new File( Environment.getExternalStorageDirectory().toString()+"/Pictures/"+"test.ozopy");
             FileWriter writer = new FileWriter(file);
             writer.append("def f():\n");
@@ -153,7 +151,12 @@ public class BoardDraw extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
 
-        }
+        }*/
+
+
+        ArrayList<String> comp =  computationBoard(hashMap,"B_B_B_B_D_D_D_D_F");
+        writeInstructionsFile(comp);
+
 
         Python py= Python.getInstance();
         PyObject initModule = py.getModule("Runnable");
@@ -261,15 +264,15 @@ public class BoardDraw extends AppCompatActivity {
     }
 
     private ArrayList<String> computationBoard(HashMap board,String sequence){
-        int linha = 0;
-        int coluna = 0;
+        int linha = 1;
+        int coluna = 1;
         countLoop = 0;
 
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
 
 
-        while((!board.get(linha+""+coluna).equals("F")) && (instructions[countLoop].equals("F"))){
+        while((!board.get(linha+""+coluna).equals("F")) || (!instructions[countLoop].equals("F"))){
 
             if(instructions[countLoop].equals("LB")){
 
@@ -293,15 +296,15 @@ public class BoardDraw extends AppCompatActivity {
             }else{
                 robotInstructions.add("\t move(30,30) \n");
                 robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
-                countLoop++;
                 linha = getCurrentPosition(instructions[countLoop],linha,coluna)[0];
                 coluna = getCurrentPosition(instructions[countLoop],linha,coluna)[1];
+                countLoop++;
             }
 
 
         }
 
-        return null;
+        return robotInstructions;
     }
 
 
@@ -408,6 +411,50 @@ public class BoardDraw extends AppCompatActivity {
         int[] pos = {l,c};
         return pos;
     }
+
+    private void writeInstructionsFile(ArrayList<String> instructions){
+
+
+        try{
+            File file = new File( Environment.getExternalStorageDirectory().toString()+"/Pictures/"+"test.ozopy");
+            FileWriter writer = new FileWriter(file);
+            writer.append("def f():\n");
+            for (String ins: instructions){
+                writer.append(ins);
+            }
+            writer.append("\n");
+            writer.append("i = 0 \n");
+            writer.append("while i < 1: \n");
+            writer.append("\t f()\n");
+            writer.append("\t i = i + 1 ");
+            writer.flush();
+            writer.close();
+
+            RandomAccessFile f = new RandomAccessFile(file, "r");
+            byte[] b = new byte[(int)f.length()];
+            f.readFully(b);
+            OutputStream outputStream2 = null;
+            try {
+                outputStream2 = new FileOutputStream(file);
+                outputStream2.write(b);
+
+
+            } finally {
+                if (outputStream2 != null)
+                    outputStream2.close();
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+
+
+    }
+
+
+
 
 
 
