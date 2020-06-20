@@ -154,7 +154,7 @@ public class BoardDraw extends AppCompatActivity {
         }*/
 
 
-        ArrayList<String> comp =  computationBoard(hashMap,"B_B_B_B_D_D_D_D_F");
+        ArrayList<String> comp =  computationBoard(hashMap,"B_B_B_D_D_D_D_F");
         writeInstructionsFile(comp);
 
 
@@ -312,61 +312,62 @@ public class BoardDraw extends AppCompatActivity {
 
         String rotacao = "";
 
-        if(currentMovement == "D") {
+        if(currentMovement.equals("D")) {
 
-            if (nextMovement == "B") {
+            if (nextMovement.equals("B")) {
                 rotacao = "\t rotate(-90,50) \n";
-            } else if (nextMovement == "C") {
+
+            } else if (nextMovement.equals("C")) {
                 rotacao = "\t rotate(90,50) \n";
 
-            } else if (nextMovement == "E") {
+            } else if (nextMovement.equals("E")) {
                 rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
 
             }
         }
 
 
-        else if(currentMovement == "E") {
+        else if(currentMovement.equals("E")) {
 
-                if (nextMovement == "B"){
+                if (nextMovement.equals("B")){
                     rotacao = "\t rotate(90,50) \n";
                 }
-                else if(nextMovement =="C"){
+                else if(nextMovement.equals("C")){
                     rotacao = "\t rotate(-90,50) \n";
 
                 }
-                else if(nextMovement =="D"){
+                else if(nextMovement.equals("D")){
                     rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
 
 
                 }
         }
 
-        else if (currentMovement == "C"){
+        else if (currentMovement.equals("C")){
 
-            if (nextMovement == "B"){
+            if (nextMovement.equals("B")){
                 rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
             }
-            else if (nextMovement == "D"){
+            else if (nextMovement.equals("D")){
                 rotacao = "\t rotate(-90,50) \n";
             }
-            else if (nextMovement == "E"){
+            else if (nextMovement.equals("E")){
                 rotacao = "\t rotate(90,50) \n";
             }
 
         }
 
 
-        else if (currentMovement == "B"){
+        else if (currentMovement.equals("B")){
 
-            if (nextMovement == "C"){
+            if (nextMovement.equals("C")){
                 rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
             }
-            else if (nextMovement == "D"){
+            else if (nextMovement.equals("D")){
                 rotacao = "\t rotate(90,50) \n";
 
             }
-            else if (nextMovement == "E"){
+            else if (nextMovement.equals("E")){
                 rotacao = "\t rotate(-90,50) \n";
             }
 
