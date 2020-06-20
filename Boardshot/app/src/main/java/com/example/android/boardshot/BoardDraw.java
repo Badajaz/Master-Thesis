@@ -154,7 +154,7 @@ public class BoardDraw extends AppCompatActivity {
         }*/
 
 
-        ArrayList<String> comp =  computationBoard(hashMap,"B_B_B_D_D_D_D_F");
+        ArrayList<String> comp =  computationBoard(hashMap,"C_C_C_F");
         writeInstructionsFile(comp);
 
 
@@ -264,15 +264,15 @@ public class BoardDraw extends AppCompatActivity {
     }
 
     private ArrayList<String> computationBoard(HashMap board,String sequence){
-        int linha = 1;
-        int coluna = 1;
+        int linha = 7;
+        int coluna = 3;
         countLoop = 0;
 
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
 
 
-        while((!board.get(linha+""+coluna).equals("F")) || (!instructions[countLoop].equals("F"))){
+        while((!board.get(linha+""+coluna).equals("F") && !board.get(linha+""+coluna).equals("X")) && (!instructions[countLoop].equals("F"))){
 
             if(instructions[countLoop].equals("LB")){
 
