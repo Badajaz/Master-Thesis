@@ -64,7 +64,6 @@ public class BoardDraw extends AppCompatActivity {
         String message = bundle.getString("message");
         HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("map");
         String[] messageArray = message.split(" ");
-        Toast.makeText(getApplicationContext(),hashMap.get("00"),Toast.LENGTH_LONG).show();
 
         textViewID = findViewById(R.id.TextViewID);
 
@@ -153,8 +152,10 @@ public class BoardDraw extends AppCompatActivity {
 
         }*/
 
-
-        ArrayList<String> comp =  computationBoard(hashMap,"C_C_C_F");
+        int linha = 7;
+        int coluna = 0;
+        String finale = hashMap.get("34");
+        ArrayList<String> comp =  computationBoard(hashMap,"LB_2_C_D_B_LE_F",linha,coluna);
         writeInstructionsFile(comp);
 
 
@@ -263,10 +264,11 @@ public class BoardDraw extends AppCompatActivity {
     return 0;
     }
 
-    private ArrayList<String> computationBoard(HashMap board,String sequence){
-        int linha = 7;
-        int coluna = 3;
+    private ArrayList<String> computationBoard(HashMap board,String sequence,int linha,int coluna){
         countLoop = 0;
+        int count = 0;
+        int countIns= 0 ;
+        int indexLE = 0;
 
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
@@ -277,21 +279,37 @@ public class BoardDraw extends AppCompatActivity {
             if(instructions[countLoop].equals("LB")){
 
                 int it = Integer.parseInt(instructions[countLoop+1]);
-                countLoop++;
-                for (int i = 0;i < it && (!instructions[countLoop].equals("LE"));i++){
+                int index = countLoop+1;
+                countLoop+=2;
+                int loopIt = (it * getNumberInstructions(instructions));
+
+                for (int i = 0;i < loopIt && (!board.get(linha+""+coluna).equals("F") && !board.get(linha+""+coluna).equals("X"));i++){
 
                     if (instructions[countLoop].equals("LB")){
                         robotInstructions.addAll(loopInstructions(instructions)); // Verificar metodo loopInstructions
                     }else{
                         robotInstructions.add("\t move(30,30) \n");
-                        robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
+                        if (instructions[countLoop+1].equals("LE")){
+                            indexLE = countLoop+1;
+                            int beforeCountLoop = countLoop;
+                            countLoop = index+1;
+                            if (i != loopIt - 1)
+                                robotInstructions.add(turnOverInstruction(instructions[beforeCountLoop],instructions[countLoop]));
+                            
+                            countLoop--;
+
+                        }else{
+                            countIns++;
+                            robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
+
+                        }
                         linha = getCurrentPosition(instructions[countLoop],linha,coluna)[0];
                         coluna = getCurrentPosition(instructions[countLoop],linha,coluna)[1];
-                        countLoop++;
+                       countLoop++;
                     }
-
                 }
-                countLoop++;
+
+                countLoop = indexLE + 1;
 
             }else{
                 robotInstructions.add("\t move(30,30) \n");
@@ -456,7 +474,46 @@ public class BoardDraw extends AppCompatActivity {
 
 
 
+private int getNumberCicles(String[] sequence){
+        int numberCicles = 0;
 
+        for (String s : sequence){
+
+            if(s.equals("LB")){
+                numberCicles++;
+            }
+        }
+
+
+    return numberCicles;
+}
+
+    private int getIndexBeginCicle(String[] sequence){
+        int index = 0;
+        for (int i = 0;i < sequence.length;i++){
+
+            if(sequence[i].equals("LB")){
+                index = i;
+            }
+        }
+
+        return  index;
+    }
+
+private int getNumberInstructions(String[] sequence) {
+    int numberInstructions= 0;
+    int i = getIndexBeginCicle(sequence)+2;
+
+    while(!sequence[i].equals("LE")){
+        numberInstructions++;
+
+        i++;
+    }
+
+
+
+return  numberInstructions;
+}
 
 
 }
