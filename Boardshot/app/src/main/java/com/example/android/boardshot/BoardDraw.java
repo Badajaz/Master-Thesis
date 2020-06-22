@@ -155,7 +155,7 @@ public class BoardDraw extends AppCompatActivity {
         int linha = 7;
         int coluna = 0;
         String finale = hashMap.get("34");
-        ArrayList<String> comp =  computationBoard(hashMap,"C_B_F",linha,coluna);
+        ArrayList<String> comp =  computationBoard(hashMap,"LB_2_C_D_B_LE_F",linha,coluna);
         writeInstructionsFile(comp);
 
 
