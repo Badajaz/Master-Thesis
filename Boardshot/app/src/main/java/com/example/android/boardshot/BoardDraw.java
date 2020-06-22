@@ -155,7 +155,7 @@ public class BoardDraw extends AppCompatActivity {
         int linha = 7;
         int coluna = 0;
         String finale = hashMap.get("34");
-        ArrayList<String> comp =  computationBoard(hashMap,"LB_2_C_D_B_LE_F",linha,coluna);
+        ArrayList<String> comp =  computationBoard(hashMap,"C_B_F",linha,coluna);
         writeInstructionsFile(comp);
 
 
@@ -339,7 +339,7 @@ public class BoardDraw extends AppCompatActivity {
                 rotacao = "\t rotate(90,50) \n";
 
             } else if (nextMovement.equals("E")) {
-                rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
+                rotacao = "\t rotate(90,50) \n  \t rotate(90,50) \n";
 
             }
         }
@@ -355,7 +355,7 @@ public class BoardDraw extends AppCompatActivity {
 
                 }
                 else if(nextMovement.equals("D")){
-                    rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
+                    rotacao = "\t rotate(90,50) \n  \t rotate(90,50) \n";
 
 
                 }
@@ -364,7 +364,7 @@ public class BoardDraw extends AppCompatActivity {
         else if (currentMovement.equals("C")){
 
             if (nextMovement.equals("B")){
-                rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
+                rotacao = "\t rotate(90,50) \n  \t rotate(90,50) \n";
             }
             else if (nextMovement.equals("D")){
                 rotacao = "\t rotate(-90,50) \n";
@@ -379,7 +379,7 @@ public class BoardDraw extends AppCompatActivity {
         else if (currentMovement.equals("B")){
 
             if (nextMovement.equals("C")){
-                rotacao = "\t rotate(90,50) \n \t rotate(90,50) \n";
+                rotacao = "\t rotate(90,50) \n  \t rotate(90,50) \n";
             }
             else if (nextMovement.equals("D")){
                 rotacao = "\t rotate(90,50) \n";
@@ -439,7 +439,14 @@ public class BoardDraw extends AppCompatActivity {
             FileWriter writer = new FileWriter(file);
             writer.append("def f():\n");
             for (String ins: instructions){
-                writer.append(ins);
+                if (ins.contains("  ")){
+                   String[] array = ins.split("  ");
+                    writer.append(array[0]);
+                    writer.append(array[1]);
+                }else{
+                    writer.append(ins);
+
+                }
             }
             writer.append("\n");
             writer.append("i = 0 \n");
