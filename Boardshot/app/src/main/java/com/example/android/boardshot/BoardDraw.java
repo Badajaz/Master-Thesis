@@ -155,7 +155,7 @@ public class BoardDraw extends AppCompatActivity {
         int linha = 7;
         int coluna = 0;
         String finale = hashMap.get("34");
-        ArrayList<String> comp =  computationBoard(hashMap,"LB_2_C_D_B_LE_F",linha,coluna);
+        ArrayList<String> comp =  computationBoard(hashMap,"D_C_LB_2_B_LE_E_F",linha,coluna);
         writeInstructionsFile(comp);
 
 
@@ -312,8 +312,19 @@ public class BoardDraw extends AppCompatActivity {
                 countLoop = indexLE + 1;
 
             }else{
+                if (countLoop > 0) {
+                    if (instructions[countLoop - 1].equals("LE")) {
+                        robotInstructions.add(turnOverInstruction(instructions[countLoop - 2], instructions[countLoop]));
+                    }
+                }
+
                 robotInstructions.add("\t move(30,30) \n");
-                robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
+                if (instructions[countLoop+1].equals("LB")){
+                    robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+3]));
+
+                }else{
+                    robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
+                }
                 linha = getCurrentPosition(instructions[countLoop],linha,coluna)[0];
                 coluna = getCurrentPosition(instructions[countLoop],linha,coluna)[1];
                 countLoop++;
