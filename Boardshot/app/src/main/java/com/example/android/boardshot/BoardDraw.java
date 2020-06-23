@@ -65,7 +65,10 @@ public class BoardDraw extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         String message = bundle.getString("message");
         HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("map");
+        String sequencia = bundle.getString("sequencia");
         String[] messageArray = message.split(" ");
+
+        Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
 
         textViewID = findViewById(R.id.TextViewID);
 
@@ -121,7 +124,7 @@ public class BoardDraw extends AppCompatActivity {
         int linha = 7;
         int coluna = 0;
         String finale = hashMap.get("34");
-        ArrayList<String> comp =  computationBoard(hashMap,"D_C_LB_2_B_LE_E_F",linha,coluna);
+        ArrayList<String> comp =  computationBoard(hashMap,sequencia,linha,coluna);
         writeInstructionsFile(comp);
 
 

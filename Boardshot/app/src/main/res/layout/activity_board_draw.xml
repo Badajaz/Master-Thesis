@@ -19,6 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:backgroundTint="#47A64A"
+            android:textColor="@color/common_google_signin_btn_text_dark_pressed"
             android:layout_marginBottom="5dp"
             android:text="load" />
 

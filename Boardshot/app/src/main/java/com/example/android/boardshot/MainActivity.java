@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    boardRec = boardRecognition();
+
 
 
                     //tv.setText(rec);
@@ -411,6 +411,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if (recPieces == 1 || board == 1) {
 
+
                         if (recPieces ==1 && hasFinal){
                             timer.cancel();
                             repeatedTask.cancel();
@@ -422,10 +423,11 @@ public class MainActivity extends AppCompatActivity {
                                             TextToSpeech.QUEUE_FLUSH, null, null);
                                 }
                             });
-                            database.child("sequencia").setValue(sequenceDB);
+                            //database.child("sequencia").setValue(sequenceDB);
+
                             recPieces = 0;
-                            sequenceDB ="";
                         }
+                        boardRec = boardRecognition();
 
 
                         board = 0;
@@ -457,13 +459,14 @@ public class MainActivity extends AppCompatActivity {
                                 });
 
 
-                        Handler mHandler = new Handler(getMainLooper());
+                       Handler mHandler = new Handler(getMainLooper());
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 Intent intent = new Intent(MainActivity.this, BoardDraw.class);
                                 intent.putExtra("message", boardRec);
                                 intent.putExtra("map", tabuleiro);
+                                intent.putExtra("sequencia", sequenceDB);
                                 startActivity(intent);
                             }
                         });
