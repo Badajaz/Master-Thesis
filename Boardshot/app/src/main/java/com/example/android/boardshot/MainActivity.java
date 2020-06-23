@@ -426,8 +426,9 @@ public class MainActivity extends AppCompatActivity {
                             //database.child("sequencia").setValue(sequenceDB);
 
                             recPieces = 0;
+                            boardRec = boardRecognition();
                         }
-                        boardRec = boardRecognition();
+
 
 
                         board = 0;
@@ -458,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
 
-
+                    if (!sequenceDB.equals("")){
                        Handler mHandler = new Handler(getMainLooper());
                         mHandler.post(new Runnable() {
                             @Override
@@ -469,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
                                 intent.putExtra("sequencia", sequenceDB);
                                 startActivity(intent);
                             }
-                        });
+                        });}
 
 
 
