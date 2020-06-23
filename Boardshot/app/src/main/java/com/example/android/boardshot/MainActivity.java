@@ -29,6 +29,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.renderscript.Sampler;
+import android.speech.RecognizerIntent;
+import android.speech.RecognizerResultsIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
@@ -77,6 +79,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.chaquo.python.*;
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     private String rec;
     private String boardRec;
     HashMap<String,String> tabuleiro;
+    private int RECOGNIZER_RESULT = 1;
 
 
 
@@ -178,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             cameraDevice=null;
         }
     };
+
 
 
     @Override
@@ -410,6 +415,11 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (recPieces == 1 || board == 1) {
+                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Speach to text");
+                        startActivityForResult(speechIntent, RECOGNIZER_RESULT);
+
 
 
                         if (recPieces ==1 && hasFinal){
@@ -1026,4 +1036,15 @@ public class MainActivity extends AppCompatActivity {
         return rec;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //
+        if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK ){
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            Toast.makeText(getApplicationContext(),matches.get(0),Toast.LENGTH_LONG).show();
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
 }
