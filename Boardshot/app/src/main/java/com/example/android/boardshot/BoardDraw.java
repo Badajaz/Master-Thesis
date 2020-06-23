@@ -59,6 +59,8 @@ public class BoardDraw extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_draw);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         String message = bundle.getString("message");
@@ -115,42 +117,6 @@ public class BoardDraw extends AppCompatActivity {
         ll.addView(iV);
 
 
-
-       /* try{
-            File file = new File( Environment.getExternalStorageDirectory().toString()+"/Pictures/"+"test.ozopy");
-            FileWriter writer = new FileWriter(file);
-            writer.append("def f():\n");
-            writer.append("\t move(30,30) \n");
-            writer.append("\t rotate(90,30) \n");
-            writer.append("\t move(30,30) \n");
-            writer.append("\t wheels(0, 0) \n ");
-            writer.append("\n");
-            writer.append("i = 0 \n");
-            writer.append("while i < 1: \n");
-            writer.append("\t f()\n");
-            writer.append("\t i = i + 1 ");
-            writer.flush();
-            writer.close();
-
-            RandomAccessFile f = new RandomAccessFile(file, "r");
-            byte[] b = new byte[(int)f.length()];
-            f.readFully(b);
-            OutputStream outputStream2 = null;
-            try {
-                outputStream2 = new FileOutputStream(file);
-                outputStream2.write(b);
-
-
-            } finally {
-                if (outputStream2 != null)
-                    outputStream2.close();
-            }
-            
-
-        }catch (Exception e){
-            e.printStackTrace();
-
-        }*/
 
         int linha = 7;
         int coluna = 0;
@@ -264,6 +230,13 @@ public class BoardDraw extends AppCompatActivity {
     return 0;
     }
 
+    /**
+     *
+     * ficam a faltar  os innerLoops TODO
+     *
+     *
+     *
+     * **/
     private ArrayList<String> computationBoard(HashMap board,String sequence,int linha,int coluna){
         countLoop = 0;
         int count = 0;
