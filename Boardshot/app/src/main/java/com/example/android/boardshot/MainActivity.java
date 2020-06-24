@@ -158,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String,String> tabuleiro;
     private int RECOGNIZER_RESULT = 1;
 
+    private String speechResult = "";
+
 
 
 
@@ -199,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
+        sequenceDB = "";
 
         //PyObject pyf = py.getModule("parameter");
         //PyObject obj = pyf.callAttr("passParameter","WOW");
@@ -415,10 +417,22 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (recPieces == 1 || board == 1) {
-                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Speach to text");
-                        startActivityForResult(speechIntent, RECOGNIZER_RESULT);
+
+                        if(board == 1) {
+                            boardRec = boardRecognition();
+                                engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                                    @Override
+                                    public void onInit(int status) {
+                                        engine.setLanguage(new Locale("pt", "PT"));
+                                        engine.speak("o que queres que faça agora?",
+                                                TextToSpeech.QUEUE_FLUSH, null, null);
+                                    }
+                                });
+
+                                lauchSpeechRecognition();
+
+
+                            }
 
 
 
@@ -1041,10 +1055,72 @@ public class MainActivity extends AppCompatActivity {
         //
         if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK ){
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            Toast.makeText(getApplicationContext(),matches.get(0),Toast.LENGTH_LONG).show();
+            speechResult = matches.get(0);
+            Toast.makeText(getApplicationContext(), matches.get(0),Toast.LENGTH_LONG).show();
+
+            if (speechResult.contains("direita")){
+                sequenceDB+= "D_";
+                engine.speak("queres ir para a direita quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            }
+            if (speechResult.contains("esquerda")){
+                sequenceDB+= "E_";
+                engine.speak("queres ir para a esquerda quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+            if (speechResult.contains("cima") || speechResult.contains("frente")){
+                sequenceDB+= "C_";
+                engine.speak("queres ir para a frente quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+
+            if (speechResult.contains("baixo") || speechResult.contains("trás")){
+                sequenceDB+= "B_";
+                engine.speak("queres ir para a baixo quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+            if (speechResult.contains("vezes")){
+                engine.speak("o que queres que faça agora?",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+            if (speechResult.contains("terminar")){
+                sequenceDB+= "F";
+                if (!sequenceDB.equals("")){
+                    Handler mHandler = new Handler(getMainLooper());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                            intent.putExtra("message", boardRec);
+                            intent.putExtra("map", tabuleiro);
+                            intent.putExtra("sequencia", sequenceDB);
+                            startActivity(intent);
+                        }
+                    });
+
+                }
+
+            }
+
 
         }
         super.onActivityResult(requestCode, resultCode, data);
 
     }
+
+
+    private void lauchSpeechRecognition(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-PT");
+                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speach to text");
+                startActivityForResult(speechIntent, RECOGNIZER_RESULT);
+            }
+        }, 6000);
+    }
+
+
 }
