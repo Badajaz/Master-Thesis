@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String speechResult = "";
     private int loop = 0;
+    private String instrucao = "";
 
 
 
@@ -1059,6 +1060,7 @@ public class MainActivity extends AppCompatActivity {
             speechResult = matches.get(0);
             Toast.makeText(getApplicationContext(), matches.get(0),Toast.LENGTH_LONG).show();
 
+
             if(speechResult.contains("terminar ciclo")){
                 sequenceDB+="LE_";
                 loop = 0;
@@ -1100,24 +1102,24 @@ public class MainActivity extends AppCompatActivity {
 
 
             else if (speechResult.contains("direita")){
-                sequenceDB+= "D_";
+                instrucao = "D_";
                 engine.speak("queres ir para a direita quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
                 lauchSpeechRecognition();
 
             }
             else if (speechResult.contains("esquerda")){
-                sequenceDB+= "E_";
+                instrucao = "E_";
                 engine.speak("queres ir para a esquerda quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
                 lauchSpeechRecognition();
             }
            else if (speechResult.contains("cima") || speechResult.contains("frente")){
-                sequenceDB+= "C_";
+                instrucao = "C_";
                 engine.speak("queres ir para a frente quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
                 lauchSpeechRecognition();
             }
 
             else if (speechResult.contains("baixo") || speechResult.contains("trás")){
-                sequenceDB+= "B_";
+                instrucao = "B_";
                 engine.speak("queres ir para a baixo quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
                 lauchSpeechRecognition();
             }
@@ -1130,6 +1132,7 @@ public class MainActivity extends AppCompatActivity {
                     lauchSpeechRecognition();
 
                 }else{
+                    sequenceDB+=getRepeatedStringByTimesNumber(instrucao,getNumberOfTimes(speechResult));
                     engine.speak("o que queres que faça agora?",TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
