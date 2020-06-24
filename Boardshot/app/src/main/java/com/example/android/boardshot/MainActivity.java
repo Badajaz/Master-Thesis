@@ -1123,8 +1123,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             else if (speechResult.contains("vezes") ||speechResult.contains("vez") ){
-                //sequenceDB+=Integer.toString(getNumberOfTimes(speechResult));
+
                 if(loop == 1 ){
+                    sequenceDB+=getNumberOfTimes(speechResult)+"_";
                     engine.speak("diga uma instrução do loop",TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
