@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
     private int RECOGNIZER_RESULT = 1;
 
     private String speechResult = "";
+    private int loop = 0;
 
 
 
@@ -1058,33 +1059,85 @@ public class MainActivity extends AppCompatActivity {
             speechResult = matches.get(0);
             Toast.makeText(getApplicationContext(), matches.get(0),Toast.LENGTH_LONG).show();
 
-            if (speechResult.contains("direita")){
+            if(speechResult.contains("terminar ciclo")){
+                sequenceDB+="LE_";
+                loop = 0;
+                engine.speak("o que queres que faça agora?",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+
+
+            else if (speechResult.contains("ciclo")){
+                sequenceDB+= "LB_";
+                loop = 1;
+                engine.speak("queres executar o ciclo quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+
+            else if (speechResult.contains("direita") && loop == 1){
+                sequenceDB+= "D_";
+                //sequenceDB+= getRepeatedStringByTimesNumber("D_",getNumberOfTimes());
+                engine.speak("indica outra instrução ou indica terminar ciclo",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            }
+            else if (speechResult.contains("esquerda")  && loop == 1){
+                sequenceDB+= "E_";
+                engine.speak("indica outra instrução ou indica terminar ciclo",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+            else if ((speechResult.contains("cima") || speechResult.contains("frente"))  && loop == 1){
+                sequenceDB+= "C_";
+                engine.speak("indica outra instrução ou indica terminar ciclo",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+
+            else if ((speechResult.contains("baixo") || speechResult.contains("trás"))  && loop == 1){
+                sequenceDB+= "B_";
+                engine.speak("indica outra instrução ou indica terminar ciclo",TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            }
+
+
+            else if (speechResult.contains("direita")){
                 sequenceDB+= "D_";
                 engine.speak("queres ir para a direita quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
                 lauchSpeechRecognition();
 
             }
-            if (speechResult.contains("esquerda")){
+            else if (speechResult.contains("esquerda")){
                 sequenceDB+= "E_";
                 engine.speak("queres ir para a esquerda quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
                 lauchSpeechRecognition();
             }
-            if (speechResult.contains("cima") || speechResult.contains("frente")){
+           else if (speechResult.contains("cima") || speechResult.contains("frente")){
                 sequenceDB+= "C_";
                 engine.speak("queres ir para a frente quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
                 lauchSpeechRecognition();
             }
 
-            if (speechResult.contains("baixo") || speechResult.contains("trás")){
+            else if (speechResult.contains("baixo") || speechResult.contains("trás")){
                 sequenceDB+= "B_";
                 engine.speak("queres ir para a baixo quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
                 lauchSpeechRecognition();
             }
-            if (speechResult.contains("vezes")){
-                engine.speak("o que queres que faça agora?",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+
+            else if (speechResult.contains("vezes") ||speechResult.contains("vez") ){
+                //sequenceDB+=Integer.toString(getNumberOfTimes(speechResult));
+                if(loop == 1 ){
+                    engine.speak("diga uma instrução do loop",TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
+                }else{
+                    engine.speak("o que queres que faça agora?",TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
+                }
+
+
             }
-            if (speechResult.contains("terminar")){
+
+            else if (speechResult.contains("terminar")){
                 sequenceDB+= "F";
                 if (!sequenceDB.equals("")){
                     Handler mHandler = new Handler(getMainLooper());
@@ -1121,6 +1174,112 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 6000);
     }
+
+
+    private String getRepeatedStringByTimesNumber(String ins,int numberTimes){
+        String concat = "";
+        for (int i = 0;i < numberTimes; i++){
+            concat+=ins;
+        }
+        return concat;
+    }
+
+
+
+    private int getNumberOfTimes(String frase){
+
+        String[] splited = frase.split(" ");
+        ArrayList<String> fraseArrayList = convertArrayToArrayList(splited);
+        String[] Numbers = {  "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove","dez","onze","doze"
+                ,"treze","quatorze","quinze","dezasseis","dessassete","dezoito","dezanove","vinte" };
+
+        if(fraseArrayList.contains("uma")){
+            return 1;
+        }
+
+        else if(fraseArrayList.contains("duas")){
+            return 2;
+        }
+        else{
+
+            for (int i = 0; i < Numbers.length ;i++){
+                if (fraseArrayList.contains(Numbers[i])){
+                    return converter(Numbers[i]);
+                }
+            }
+
+        }
+
+
+        return 0;
+
+
+    }
+
+    private int converter(String number){
+
+        switch (number){
+            case "um":
+                return 1;
+            case  "dois":
+                return 2;
+
+            case "três":
+                return 3;
+
+            case "quatro":
+                return 4;
+
+            case "cinco":
+                return 5;
+            case "seis":
+                return 6;
+
+            case "sete":
+                return 7;
+            case "oito":
+                return 8;
+            case "nove":
+                return 9;
+            case "dez":
+                return 10;
+            case "onze":
+                return 11;
+            case "doze":
+                return 12;
+            case "treze":
+                return 13;
+            case "quatorze":
+                return 14;
+            case "quinze":
+                return 15;
+            case "dezasseis":
+                return 16;
+            case "dessassete":
+                return 17;
+            case "dezoito":
+                return 16;
+            case "dezanove":
+                return 19;
+            case "vinte":
+                return 19;
+
+
+        }
+    return 0;
+    }
+
+
+
+    private ArrayList<String> convertArrayToArrayList(String[] array){
+        ArrayList<String> current = new ArrayList<>();
+
+        for (String s : array){
+            current.add(s);
+        }
+        return current;
+    }
+
 
 
 }
