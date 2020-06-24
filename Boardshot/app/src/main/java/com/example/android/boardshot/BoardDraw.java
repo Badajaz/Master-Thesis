@@ -134,17 +134,6 @@ public class BoardDraw extends AppCompatActivity {
         colorCode = runCall.toString();
 
 
-        Button speechRec = findViewById(R.id.SpeechRecognition);
-        speechRec.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-            }
-        });
-
-
-
 
         Button b = findViewById(R.id.loadRobot);
 
