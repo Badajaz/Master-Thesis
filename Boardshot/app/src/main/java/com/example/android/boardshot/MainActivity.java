@@ -352,11 +352,11 @@ public class MainActivity extends AppCompatActivity {
 
 
                     if (recPieces == 1) {
-                        Toast.makeText(MainActivity.this, "recPieces", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "recPieces", Toast.LENGTH_SHORT).show();
                         List<TopCode> listaTopCodes = recognizeTopcodes(file.getPath());
                         if (!listaTopCodes.isEmpty() && hasFinalCode(listaTopCodes)) {
                             hasFinal = true;
-                            Toast.makeText(MainActivity.this, "!Empty && final code", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.this, "!Empty && final code", Toast.LENGTH_SHORT).show();
                             for (Integer t : instructionsRecognition(listaTopCodes)) {
 
                                 if (t == 31) {
@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
                                     sequenceDB += "B_";
                                 } else if (t == 107) {
                                     sequenceDB += "F";
-                                    Toast.makeText(MainActivity.this, "FIMMMMMMM", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(MainActivity.this, "FIMMMMMMM", Toast.LENGTH_SHORT).show();
 
                                 }
                             }
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
                         List<TopCode> listaTopCodes = recognizeTopcodes(file.getPath());
                         if (!listaTopCodes.isEmpty()) {
                             for (TopCode t : listaTopCodes) {
-                                Toast.makeText(MainActivity.this, "Topcode = "+t.code, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(MainActivity.this, "Topcode = "+t.code, Toast.LENGTH_SHORT).show();
                                 if (t.code == 31) {
                                     instruction = "Esquerda";
 
@@ -462,7 +462,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
 
-                        Uri filed = Uri.fromFile(file);
+                        /*Uri filed = Uri.fromFile(file);
 
                         StorageReference riversRef = mStorageRef.child("images");
                         Toast.makeText(MainActivity.this, "chego aqui", Toast.LENGTH_SHORT).show();
@@ -484,7 +484,7 @@ public class MainActivity extends AppCompatActivity {
                                         // ...
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
-                                });
+                                });   */
 
                     if (!sequenceDB.equals("")){
                        Handler mHandler = new Handler(getMainLooper());
@@ -736,7 +736,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private List<TopCode> recognizeTopcodes(String nameLastPhoto){
-        Toast.makeText(getApplicationContext(),"path ="+ nameLastPhoto, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),"path ="+ nameLastPhoto, Toast.LENGTH_LONG).show();
 
         List<TopCode> lista = null;
         Bitmap bmImg = BitmapFactory.decodeFile(nameLastPhoto);
@@ -791,7 +791,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }else{
-            Toast.makeText(getApplicationContext(), "a lista está vazia", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "a lista está vazia", Toast.LENGTH_LONG).show();
 
         }
 
@@ -907,7 +907,7 @@ public class MainActivity extends AppCompatActivity {
         tabuleiro = new HashMap();
 
 
-        Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
         int linha = 0;
         for (int i = 0;i < squares.size();i++){
 
@@ -1059,7 +1059,6 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK ){
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             speechResult = matches.get(0);
-            //Toast.makeText(getApplicationContext(), matches.get(0),Toast.LENGTH_LONG).show();
 
             
 

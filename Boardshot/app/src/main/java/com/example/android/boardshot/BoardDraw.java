@@ -50,14 +50,12 @@ public class BoardDraw extends AppCompatActivity {
 
     private TextView textViewID;
     private String colorCode;
-    private ValueAnimator colorAnimation = null;
 
     private int count = 1;
     private int countLoop;
 
     private ArrayList<String> feedbackAudios = new ArrayList<>();
     TextToSpeech engine = null;
-    private String audioAux;
 
     private int countIns = 0;
 
@@ -76,7 +74,7 @@ public class BoardDraw extends AppCompatActivity {
         String sequencia = bundle.getString("sequencia");
         String[] messageArray = message.split(" ");
 
-        Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
 
         textViewID = findViewById(R.id.TextViewID);
 
@@ -566,16 +564,10 @@ private void speakAudioFeedbackInstructions(){
 
     };
 
-    long delay = 30000;
+    long delay = 25000;
     long period = 2000;
 
     t.scheduleAtFixedRate(task, delay, period);
-
-    /*if(countIns == feedbackAudios.size()){
-        timer.cancel();
-        task.cancel();
-    }*/
-
 
 
 
