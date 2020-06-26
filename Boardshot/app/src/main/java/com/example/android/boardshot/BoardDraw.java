@@ -566,7 +566,7 @@ private void speakAudioFeedbackInstructions(){
 
     };
 
-    long delay = 5000;
+    long delay = 30000;
     long period = 2000;
 
     t.scheduleAtFixedRate(task, delay, period);
