@@ -15,6 +15,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +36,7 @@ import java.io.RandomAccessFile;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,6 +54,12 @@ public class BoardDraw extends AppCompatActivity {
 
     private int count = 1;
     private int countLoop;
+
+    private ArrayList<String> feedbackAudios = new ArrayList<>();
+    TextToSpeech engine = null;
+    private String audioAux;
+
+    private int countIns = 0;
 
 
 
@@ -121,17 +129,24 @@ public class BoardDraw extends AppCompatActivity {
 
 
 
-        int linha = 7;
-        int coluna = 0;
+        int linha = 5;
+        int coluna = 2;
         String finale = hashMap.get("34");
         ArrayList<String> comp =  computationBoard(hashMap,sequencia,linha,coluna);
         writeInstructionsFile(comp);
+
+        speakAudioFeedbackInstructions();
+
+
+
 
 
         Python py= Python.getInstance();
         PyObject initModule = py.getModule("Runnable");
         PyObject runCall= initModule.callAttr("test",Environment.getExternalStorageDirectory().toString()+"/Pictures/"+"test.ozopy");
         colorCode = runCall.toString();
+
+
 
 
 
@@ -165,6 +180,7 @@ public class BoardDraw extends AppCompatActivity {
                 }else{
                     repeatedTask.cancel();
                     timer.cancel();
+
 
                 }
 
@@ -276,8 +292,9 @@ public class BoardDraw extends AppCompatActivity {
                             robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
 
                         }
-                        linha = getCurrentPosition(instructions[countLoop],linha,coluna)[0];
-                        coluna = getCurrentPosition(instructions[countLoop],linha,coluna)[1];
+                        int[] pos = getCurrentPosition(instructions[countLoop],linha,coluna);
+                        linha = pos[0];
+                        coluna = pos[1];
                        countLoop++;
                     }
                 }
@@ -298,13 +315,28 @@ public class BoardDraw extends AppCompatActivity {
                 }else{
                     robotInstructions.add(turnOverInstruction(instructions[countLoop],instructions[countLoop+1]));
                 }
-                linha = getCurrentPosition(instructions[countLoop],linha,coluna)[0];
-                coluna = getCurrentPosition(instructions[countLoop],linha,coluna)[1];
+                int[] pos = getCurrentPosition(instructions[countLoop],linha,coluna);
+                linha = pos[0];
+                coluna = pos[1];
                 countLoop++;
             }
 
 
         }
+        if(board.get(linha+""+coluna).equals("F") ){
+            feedbackAudios.add("Chegou ao objectivo");
+        }
+
+        else if(board.get(linha+""+coluna).equals("X") ){
+            feedbackAudios.add("bateu num obstáculo");
+        }
+
+        else if(instructions[countLoop].equals("F")){
+            feedbackAudios.add("sequencia terminou numa casa possível");
+        }
+
+
+
 
         return robotInstructions;
     }
@@ -401,15 +433,19 @@ public class BoardDraw extends AppCompatActivity {
 
         if (movement.equals("D")){
             c++;
+            feedbackAudios.add("Vamos para a direita");
         }
         else if (movement.equals("E")){
             c--;
+            feedbackAudios.add("Vamos para a esquerda");
         }
         else if (movement.equals("C")){
             l--;
+            feedbackAudios.add("Vamos para cima");
         }
         else if (movement.equals("B")){
             l++;
+            feedbackAudios.add("Vamos para baixo");
         }
         int[] pos = {l,c};
         return pos;
@@ -505,6 +541,46 @@ private int getNumberInstructions(String[] sequence) {
 
 return  numberInstructions;
 }
+
+
+private void speakAudioFeedbackInstructions(){
+
+    engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        @Override
+        public void onInit(int status) {
+            engine.setLanguage(new Locale("pt", "PT"));
+        }
+    });
+
+
+    Timer t = new Timer("Timer");
+
+        TimerTask task = new TimerTask() {
+        public void run() {
+            if (countIns < feedbackAudios.size()) {
+                engine.speak(feedbackAudios.get(countIns), TextToSpeech.QUEUE_FLUSH, null, null);
+                countIns += 1;
+            }
+        }
+
+
+    };
+
+    long delay = 5000;
+    long period = 2000;
+
+    t.scheduleAtFixedRate(task, delay, period);
+
+    /*if(countIns == feedbackAudios.size()){
+        timer.cancel();
+        task.cancel();
+    }*/
+
+
+
+
+}
+
 
 
 }

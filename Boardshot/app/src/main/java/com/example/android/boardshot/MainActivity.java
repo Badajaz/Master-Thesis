@@ -31,6 +31,7 @@ import android.os.HandlerThread;
 import android.renderscript.Sampler;
 import android.speech.RecognizerIntent;
 import android.speech.RecognizerResultsIntent;
+import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
@@ -1058,7 +1059,9 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK ){
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             speechResult = matches.get(0);
-            Toast.makeText(getApplicationContext(), matches.get(0),Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), matches.get(0),Toast.LENGTH_LONG).show();
+
+            
 
 
             if(speechResult.contains("terminar ciclo")){
@@ -1171,14 +1174,20 @@ public class MainActivity extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
+
+
                 Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-PT");
                 speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speach to text");
+                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 20000);
+                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 10000);
                 startActivityForResult(speechIntent, RECOGNIZER_RESULT);
+
             }
-        }, 6000);
+        }, 4000);
     }
 
+    
 
     private String getRepeatedStringByTimesNumber(String ins,int numberTimes){
         String concat = "";
