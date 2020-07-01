@@ -644,7 +644,7 @@ for i in a:
         adjusted = adjust_gamma(image, gamma=gamma)
         cv2.imwrite("adjusted.jpg", adjusted)
         image = cv2.imread("adjusted.jpg")
-        #break
+        break
         imageCrop = Image.open(r"adjusted.jpg")
         for index in range(len(squares)):
             if j == columns-1:
