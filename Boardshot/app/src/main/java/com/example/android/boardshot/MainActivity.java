@@ -246,9 +246,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
 
-
-
-
         btnCapture = (Button)findViewById(R.id.btnCapture);
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,14 +276,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
 
-        btnToturial = (Button)findViewById(R.id.Tutorial);
+       /* btnToturial = (Button)findViewById(R.id.Tutorial);
         btnToturial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePicture();
                 tutorialPieces = 1;
             }
-        });
+        });*/
 
 
 
@@ -1350,7 +1347,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
-        Toast.makeText(getApplicationContext(),"LONG PRESS",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),"LONG PRESS",Toast.LENGTH_LONG).show();
+        takePicture();
+        tutorialPieces = 1;
     }
 
     @Override
