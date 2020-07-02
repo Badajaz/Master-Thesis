@@ -36,6 +36,8 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -99,7 +101,8 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener,GestureDetector.OnGestureListener,
+        GestureDetector.OnDoubleTapListener {
 
 
     private Button btnCapture;
@@ -165,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    private GestureDetector gd;
+
 
 
     private StorageReference mStorageRef;
@@ -220,6 +225,30 @@ public class MainActivity extends AppCompatActivity {
         textureView = (TextureView)findViewById(R.id.textureView);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
+
+        TextView touch = findViewById(R.id.textoo);
+        /*touch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Toast.makeText(getApplicationContext(),"TOUUUUUCHHHHHHDOOOWN",Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });*/
+
+
+        touch.setOnTouchListener(this);
+        gd = new GestureDetector(this,this);
+
+
+
+
+
+
+
+
+
+
+
         btnCapture = (Button)findViewById(R.id.btnCapture);
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1292,6 +1321,58 @@ public class MainActivity extends AppCompatActivity {
         return current;
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        gd.onTouchEvent(motionEvent);
+        //Toast.makeText(getApplicationContext()," TOUCH",Toast.LENGTH_LONG).show();
+        return true;
+    }
 
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+    }
 
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+        Toast.makeText(getApplicationContext(),"LONG PRESS",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+        Toast.makeText(getApplicationContext(),"SINGLE TAP",Toast.LENGTH_LONG).show();
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent motionEvent) {
+        Toast.makeText(getApplicationContext(),"Double Tap",Toast.LENGTH_LONG).show();
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+        //Toast.makeText(getApplicationContext(),"Double Tap",Toast.LENGTH_LONG).show();
+        return true;
+    }
 }
