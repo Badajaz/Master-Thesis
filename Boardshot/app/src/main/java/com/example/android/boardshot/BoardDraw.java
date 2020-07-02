@@ -17,6 +17,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,7 +43,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class BoardDraw extends AppCompatActivity {
+public class BoardDraw extends AppCompatActivity implements View.OnTouchListener,GestureDetector.OnGestureListener,
+        GestureDetector.OnDoubleTapListener{
 
     private int left;
     private int top;
@@ -58,6 +61,7 @@ public class BoardDraw extends AppCompatActivity {
     TextToSpeech engine = null;
 
     private int countIns = 0;
+    private GestureDetector gd;
 
 
 
@@ -77,9 +81,11 @@ public class BoardDraw extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
 
         textViewID = findViewById(R.id.TextViewID);
+        textViewID.setOnTouchListener(this);
+        gd = new GestureDetector(this,this);
 
 
-         left = 50; // initial start position of rectangles (50 pixels from left)
+        /* left = 50; // initial start position of rectangles (50 pixels from left)
          top = 50; // 50 pixels from the top
          width = 80;
          height = 80;
@@ -124,7 +130,7 @@ public class BoardDraw extends AppCompatActivity {
         ImageView iV = new ImageView(this);
         iV.setImageBitmap(bg);
         ll.addView(iV);
-
+*/
 
 
         int linha = 5;
@@ -148,7 +154,7 @@ public class BoardDraw extends AppCompatActivity {
 
 
 
-        Button b = findViewById(R.id.loadRobot);
+        /*Button b = findViewById(R.id.loadRobot);
 
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,12 +216,12 @@ public class BoardDraw extends AppCompatActivity {
                     });
                     colorAnimation.start();
 
-                }*/
+                }
 
 
 
 
-        });
+        });*/
 
 
 
@@ -574,5 +580,86 @@ private void speakAudioFeedbackInstructions(){
 }
 
 
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+        return false;
+    }
 
+    @Override
+    public boolean onDoubleTap(MotionEvent motionEvent) {
+        Timer timer = new Timer("Timer");
+        //Toast.makeText(getApplicationContext(), "DEPOIS BUTTON = " + colorCode, Toast.LENGTH_LONG).show();
+        Log.d("COLOR", colorCode);
+        TimerTask repeatedTask = null;
+        count = 0;
+        if (count < colorCode.length()) {
+            repeatedTask = new TimerTask() {
+                public void run() {
+                    if (count < colorCode.length()) {
+                        int colorTo = getColor(colorCode.charAt(count));
+
+                        GradientDrawable tvBackground2 = (GradientDrawable) textViewID.getBackground();
+                        tvBackground2.setColor(colorTo);
+
+                        //textView.setBackgroundColor(colorTo);
+                        count += 1;
+                    }
+                }
+
+
+            } ;
+        }else{
+            repeatedTask.cancel();
+            timer.cancel();
+
+
+        }
+
+
+        long delay = 0;
+        long period = 50;
+        timer.scheduleAtFixedRate(repeatedTask, delay, period);
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        gd.onTouchEvent(motionEvent);
+        return true;
+    }
 }

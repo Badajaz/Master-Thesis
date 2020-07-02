@@ -165,6 +165,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private String speechResult = "";
     private int loop = 0;
     private String instrucao = "";
+    private TimerTask TaskMenu;
+    private Timer timerMenu;
+
+    private int menu = 0;
+
 
 
 
@@ -192,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             cameraDevice=null;
         }
     };
-
 
 
     @Override
@@ -239,6 +243,55 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         touch.setOnTouchListener(this);
         gd = new GestureDetector(this,this);
 
+       /* if (menu < 5) {
+            TaskMenu = new TimerTask() {
+                @Override
+                public void run() {
+
+                    if (menu < 5) {
+                        String menuVoz = "";
+                        if (menu == 0) {
+                            menuVoz = "Tens 3 opções de escolha:";
+                        } else if (menu == 1) {
+                            menuVoz = "Para o reconhecimento com voz carregue uma vez no ecrã";
+
+                        } else if (menu == 2) {
+                            menuVoz = "Para o reconhecimento com peças carregue duas vezes no ecrã";
+
+                        } else if (menu == 3) {
+                            menuVoz = "Para saber qual é a instrução a que corresponde a peça pressione o ecrã durante algum tempo";
+
+                        }else if(menu == 4){
+                            menuVoz = "Para ouvir novamente as instruções deslize o dedo para baixo no ecrã";
+                        }
+
+                        final String finalMenuVoz = menuVoz;
+                        engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                            @Override
+                            public void onInit(int status) {
+
+
+                                engine.setLanguage(new Locale("pt", "PT"));
+                                engine.speak(finalMenuVoz,
+                                        TextToSpeech.QUEUE_FLUSH, null, null);
+                            }
+                        });
+                        menu++;
+                    }else{
+                        menu = 0;
+                    }
+                }
+            };
+            timerMenu = new Timer("Timer");
+            long delay = 1;
+            long period = 5000;
+            timerMenu.scheduleAtFixedRate(TaskMenu, delay, period);
+
+        }else{
+            TaskMenu.cancel();
+        }
+*/
+
 
 
 
@@ -253,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });*/
 
-        btnCaptureWithPieces = (Button)findViewById(R.id.btnCapturePieces);
+       /* btnCaptureWithPieces = (Button)findViewById(R.id.btnCapturePieces);
         btnCaptureWithPieces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -270,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 timer.scheduleAtFixedRate(repeatedTask, delay, period);
                 recPieces = 1;
             }
-        });
+        });*/
 
        /* btnToturial = (Button)findViewById(R.id.Tutorial);
         btnToturial.setOnClickListener(new View.OnClickListener() {
@@ -603,7 +656,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private void openCamera() {
         CameraManager manager = (CameraManager)getSystemService(Context.CAMERA_SERVICE);
         try{
+
             cameraId = manager.getCameraIdList()[0];
+            Toast.makeText(getApplicationContext(),cameras(manager.getCameraIdList())+"",Toast.LENGTH_LONG).show();
+
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
@@ -1323,7 +1379,54 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onDown(MotionEvent motionEvent) {
-        return false;
+        Toast.makeText(getApplicationContext(),"scroll",Toast.LENGTH_LONG).show();
+/*
+        if (menu < 5) {
+            TaskMenu = new TimerTask() {
+                @Override
+                public void run() {
+
+                    if (menu < 5) {
+                        String menuVoz = "";
+                        if (menu == 0) {
+                            menuVoz = "Tens 3 opções de escolha:";
+                        } else if (menu == 1) {
+                            menuVoz = "Para o reconhecimento com voz carregue uma vez no ecrã";
+
+                        } else if (menu == 2) {
+                            menuVoz = "Para o reconhecimento com peças carregue duas vezes no ecrã";
+
+                        } else if (menu == 3) {
+                            menuVoz = "Para saber qual é a instrução a que corresponde a peça pressione o ecrã durante algum tempo";
+
+                        }else if(menu == 4){
+                            menuVoz = "Para ouvir novamente as instruções deslize o dedo para baixo no ecrã";
+                        }
+
+                        final String finalMenuVoz = menuVoz;
+                        engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                            @Override
+                            public void onInit(int status) {
+
+
+                                engine.setLanguage(new Locale("pt", "PT"));
+                                engine.speak(finalMenuVoz,
+                                        TextToSpeech.QUEUE_FLUSH, null, null);
+                            }
+                        });
+                        menu++;
+                    }else{
+                        TaskMenu.cancel();
+                    }
+                }
+            };
+            timerMenu = new Timer("Timer");
+            long delay = 1;
+            long period = 5000;
+            timerMenu.scheduleAtFixedRate(TaskMenu, delay, period);
+
+        }*/
+        return true;
     }
 
     @Override
@@ -1338,7 +1441,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        return false;
+        return true;
     }
 
     @Override
@@ -1363,7 +1466,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onDoubleTap(MotionEvent motionEvent) {
-        Toast.makeText(getApplicationContext(),"Double Tap",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),"Double Tap",Toast.LENGTH_LONG).show();
+        repeatedTask = new TimerTask() {
+            @Override
+            public void run() {
+
+                takePicture();
+            }
+        };
+        timer = new Timer("Timer");
+        long delay = 1;
+        long period = 5000;
+        timer.scheduleAtFixedRate(repeatedTask, delay, period);
+        recPieces = 1;
+
         return false;
     }
 
@@ -1372,4 +1488,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //Toast.makeText(getApplicationContext(),"Double Tap",Toast.LENGTH_LONG).show();
         return true;
     }
+
+    private  String cameras(String[] id){
+        String c = "";
+        for (String s :id){
+           c+=s+" ";
+        }
+        return c;
+    }
+
+
 }

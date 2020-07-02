@@ -14,7 +14,7 @@
         tools:layout_editor_absoluteX="101dp"
         tools:layout_editor_absoluteY="130dp">
 
-        <Button
+       <!-- <Button
             android:id="@+id/loadRobot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,14 +22,13 @@
             android:backgroundTint="#47A64A"
             android:textColor="@color/common_google_signin_btn_text_dark_pressed"
             android:layout_marginBottom="5dp"
-            android:text="load" />
+            android:text="load" />-->
 
 
         <TextView
             android:id="@+id/TextViewID"
-            android:layout_width="wrap_content"
-            android:layout_height="312dp"
-            android:layout_above="@+id/loadRobot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="21dp"
