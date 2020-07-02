@@ -242,11 +242,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
 
-
-
-
-
-        btnCapture = (Button)findViewById(R.id.btnCapture);
+        /*btnCapture = (Button)findViewById(R.id.btnCapture);
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -255,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 board = 1;
 
             }
-        });
+        });*/
 
         btnCaptureWithPieces = (Button)findViewById(R.id.btnCapturePieces);
         btnCaptureWithPieces.setOnClickListener(new View.OnClickListener() {
@@ -1359,7 +1355,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
-        Toast.makeText(getApplicationContext(),"SINGLE TAP",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),"SINGLE TAP",Toast.LENGTH_LONG).show();
+        takePicture();
+        board = 1;
         return false;
     }
 
