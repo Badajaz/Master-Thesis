@@ -519,7 +519,8 @@ while True:
                 j = 0
 
             tuples = (squares[index][0][0],squares[index][0][1],squares[index][3][0],squares[index][3][1])
-
+            if i == 2 and j == 1:
+                print(tuples)
             #print(str((i,j))+" "+str(tuples))
             #box_area1 = (23,236, 215,437)
             crop = imageCrop.crop(tuples)

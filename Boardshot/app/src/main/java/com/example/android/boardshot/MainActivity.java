@@ -537,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                         Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
 
-                        /*Uri filed = Uri.fromFile(file);
+                        Uri filed = Uri.fromFile(file);
 
                         StorageReference riversRef = mStorageRef.child("images");
                         Toast.makeText(MainActivity.this, "chego aqui", Toast.LENGTH_SHORT).show();
@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         // ...
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
-                                });   */
+                                });
 
                     if (!sequenceDB.equals("")){
                        Handler mHandler = new Handler(getMainLooper());
@@ -658,8 +658,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         try{
 
             cameraId = manager.getCameraIdList()[0];
-            Toast.makeText(getApplicationContext(),cameras(manager.getCameraIdList())+"",Toast.LENGTH_LONG).show();
-
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
@@ -912,6 +910,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         PyObject cv2 = py.getModule("cv2");
         PyObject numpy = py.getModule("numpy");
 
+        PyObject orangeLines = py.getModule("OrangeLines");
+        PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition",file.getPath());
+        List<PyObject> orangefourCorners = orangeLinesMod.asList();
+        int x1_Orange = orangefourCorners.get(0).asList().get(0).toInt();
+        int y1_Orange = orangefourCorners.get(0).asList().get(1).toInt();
+        int x2_Orange = orangefourCorners.get(0).asList().get(2).toInt();
+        int y2_Orange = orangefourCorners.get(0).asList().get(3).toInt();
+
+        Toast.makeText(getApplicationContext(),"Cor Laranja = "+x1_Orange+" "+y1_Orange+" "+x2_Orange+" "+y2_Orange,Toast.LENGTH_LONG).show();
+
 
         PyObject tab = py.getModule("BoardRecognition");
         PyObject obj= tab.callAttr("boardRecognition",file.getPath());
@@ -1040,18 +1048,35 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int green = (greenColors/pixelCount);
             int blue = (blueColors/pixelCount);
             //int yellow = ((redColors+greenColors)/pixelCount);
-
-            if(green >= red && green >=  blue){
-                tabuleiro.put(""+linha+""+count,"O");
+            if (linha == 6 && count == 2 ){
+                Log.d("coordenadas","Cor Laranja = "+x1_Orange+" "+y1_Orange+" "+x2_Orange+" "+y2_Orange);
+                Log.d("coordenadas","Cor = "+a+" "+b+" "+c+" "+d);
             }
 
-            else if (red >= green && red >= blue){
-                tabuleiro.put(""+linha+""+count,"F");
+            int dif1 = Math.abs(x1_Orange - a);
+            int dif2 = Math.abs(y1_Orange - b);
+            int dif3 = Math.abs(x2_Orange - c);
+            int dif4 = Math.abs(y2_Orange - d);
+
+
+            if(dif1 <= 50 && dif2 <= 50 && dif3 <= 50 &&dif4 <= 50){
+                tabuleiro.put(""+linha+""+count,"R");
+
+            }else{
+                if(green >= red && green >=  blue){
+                    tabuleiro.put(""+linha+""+count,"O");
+                }
+
+                else if (red >= green && red >= blue){
+                    tabuleiro.put(""+linha+""+count,"F");
+                }
+
+                else if(blue >= red && blue >= green){
+                    tabuleiro.put(""+linha+""+count,"X");
+                }
             }
 
-            else if(blue >= red && blue >= green){
-                tabuleiro.put(""+linha+""+count,"X");
-            }
+
 
 
 
@@ -1074,15 +1099,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 if (outputStream2 != null)
                     outputStream2.close();
             }
-
-
-
-
-            //PyObject blackLines = py.getModule("BlackLines");
-            //PyObject blackLinesMod = blackLines.callAttr("getBlackCounts",file.getPath());
-            //int black = blackLinesMod.toInt();
-            //Log.d("BlackArea",""+linha+""+count+","+black+"");
-            //blackareas.put(""+linha+""+count,black);
 
 
 

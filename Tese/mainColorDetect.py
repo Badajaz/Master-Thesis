@@ -644,7 +644,7 @@ for i in a:
         adjusted = adjust_gamma(image, gamma=gamma)
         cv2.imwrite("adjusted.jpg", adjusted)
         image = cv2.imread("adjusted.jpg")
-        break
+        #break
         imageCrop = Image.open(r"adjusted.jpg")
         for index in range(len(squares)):
             if j == columns-1:
@@ -652,6 +652,8 @@ for i in a:
                 j = 0
 
             tuples = (squares[index][0][0],squares[index][0][1],squares[index][3][0],squares[index][3][1])
+            if i == 2 and j == 1:
+                print(tuples)
             #print(str((i,j))+" "+str(tuples))
             #box_area1 = (23,236, 215,437)
             # crop = imageCrop.crop(tuples)
