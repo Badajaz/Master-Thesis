@@ -77,6 +77,9 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("map");
         String sequencia = bundle.getString("sequencia");
         String[] messageArray = message.split(" ");
+        int linha = bundle.getInt("roboLinha");
+        int coluna = bundle.getInt("roboColuna");
+
 
         //Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
 
@@ -133,8 +136,6 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
 
 
-        int linha = 5;
-        int coluna = 2;
         String finale = hashMap.get("34");
         ArrayList<String> comp =  computationBoard(hashMap,sequencia,linha,coluna);
         writeInstructionsFile(comp);
