@@ -16,10 +16,10 @@ def getStartPosition(image):
 
 
     if len(orangecnts)>0:
-        orange_area = max(orangecnts, key=cv2.contourArea)
-        (xg,yg,wg,hg) = cv2.boundingRect(orange_area)
+        orange_cnts = max(orangecnts, key=cv2.contourArea)
+        (xg,yg,wg,hg) = cv2.boundingRect(orange_cnts)
         tuple1 = (xg, yg)
         tuple2 = (xg + wg, yg + hg)
-        orange_area = abs(tuple1[0] - tuple2[0]) * abs(tuple1[1] - tuple2[1])
+        orange_area = wg * hg
         cv2.rectangle(image,(xg,yg),(xg+wg, yg+hg),(255,0,0),9)
     return orange_area

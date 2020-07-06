@@ -999,7 +999,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             Rect roi = new Rect(a, b,c - a , d - b);
             cropped = new Mat(matrixBright, roi);
-            croppedNormal = new Mat(matrix, roi);
+            croppedNormal = new Mat(matrixRobot, roi);
 
 
 
@@ -1081,7 +1081,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             PyObject orangeLines = py.getModule("OrangeLines");
             PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition",file.getPath());
             int orangeAux = orangeLinesMod.toInt();
-            //Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
+            Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
 
 
             if (orangeArea < orangeAux){
