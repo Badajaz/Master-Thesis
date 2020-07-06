@@ -22,4 +22,4 @@ def getStartPosition(image):
         tuple2 = (xg + wg, yg + hg)
         orange_area = abs(tuple1[0] - tuple2[0]) * abs(tuple1[1] - tuple2[1])
         cv2.rectangle(image,(xg,yg),(xg+wg, yg+hg),(255,0,0),9)
-    return [(xg, yg, xg + wg,yg + hg)]
+    return orange_area

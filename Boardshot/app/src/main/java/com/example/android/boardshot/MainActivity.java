@@ -170,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private int menu = 0;
 
+    private int orangeArea = -1;
+    private int robotLine;
+    private int robotCollumn;
 
 
 
@@ -910,18 +913,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         PyObject cv2 = py.getModule("cv2");
         PyObject numpy = py.getModule("numpy");
 
-        PyObject orangeLines = py.getModule("OrangeLines");
-        PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition",file.getPath());
-        List<PyObject> orangefourCorners = orangeLinesMod.asList();
-        int x1_Orange = orangefourCorners.get(0).asList().get(0).toInt();
-        int y1_Orange = orangefourCorners.get(0).asList().get(1).toInt();
-        int x2_Orange = orangefourCorners.get(0).asList().get(2).toInt();
-        int y2_Orange = orangefourCorners.get(0).asList().get(3).toInt();
 
-        Toast.makeText(getApplicationContext(),"Cor Laranja = "+x1_Orange+" "+y1_Orange+" "+x2_Orange+" "+y2_Orange,Toast.LENGTH_LONG).show();
-
-
-        PyObject tab = py.getModule("BoardRecognition");
+        /*PyObject tab = py.getModule("BoardRecognition");
         PyObject obj= tab.callAttr("boardRecognition",file.getPath());
         List<PyObject> fourCorners = obj.asList();
 
@@ -930,7 +923,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int x2 = fourCorners.get(0).asList().get(2).toInt();
         int y2 = fourCorners.get(0).asList().get(3).toInt();
 
-        Log.d("corners",x1+" "+y1+" "+x2+" "+y2);
+        Log.d("corners",x1+" "+y1+" "+x2+" "+y2);*/
 
         Mat matrix = Imgcodecs.imread(file.getPath());
 
@@ -944,7 +937,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //Imgproc.findContours(matrix, contours, matrix, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         //Imgproc.rectangle(matrix,new Point(x1, y1),new Point(x2, y2),new Scalar(0, 0, 255),10);
 
-        PyObject vhlines = py.getModule("verticalAndHorizontal");
+       /* PyObject vhlines = py.getModule("verticalAndHorizontal");
         PyObject obj1= vhlines.callAttr("boardRecognition",file.getPath());
         List<PyObject> Horizontal = obj1.asList();
 
@@ -970,8 +963,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             //Imgproc.rectangle(matrix,new Point(Hx1, y1),new Point(Hx1, y2),new Scalar(0, 0, 255),10);
             //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
-        }
-
+        }*/
+        PyObject vhlines = py.getModule("verticalAndHorizontal");
         TextView tv = findViewById(R.id.textoo);
         PyObject obj3= vhlines.callAttr("squares",file.getPath());
         List<PyObject> squares = obj3.asList();
@@ -1001,7 +994,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int b = squares.get(i).asList().get(1).toInt();
             int c = squares.get(i).asList().get(2).toInt();
             int d = squares.get(i).asList().get(3).toInt();
-            //Log.d("Tag",a+" "+b+" "+c+" "+d);
+            Log.d("SQUARES",a+" "+b+" "+c+" "+d);
 
 
             Rect roi = new Rect(a, b,c - a , d - b);
@@ -1048,21 +1041,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int green = (greenColors/pixelCount);
             int blue = (blueColors/pixelCount);
             //int yellow = ((redColors+greenColors)/pixelCount);
-            if (linha == 6 && count == 2 ){
-                Log.d("coordenadas","Cor Laranja = "+x1_Orange+" "+y1_Orange+" "+x2_Orange+" "+y2_Orange);
-                Log.d("coordenadas","Cor = "+a+" "+b+" "+c+" "+d);
-            }
-
-            int dif1 = Math.abs(x1_Orange - a);
-            int dif2 = Math.abs(y1_Orange - b);
-            int dif3 = Math.abs(x2_Orange - c);
-            int dif4 = Math.abs(y2_Orange - d);
 
 
-            if(dif1 <= 50 && dif2 <= 50 && dif3 <= 50 &&dif4 <= 50){
-                tabuleiro.put(""+linha+""+count,"R");
-
-            }else{
                 if(green >= red && green >=  blue){
                     tabuleiro.put(""+linha+""+count,"O");
                 }
@@ -1074,8 +1054,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 else if(blue >= red && blue >= green){
                     tabuleiro.put(""+linha+""+count,"X");
                 }
-            }
-
 
 
 
@@ -1100,6 +1078,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     outputStream2.close();
             }
 
+            PyObject orangeLines = py.getModule("OrangeLines");
+            PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition",file.getPath());
+            int orangeAux = orangeLinesMod.toInt();
+            //Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
+
+
+            if (orangeArea < orangeAux){
+                orangeArea = orangeAux;
+                robotLine = linha;
+                robotCollumn = count;
+            }
+
 
 
             count++;
@@ -1111,7 +1101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         }
         //String robotCoordenates = getRobotCoordenates(blackareas);
-        //tabuleiro.put(robotCoordenates,"R");
+        tabuleiro.put((""+robotLine+""+robotCollumn),"R");
+
         rec= "";
         for (int i = 0;i < 8;i++){
 
