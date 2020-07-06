@@ -100,6 +100,10 @@ import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import static android.speech.SpeechRecognizer.ERROR_NETWORK_TIMEOUT;
+import static android.speech.SpeechRecognizer.ERROR_NO_MATCH;
+import static android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener,GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener {
@@ -215,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Toast.makeText(getApplicationContext(),"Insucesso",Toast.LENGTH_LONG).show();
 
         }
+
 
         sequenceDB = "";
 
@@ -1140,12 +1145,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if (resultCode == ERROR_NETWORK_TIMEOUT){
+            Toast.makeText(getApplicationContext(),"timeout", Toast.LENGTH_LONG).show();
+        }
+
         //
         if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK ){
+
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if (matches == null){
+                Toast.makeText(getApplicationContext(),"matches null", Toast.LENGTH_LONG).show();
+            }
             speechResult = matches.get(0);
 
-            
+
 
 
             if(speechResult.contains("terminar ciclo")){
