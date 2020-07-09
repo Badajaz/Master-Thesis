@@ -62,6 +62,9 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
     private int countIns = 0;
     private GestureDetector gd;
+    private String orientation;
+    private int currentLine;
+    private int currentCollumn;
 
 
 
@@ -136,8 +139,8 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
 
 
-        String finale = hashMap.get("34");
-        ArrayList<String> comp =  computationBoard(hashMap,sequencia,linha,coluna);
+        //ArrayList<String> comp =  computationBoard(hashMap,sequencia,linha,coluna);
+        ArrayList<String> comp =  computationEgocentric(hashMap,sequencia,linha,coluna);
         writeInstructionsFile(comp);
 
         speakAudioFeedbackInstructions();
@@ -346,6 +349,239 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         return robotInstructions;
     }
 
+
+    private ArrayList<String> computationEgocentric(HashMap board,String sequence,int linha,int coluna){
+        countLoop = 0;
+        String[] instructions = sequence.split("_");
+        ArrayList<String> robotInstructions = new ArrayList<>();
+        int[] finalCoordenates = getGoalCoordenates(board);
+        orientation = checkRobotStartOrientation(linha,coluna,finalCoordenates[0],finalCoordenates[1]);
+        currentLine = linha;
+        currentCollumn = coluna;
+
+
+
+        while((!board.get(currentLine+""+currentCollumn).equals("F") && !board.get(currentLine+""+currentCollumn).equals("X"))
+                && (!instructions[countLoop].equals("F"))){
+
+            if(instructions[countLoop].equals("LB")){
+
+                int it = Integer.parseInt(instructions[countLoop+1]);
+                int index = countLoop+1;
+                countLoop+=2;
+                int loopIt = (it * getNumberInstructions(instructions));
+                for (int i = 0;i < loopIt && (!board.get(linha+""+coluna).equals("F") && !board.get(linha+""+coluna).equals("X"));i++){
+                    //caso normal loop
+                    String insaux = InstructionEgocentric(instructions[countLoop]);
+                    robotInstructions.add(insaux);
+                    if (instructions[countLoop+1].equals("LE")){
+                        countLoop = index+1;
+                    }
+                    countLoop++;
+
+                }
+
+
+
+            }else{
+
+                //caso normal sem loops
+                String insaux = InstructionEgocentric(instructions[countLoop]);
+                robotInstructions.add(insaux);
+                getCurrentOrientation(instructions[countLoop]);
+                countLoop++;
+
+                }
+
+
+
+            }
+
+            if(board.get(currentLine+""+currentCollumn).equals("F") ){
+                feedbackAudios.add("Chegou ao objectivo");
+            }
+
+            else if(board.get(currentLine+""+currentCollumn).equals("X") ){
+                feedbackAudios.add("bateu num obstáculo");
+            }
+
+            else if(instructions[countLoop].equals("F")){
+                feedbackAudios.add("sequencia terminou numa casa possível");
+            }
+
+
+            return  robotInstructions;
+        }
+
+
+
+
+
+        private void getCurrentOrientation(String move){
+
+            if (orientation.equals("B")){
+
+                if(move.equals("C")){
+                    feedbackAudios.add("Vamos para a frente");
+                    currentLine++;
+                }else if(move.equals("D")){
+                    feedbackAudios.add("Vamos virar para a direita");
+                    orientation = "E";
+
+                }else if(move.equals("E")){
+                    feedbackAudios.add("Vamos virar para a esquerda");
+                    orientation = "D";
+                }
+
+
+
+            }else if(orientation.equals("C")){
+                if(move.equals("C")){
+                    feedbackAudios.add("Vamos para a frente");
+                    currentLine--;
+                }else if(move.equals("D")){
+                    feedbackAudios.add("Vamos virar para a direita");
+                    orientation = "D";
+
+                }else if(move.equals("E")){
+                    feedbackAudios.add("Vamos virar para a esquerda");
+                    orientation = "E";
+                }
+
+
+            }else if(orientation.equals("D")){
+
+                if(move.equals("C")){
+                    feedbackAudios.add("Vamos para a frente");
+                    currentCollumn++;
+                }else if(move.equals("D")){
+                    feedbackAudios.add("Vamos virar para a direita");
+                    orientation = "B";
+
+                }else if(move.equals("E")){
+                    feedbackAudios.add("Vamos virar para a esquerda");
+                    orientation = "C";
+                }
+
+
+            }else if(orientation.equals("E")){
+
+                if(move.equals("C")){
+                    feedbackAudios.add("Vamos para a frente");
+                    currentCollumn--;
+                }else if(move.equals("D")){
+                    feedbackAudios.add("Vamos virar para a direita");
+                    orientation = "C";
+
+                }else if(move.equals("E")){
+                    feedbackAudios.add("Vamos virar para a esquerda");
+                    orientation = "B";
+                }
+            }
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+    private String checkRobotStartOrientation(int startLine,int startCollumn,int endLine,int endCollumn){
+
+        String orientation = "";
+        if (endLine < startLine){
+            orientation = "C";
+        }else if(endLine > startLine){
+            orientation = "B";
+        }else{
+            if (startCollumn > endCollumn){
+                orientation = "D";
+            }else if(endCollumn < startCollumn){
+                orientation = "E";
+            }
+        }
+
+
+        return orientation;
+    }
+
+
+    private int[] getGoalCoordenates(HashMap board){
+        String coordenates = "";
+        Object[] keys = board.keySet().toArray();
+        for( int i = 0;i< keys.length; i++){
+            if (board.get(keys[i].toString()).equals("F")){
+                coordenates = keys[i].toString();
+                break;
+            }
+        }
+        int[] returnCoordenates = {Integer.parseInt(coordenates.charAt(0)+""),Integer.parseInt(coordenates.charAt(1)+"")};
+
+
+        return  returnCoordenates;
+    }
+
+
+
+
+
+    private int[] getCurrentPositionEgocentric(String movement,String previousMovement,int linha,int coluna){
+        int l = linha;
+        int c = coluna;
+        if (movement.equals("D")){
+            feedbackAudios.add("Vamos virar para a direita");
+
+        } else if (movement.equals("E")){
+            feedbackAudios.add("Vamos virar para a esquerda");
+
+        }
+       else if (movement.equals("C")){
+            l--;
+            feedbackAudios.add("Vamos para a frente");
+            if (previousMovement.equals("D"))
+                c++;
+            if (previousMovement.equals("E"))
+                c--;
+
+        }else if (movement.equals("B")){
+            l++;
+
+        }
+
+
+
+        int[] pos = {l,c};
+        return pos;
+    }
+
+    private String  InstructionEgocentric(String currentMovement){
+
+        switch (currentMovement){
+            case "D":
+                return "\t rotate(-90,50) \n";
+            case "E":
+                return "\t rotate(90,50) \n";
+            case "C":
+                return "\t move(30,30) \n";
+            case "B":
+                return "\t move(30,30) \n";
+
+            default:
+                return "";
+
+        }
+
+
+
+    }
 
     private String turnOverInstruction(String currentMovement,String nextMovement){
 
