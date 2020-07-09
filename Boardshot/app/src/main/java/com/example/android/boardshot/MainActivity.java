@@ -1,6 +1,7 @@
 package com.example.android.boardshot;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -37,12 +40,18 @@ import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -181,7 +190,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
     private GestureDetector gd;
-
+    private PopupWindow pw;
+    private int left;
+    private int top;
+    private int width;
+    private int height;
+    private int recBoardPopup;
 
 
     private StorageReference mStorageRef;
@@ -250,6 +264,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         touch.setOnTouchListener(this);
         gd = new GestureDetector(this,this);
+
+        final Button boardRecognition = (Button) findViewById(R.id.boarRecButton);
+        boardRecognition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               recBoardPopup = 1;
+               takePicture();
+            }
+        });
+
 
        /* if (menu < 5) {
             TaskMenu = new TimerTask() {
@@ -431,6 +455,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     //Mat gray = new Mat();
                     //Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
+
+                    if(recBoardPopup == 1){
+                        boardRec = boardRecognition();
+                        ShowPopUpBoard();
+                        recBoardPopup = 0;
+                    }
 
 
 
@@ -1519,6 +1549,91 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         return c;
     }
+
+
+    public void ShowPopUpBoard(){
+        String[] messageArray = boardRec.split(" ");
+        try {
+            //We need to get the instance of the LayoutInflater, use the context of this activity
+
+            LayoutInflater inflater = (LayoutInflater)MainActivity.this
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.cutompopup,
+                    (ViewGroup) findViewById(R.id.popup_element));
+            //Inflate the view from a predefined XML layout
+
+            left = 50; // initial start position of rectangles (50 pixels from left)
+            top = 50; // 50 pixels from the top
+            width = 80;
+            height = 80;
+            Bitmap bg = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
+            int index = 0;
+            int col;
+            for (int row = 0; row < 8; row++) { // draw 2 rows
+                for(col = 0; col < 6; col++) { // draw 4 columns
+                    Paint paint = new Paint();
+                    if (messageArray[index].contains("O")){
+
+                        Log.d("AA","O"+index);
+                        paint.setColor(Color.parseColor("#008000"));
+
+                    }else if(messageArray[index].contains("X")){
+                        Log.d("AA","X"+index);
+                        paint.setColor(Color.parseColor("#CD5C5C"));
+
+                    }else if(messageArray[index].contains("F")) {
+                        Log.d("AA","F"+index);
+                        paint.setColor(Color.parseColor("#3792cb"));
+
+                    }else if(messageArray[index].contains("R")) {
+                        Log.d("AA", "R"+index);
+                        paint.setColor(Color.parseColor("#000000"));
+                    }
+
+
+                    Canvas canvas = new Canvas(bg);
+                    canvas.drawRect(left, top, left+width, top+height, paint);
+                    left = (left + width  +10); // set new left co-ordinate + 10 pixel gap
+                    // Do other things here
+                    // i.e. change colour
+                    index++;
+                }
+
+                top = top + height + 10; // move to new row by changing the top co-ordinate
+                left = 50;
+            }
+
+            RelativeLayout ll = (RelativeLayout) layout.findViewById(R.id.popup_element);
+            ImageView iV = new ImageView(this);
+            iV.setImageBitmap(bg);
+            ll.addView(iV);
+
+            // create a 300px width and 470px height PopupWindow
+             pw = new PopupWindow(layout, 800, 1000, true);
+            // display the popup in the center
+            pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
+
+
+
+
+
+            Button tv = (Button) layout.findViewById(R.id.cross);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    pw.dismiss();
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
 
 
 }
