@@ -355,7 +355,8 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
         int[] finalCoordenates = getGoalCoordenates(board);
-        orientation = checkRobotStartOrientation(linha,coluna,finalCoordenates[0],finalCoordenates[1]);
+        orientation = OrientedAvailableCoordenates(linha,coluna,board);
+        //orientation = checkRobotStartOrientation(linha,coluna,finalCoordenates[0],finalCoordenates[1]);
         currentLine = linha;
         currentCollumn = coluna;
 
@@ -497,20 +498,73 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     private String checkRobotStartOrientation(int startLine,int startCollumn,int endLine,int endCollumn){
 
         String orientation = "";
-        if (endLine < startLine){
-            orientation = "C";
-        }else if(endLine > startLine){
-            orientation = "B";
-        }else{
-            if (startCollumn > endCollumn){
+
+        if(startLine == endLine){
+            if (startCollumn < endCollumn){
                 orientation = "D";
-            }else if(endCollumn < startCollumn){
+            }else  if (startCollumn > endCollumn){
                 orientation = "E";
+            }
+
+        }
+
+        if (startCollumn == endCollumn){
+            if (startLine < endLine){
+                orientation = "B";
+            }else if (startLine > endLine){
+                orientation = "C";
             }
         }
 
+        if (startLine < endLine){
+
+
+
+
+            orientation = "B";
+        }
+
+
+        if (startLine > endLine){
+            orientation = "C";
+
+        }
+
+
 
         return orientation;
+    }
+
+
+    private String OrientedAvailableCoordenates(int startLine,int startCollumn,HashMap<String,String> map){
+
+        String dir = "";
+        if (map.get(""+(startLine+1)+""+startCollumn).equals("O")  &&
+                map.get(""+(startLine+1)+""+(startCollumn+1)).equals("X") &&
+                        map.get(""+(startLine+1)+""+(startCollumn-1)).equals("X")){
+            dir+="B";
+        }
+
+        if (map.get(""+(startLine-1)+""+startCollumn).equals("O") &&
+                map.get(""+(startLine-1)+""+(startCollumn+1)).equals("X")&&
+                map.get(""+(startLine-1)+""+(startCollumn-1)).equals("X")){
+            dir+="C";
+        }
+
+        if (map.get(""+startLine+""+(startCollumn+1)).equals("O") &&
+                map.get(""+(startLine-1)+""+(startCollumn+1)).equals("X") &&
+                map.get(""+(startLine+1)+""+(startCollumn+1)).equals("X")){
+
+            dir+="D";
+        }
+        if (map.get(""+startLine+""+(startCollumn-1)).equals("O") &&
+                map.get(""+(startLine-1)+""+(startCollumn-1)).equals("X") &&
+                map.get(""+(startLine+1)+""+(startCollumn-1)).equals("X")){
+
+            dir+="E";
+        }
+
+        return dir;
     }
 
 

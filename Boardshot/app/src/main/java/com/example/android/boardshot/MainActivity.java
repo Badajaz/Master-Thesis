@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int orangeArea = -1;
     private int robotLine;
     private int robotCollumn;
+    private String boardAux= "";
 
 
 
@@ -457,10 +458,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     //Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
 
                     if(recBoardPopup == 1){
-                        boardRec = boardRecognition();
-                        ShowPopUpBoard();
+                        boardAux = "";
                         recBoardPopup = 0;
+                        boardAux = boardRecognition();
+                        ShowPopUpBoard();
+
                     }
+
 
 
 
@@ -1009,7 +1013,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         matrix.convertTo(matrixBright, -1, 1, 200);
 
         Mat matrixRobot = new Mat();
-        matrix.convertTo(matrixRobot, -1, 1, 35);
+        matrix.convertTo(matrixRobot, -1, 1, 0);
 
 
 
@@ -1552,7 +1556,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
     public void ShowPopUpBoard(){
-        String[] messageArray = boardRec.split(" ");
+        String[] messageArray = boardAux.split(" ");
         try {
             //We need to get the instance of the LayoutInflater, use the context of this activity
 
