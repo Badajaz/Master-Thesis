@@ -1033,7 +1033,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int b = squares.get(i).asList().get(1).toInt();
             int c = squares.get(i).asList().get(2).toInt();
             int d = squares.get(i).asList().get(3).toInt();
-            Log.d("SQUARES",a+" "+b+" "+c+" "+d);
+           // Log.d("SQUARES",a+" "+b+" "+c+" "+d);
 
 
             Rect roi = new Rect(a, b,c - a , d - b);
@@ -1120,7 +1120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             PyObject orangeLines = py.getModule("OrangeLines");
             PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition",file.getPath());
             int orangeAux = orangeLinesMod.toInt();
-            Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
+           // Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
 
 
             if (orangeArea < orangeAux){

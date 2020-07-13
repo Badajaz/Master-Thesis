@@ -276,9 +276,10 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
             if(instructions[countLoop].equals("LB")){
 
                 int it = Integer.parseInt(instructions[countLoop+1]);
+                int loopIt = (it * getNumberInstructions(instructions,countLoop));
                 int index = countLoop+1;
                 countLoop+=2;
-                int loopIt = (it * getNumberInstructions(instructions));
+
 
                 for (int i = 0;i < loopIt && (!board.get(linha+""+coluna).equals("F") && !board.get(linha+""+coluna).equals("X"));i++){
 
@@ -368,10 +369,11 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
             if(instructions[countLoop].equals("LB")){
 
                 int it = Integer.parseInt(instructions[countLoop+1]);
+                int loopIt = (it * getNumberInstructions(instructions,countLoop));
                 int index = countLoop+1;
                 int loopend = -1;
                 countLoop+=2;
-                int loopIt = (it * getNumberInstructions(instructions));
+
                 for (int i = 0;i < loopIt && (!board.get(currentLine+""+currentCollumn).equals("F") && !board.get(currentLine+""+currentCollumn).equals("X"));i++){
                     //caso normal loop
                     String insaux = InstructionEgocentric(instructions[countLoop]);
@@ -387,9 +389,6 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
                 }
                 countLoop = loopend+1;
-
-
-
 
             }else{
 
@@ -415,7 +414,6 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             else if(instructions[countLoop].equals("F")){
                 feedbackAudios.add("sequencia terminou numa casa possível");
-                Log.d("casaFinal",currentLine+""+currentCollumn);
             }
 
 
@@ -824,15 +822,17 @@ private int getNumberCicles(String[] sequence){
 
             if(sequence[i].equals("LB")){
                 index = i;
+                break;
             }
         }
 
         return  index;
     }
 
-private int getNumberInstructions(String[] sequence) {
+private int getNumberInstructions(String[] sequence,int begining) {
+
     int numberInstructions= 0;
-    int i = getIndexBeginCicle(sequence)+2;
+    int i = begining+2;
 
     while(!sequence[i].equals("LE")){
         numberInstructions++;
