@@ -1339,6 +1339,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         ArrayList<String> fraseArrayList = convertArrayToArrayList(splited);
         String[] Numbers = {  "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove","dez","onze","doze"
                 ,"treze","quatorze","quinze","dezasseis","dessassete","dezoito","dezanove","vinte" };
+        String[] NumberFormat = {  "1", "2", "3", "4", "5", "6", "7", "8", "9","10","11","12"
+                ,"13","14","15","16","17","18","19","20" };
 
         if(fraseArrayList.contains("uma")){
             return 1;
@@ -1353,6 +1355,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 if (fraseArrayList.contains(Numbers[i])){
                     return converter(Numbers[i]);
                 }
+
+                if (fraseArrayList.contains(NumberFormat[i])){
+                    return Integer.parseInt(NumberFormat[i]);
+                }
+
             }
 
         }

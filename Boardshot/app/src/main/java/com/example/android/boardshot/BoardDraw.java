@@ -369,18 +369,25 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
                 int it = Integer.parseInt(instructions[countLoop+1]);
                 int index = countLoop+1;
+                int loopend = -1;
                 countLoop+=2;
                 int loopIt = (it * getNumberInstructions(instructions));
-                for (int i = 0;i < loopIt && (!board.get(linha+""+coluna).equals("F") && !board.get(linha+""+coluna).equals("X"));i++){
+                for (int i = 0;i < loopIt && (!board.get(currentLine+""+currentCollumn).equals("F") && !board.get(currentLine+""+currentCollumn).equals("X"));i++){
                     //caso normal loop
                     String insaux = InstructionEgocentric(instructions[countLoop]);
                     robotInstructions.add(insaux);
+                    getCurrentOrientation(instructions[countLoop]);
                     if (instructions[countLoop+1].equals("LE")){
+                        loopend = countLoop+1;
                         countLoop = index+1;
+                    }else{
+                        countLoop++;
                     }
-                    countLoop++;
+
 
                 }
+                countLoop = loopend+1;
+
 
 
 
@@ -408,6 +415,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             else if(instructions[countLoop].equals("F")){
                 feedbackAudios.add("sequencia terminou numa casa possível");
+                Log.d("casaFinal",currentLine+""+currentCollumn);
             }
 
 
