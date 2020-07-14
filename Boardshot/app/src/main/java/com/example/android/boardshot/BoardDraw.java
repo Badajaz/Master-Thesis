@@ -350,8 +350,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         return robotInstructions;
     }
 
-
-    private ArrayList<String> computationEgocentric(HashMap board,String sequence,int linha,int coluna){
+    private ArrayList<String> computationEgocentric2(HashMap board,String sequence,int linha,int coluna){
         countLoop = 0;
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
@@ -389,6 +388,107 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
                 }
                 countLoop = loopend+1;
+
+            }else{
+
+                //caso normal sem loops
+                String insaux = InstructionEgocentric(instructions[countLoop]);
+                robotInstructions.add(insaux);
+                getCurrentOrientation(instructions[countLoop]);
+                countLoop++;
+
+            }
+
+
+
+        }
+
+        if(board.get(currentLine+""+currentCollumn).equals("F") ){
+            feedbackAudios.add("Chegou ao objectivo");
+        }
+
+        else if(board.get(currentLine+""+currentCollumn).equals("X") ){
+            feedbackAudios.add("bateu num obstáculo");
+        }
+
+        else if(instructions[countLoop].equals("F")){
+            feedbackAudios.add("sequencia terminou numa casa possível");
+        }
+
+
+        return  robotInstructions;
+    }
+
+
+    private ArrayList<String> computationEgocentric(HashMap board,String sequence,int linha,int coluna){
+        countLoop = 0;
+        String[] instructions = sequence.split("_");
+        ArrayList<String> robotInstructions = new ArrayList<>();
+        int[] finalCoordenates = getGoalCoordenates(board);
+        orientation = OrientedAvailableCoordenates(linha,coluna,board);
+        //orientation = checkRobotStartOrientation(linha,coluna,finalCoordenates[0],finalCoordenates[1]);
+        currentLine = linha;
+        currentCollumn = coluna;
+
+
+
+        while((!board.get(currentLine+""+currentCollumn).equals("F") && !board.get(currentLine+""+currentCollumn).equals("X"))
+                && (!instructions[countLoop].equals("F"))){
+
+            if(instructions[countLoop].equals("LB")){
+
+                int it = Integer.parseInt(instructions[countLoop+1]);
+                int loopIt = (it * getNumberInstructions(instructions,countLoop));
+                int index = countLoop+1;
+                int loopend = -1;
+                countLoop+=2;
+
+
+
+                for (int i = 0;i < loopIt && (!board.get(currentLine+""+currentCollumn).equals("F") && !board.get(currentLine+""+currentCollumn).equals("X"));i++){
+                    //caso normal loop
+
+                    if (instructions[countLoop].equals("LB")){
+                        int insideIt = Integer.parseInt(instructions[countLoop+1]);
+                        int insideloopIt = (insideIt * getNumberInstructions(instructions,countLoop));
+                        int insideIndex = countLoop+1;
+                        int insideloopend = -1;
+                        countLoop+=2;
+                        for (int j = 0;j < insideloopIt && (!board.get(currentLine+""+currentCollumn).equals("F") && !board.get(currentLine+""+currentCollumn).equals("X"));j++){
+
+                            String insaux = InstructionEgocentric(instructions[countLoop]);
+                            robotInstructions.add(insaux);
+                            getCurrentOrientation(instructions[countLoop]);
+                            if (instructions[countLoop+1].equals("LE")){
+                                insideloopend = countLoop+1;
+                                countLoop = index+1;
+                            }else{
+                                countLoop++;
+                            }
+
+                        }
+                        countLoop = insideloopend+1;
+
+                    }else{
+                       if (!instructions[countLoop].equals("LE")) {
+                           String insaux = InstructionEgocentric(instructions[countLoop]);
+                           robotInstructions.add(insaux);
+                           getCurrentOrientation(instructions[countLoop]);
+                           if (instructions[countLoop + 1].equals("LE")) {
+                               loopend = countLoop + 1;
+                               countLoop = index + 1;
+                           } else {
+                               countLoop++;
+                           }
+                       }
+
+                    }
+
+                    }
+                countLoop = loopend+1;
+
+
+
 
             }else{
 
