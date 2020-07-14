@@ -26,6 +26,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -377,6 +378,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private void takePicture() {
         if(cameraDevice == null)
             return;
+        MediaActionSound sound = new MediaActionSound();
+        sound.play(MediaActionSound.SHUTTER_CLICK);
+
         CameraManager manager = (CameraManager)getSystemService(Context.CAMERA_SERVICE);
         try{
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraDevice.getId());
