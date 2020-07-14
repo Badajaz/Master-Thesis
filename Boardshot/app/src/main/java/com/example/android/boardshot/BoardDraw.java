@@ -91,7 +91,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         gd = new GestureDetector(this,this);
 
 
-        left = 50; // initial start position of rectangles (50 pixels from left)
+        /*left = 50; // initial start position of rectangles (50 pixels from left)
          top = 50; // 50 pixels from the top
          width = 80;
          height = 80;
@@ -135,7 +135,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         RelativeLayout ll = (RelativeLayout) findViewById(R.id.rect);
         ImageView iV = new ImageView(this);
         iV.setImageBitmap(bg);
-        ll.addView(iV);
+        ll.addView(iV);*/
 
 
 
