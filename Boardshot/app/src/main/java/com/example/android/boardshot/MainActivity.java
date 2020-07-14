@@ -228,10 +228,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         if (OpenCVLoader.initDebug()){
 
-            Toast.makeText(getApplicationContext(),"sucesso",Toast.LENGTH_LONG).show();
+           // Toast.makeText(getApplicationContext(),"sucesso",Toast.LENGTH_LONG).show();
 
         }else{
-            Toast.makeText(getApplicationContext(),"Insucesso",Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),"Insucesso",Toast.LENGTH_LONG).show();
 
         }
 
@@ -577,9 +577,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                         board = 0;
 
-                        Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
 
-                        Uri filed = Uri.fromFile(file);
+                        /*Uri filed = Uri.fromFile(file);
 
                         StorageReference riversRef = mStorageRef.child("images");
                         Toast.makeText(MainActivity.this, "chego aqui", Toast.LENGTH_SHORT).show();
@@ -601,7 +601,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         // ...
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
-                                });
+                                });*/
 
                     if (!sequenceDB.equals("")){
                        Handler mHandler = new Handler(getMainLooper());
@@ -627,7 +627,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(MainActivity.this, "Saved "+file, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Saved "+file, Toast.LENGTH_SHORT).show();
 
                     createCameraPreview();
                 }
@@ -945,7 +945,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
         if (Python.isStarted()){
-            Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
         }
 
         Python py = Python.getInstance();
@@ -1443,7 +1443,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public boolean onDown(MotionEvent motionEvent) {
-        Toast.makeText(getApplicationContext(),"scroll",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),"scroll",Toast.LENGTH_LONG).show();
 /*
         if (menu < 5) {
             TaskMenu = new TimerTask() {
