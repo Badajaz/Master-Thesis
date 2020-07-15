@@ -78,6 +78,7 @@
 
         android:backgroundTint="#47A64A"
         android:text="Board"
+        android:layout_marginStart="17dp"
         android:textColor="@color/common_google_signin_btn_text_dark_pressed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
