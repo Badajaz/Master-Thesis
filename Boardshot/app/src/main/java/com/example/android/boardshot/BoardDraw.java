@@ -1048,7 +1048,7 @@ private void speakAudioFeedbackInstructions(){
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
-
+        super.onBackPressed();
     }
 
     @Override

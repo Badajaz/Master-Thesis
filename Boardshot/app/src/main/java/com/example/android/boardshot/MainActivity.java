@@ -575,6 +575,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                             recPieces = 0;
                             boardRec = boardRecognition();
+                            if (!sequenceDB.equals("")){
+                                Handler mHandler = new Handler(getMainLooper());
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                        intent.putExtra("message", boardRec);
+                                        intent.putExtra("map", tabuleiro);
+                                        intent.putExtra("sequencia", sequenceDB);
+                                        intent.putExtra("roboLinha", robotLine);
+                                        intent.putExtra("roboColuna", robotCollumn);
+                                        startActivity(intent);
+                                    }
+                                });}
                         }
 
 
@@ -607,18 +621,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                     }
                                 });*/
 
-                    if (!sequenceDB.equals("")){
-                       Handler mHandler = new Handler(getMainLooper());
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(MainActivity.this, BoardDraw.class);
-                                intent.putExtra("message", boardRec);
-                                intent.putExtra("map", tabuleiro);
-                                intent.putExtra("sequencia", sequenceDB);
-                                startActivity(intent);
-                            }
-                        });}
+
 
 
 
