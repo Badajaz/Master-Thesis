@@ -134,10 +134,10 @@ def squares(file):
     count = 0
     i = 1
     while y1 < fourCorners[2][1] and y2 < fourCorners[3][1]:
-        y1 += 175
-        y2 += 175
+        y1 += 150
+        y2 += 150
 
-        if count < 7:
+        if count < 11:
             cv2.line(image,(x1,y1),(x2,y2), (0, 255, 0), 9)
             horizontalLines += [y1]
         count+=1
@@ -160,11 +160,11 @@ def squares(file):
     j = 1
     while x1 < fourCorners[1][0] and x2 < fourCorners[3][0]:
 
-        x1 += 175
-        x2 += 175
+        x1 += 147
+        x2 += 147
 
 
-        if count2 < 5:
+        if count2 < 11:
             cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 9)
             verticalLines += [x1]
         count2+=1

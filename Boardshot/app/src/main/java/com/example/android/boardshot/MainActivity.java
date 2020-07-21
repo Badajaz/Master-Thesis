@@ -597,7 +597,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                         //Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
 
-                        /*Uri filed = Uri.fromFile(file);
+                        Uri filed = Uri.fromFile(file);
 
                         StorageReference riversRef = mStorageRef.child("images");
                         Toast.makeText(MainActivity.this, "chego aqui", Toast.LENGTH_SHORT).show();
@@ -619,7 +619,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         // ...
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
-                                });*/
+                                });
 
 
 
@@ -1034,8 +1034,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         //Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
         int linha = 0;
-        for (int i = 0;i < squares.size();i++){
 
+        Toast.makeText(getApplicationContext(),"squaressssss"+squares.size()+" ",Toast.LENGTH_LONG).show();
+        Log.d("SQUARE",squares.size()+"");
+        for (int i = 0;i < squares.size();i++){
             int a = squares.get(i).asList().get(0).toInt();
             int b = squares.get(i).asList().get(1).toInt();
             int c = squares.get(i).asList().get(2).toInt();
@@ -1139,7 +1141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
             count++;
-            if (count == 6){
+            if (count == 12){
                 rec+="\n";
                 count = 0;
                 linha++;
@@ -1150,9 +1152,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         tabuleiro.put((""+robotLine+""+robotCollumn),"R");
 
         rec= "";
-        for (int i = 0;i < 8;i++){
+        for (int i = 0;i < 12;i++){
 
-            for (int j = 0;j < 6;j++){
+            for (int j = 0;j < 12;j++){
                 rec+= tabuleiro.get(""+i+""+j)+" ";
 
 
@@ -1582,29 +1584,36 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             left = 50; // initial start position of rectangles (50 pixels from left)
             top = 50; // 50 pixels from the top
-            width = 80;
-            height = 80;
+            width = 30;
+            height = 30;
             Bitmap bg = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
             int index = 0;
             int col;
-            for (int row = 0; row < 8; row++) { // draw 2 rows
-                for(col = 0; col < 6; col++) { // draw 4 columns
+            for (int row = 0; row < 12; row++) { // draw 2 rows
+                for(col = 0; col < 12; col++) { // draw 4 columns
                     Paint paint = new Paint();
                     if (messageArray[index].contains("O")){
-
-                        Log.d("AA","O"+index);
+                        //Log.d("AA","O ,("+row+","+col+")");
+                        //Log.d("AA","O"+index);
                         paint.setColor(Color.parseColor("#008000"));
 
                     }else if(messageArray[index].contains("X")){
-                        Log.d("AA","X"+index);
+                        //Log.d("AA","X"+index);
+                        //Log.d("AA","X ,("+row+","+col+")");
+
                         paint.setColor(Color.parseColor("#CD5C5C"));
 
                     }else if(messageArray[index].contains("F")) {
-                        Log.d("AA","F"+index);
+                        //Log.d("AA","F"+index);
+                        //Log.d("AA","F ,("+row+","+col+")");
+
+
                         paint.setColor(Color.parseColor("#3792cb"));
 
                     }else if(messageArray[index].contains("R")) {
-                        Log.d("AA", "R"+index);
+                        //Log.d("AA", "R"+index);
+                        Toast.makeText(getApplicationContext(),"RRRRRRR",Toast.LENGTH_LONG).show();
+                        Log.d("AA","R ,("+row+","+col+")");
                         paint.setColor(Color.parseColor("#000000"));
                     }
 
@@ -1627,7 +1636,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             ll.addView(iV);
 
             // create a 300px width and 470px height PopupWindow
-             pw = new PopupWindow(layout, 800, 1000, true);
+             pw = new PopupWindow(layout, 1110, 1110, true);
             // display the popup in the center
             pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
