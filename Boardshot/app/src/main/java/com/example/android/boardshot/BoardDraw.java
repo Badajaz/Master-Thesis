@@ -424,7 +424,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         countLoop = 0;
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
-        int[] finalCoordenates = getGoalCoordenates(board);
+        //int[] finalCoordenates = getGoalCoordenates(board);
         orientation = OrientedAvailableCoordenates(linha,coluna,board);
         //orientation = checkRobotStartOrientation(linha,coluna,finalCoordenates[0],finalCoordenates[1]);
         currentLine = linha;
