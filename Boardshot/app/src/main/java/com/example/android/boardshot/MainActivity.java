@@ -199,6 +199,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int height;
     private int recBoardPopup;
 
+    private String Levels;
+
 
     private StorageReference mStorageRef;
 
@@ -226,6 +228,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        Levels = bundle.getString("levels");
+        Toast.makeText(getApplicationContext(),Levels,Toast.LENGTH_LONG).show();
 
         if (OpenCVLoader.initDebug()){
 
