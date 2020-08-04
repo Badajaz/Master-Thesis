@@ -200,6 +200,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int recBoardPopup;
 
     private String Levels;
+    private int speechCount = 0;
+    private  TimerTask taskTalk;
 
 
     private StorageReference mStorageRef;
@@ -282,100 +284,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                takePicture();
             }
         });
-
-
-       /* if (menu < 5) {
-            TaskMenu = new TimerTask() {
-                @Override
-                public void run() {
-
-                    if (menu < 5) {
-                        String menuVoz = "";
-                        if (menu == 0) {
-                            menuVoz = "Tens 3 opções de escolha:";
-                        } else if (menu == 1) {
-                            menuVoz = "Para o reconhecimento com voz carregue uma vez no ecrã";
-
-                        } else if (menu == 2) {
-                            menuVoz = "Para o reconhecimento com peças carregue duas vezes no ecrã";
-
-                        } else if (menu == 3) {
-                            menuVoz = "Para saber qual é a instrução a que corresponde a peça pressione o ecrã durante algum tempo";
-
-                        }else if(menu == 4){
-                            menuVoz = "Para ouvir novamente as instruções deslize o dedo para baixo no ecrã";
-                        }
-
-                        final String finalMenuVoz = menuVoz;
-                        engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-                            @Override
-                            public void onInit(int status) {
-
-
-                                engine.setLanguage(new Locale("pt", "PT"));
-                                engine.speak(finalMenuVoz,
-                                        TextToSpeech.QUEUE_FLUSH, null, null);
-                            }
-                        });
-                        menu++;
-                    }else{
-                        menu = 0;
-                    }
-                }
-            };
-            timerMenu = new Timer("Timer");
-            long delay = 1;
-            long period = 5000;
-            timerMenu.scheduleAtFixedRate(TaskMenu, delay, period);
-
-        }else{
-            TaskMenu.cancel();
-        }
-*/
-
-
-
-
-        /*btnCapture = (Button)findViewById(R.id.btnCapture);
-        btnCapture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                takePicture();
-                board = 1;
-
-            }
-        });*/
-
-       /* btnCaptureWithPieces = (Button)findViewById(R.id.btnCapturePieces);
-        btnCaptureWithPieces.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                 repeatedTask = new TimerTask() {
-                    @Override
-                    public void run() {
-
-                        takePicture();
-                    }
-                };
-                timer = new Timer("Timer");
-                long delay = 1;
-                long period = 5000;
-                timer.scheduleAtFixedRate(repeatedTask, delay, period);
-                recPieces = 1;
-            }
-        });*/
-
-       /* btnToturial = (Button)findViewById(R.id.Tutorial);
-        btnToturial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takePicture();
-                tutorialPieces = 1;
-            }
-        });*/
-
-
 
 
 
@@ -551,16 +459,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                         if(board == 1) {
                             boardRec = boardRecognition();
-                                engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+
+                            introSpeach();
+                            while (speechCount< 6);
+                            lauchSpeechRecognition();
+
+
+
+
+
+
+
+                                /*engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
                                     @Override
                                     public void onInit(int status) {
                                         engine.setLanguage(new Locale("pt", "PT"));
                                         engine.speak("o que queres que faça agora?",
                                                 TextToSpeech.QUEUE_FLUSH, null, null);
                                     }
-                                });
+                                });*/
 
-                                lauchSpeechRecognition();
 
 
                             }
@@ -604,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                         //Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
 
-                        Uri filed = Uri.fromFile(file);
+                        /*Uri filed = Uri.fromFile(file);
 
                         StorageReference riversRef = mStorageRef.child("images");
                         Toast.makeText(MainActivity.this, "chego aqui", Toast.LENGTH_SHORT).show();
@@ -626,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         // ...
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
-                                });
+                                });*/
 
 
 
@@ -668,6 +586,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             e.printStackTrace();
         }
     }
+
 
 
     private void createCameraPreview() {
@@ -1201,118 +1120,149 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
         //
-        if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK ){
+        if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK ) {
 
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            if (matches == null){
-                Toast.makeText(getApplicationContext(),"matches null", Toast.LENGTH_LONG).show();
+            if (matches == null) {
+                Toast.makeText(getApplicationContext(), "matches null", Toast.LENGTH_LONG).show();
             }
             speechResult = matches.get(0);
 
-
-
-
-            if(speechResult.contains("terminar ciclo")){
-                sequenceDB+="LE_";
-                loop = 0;
-                engine.speak("o que queres que faça agora?",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-            }
-
-
-            else if (speechResult.contains("ciclo")){
-                sequenceDB+= "LB_";
-                loop = 1;
-                engine.speak("queres executar o ciclo quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-            }
-
-            else if (speechResult.contains("direita") && loop == 1){
-                sequenceDB+= "D_";
-                //sequenceDB+= getRepeatedStringByTimesNumber("D_",getNumberOfTimes());
-                engine.speak("indica outra instrução ou indica terminar ciclo",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-
-            }
-            else if (speechResult.contains("esquerda")  && loop == 1){
-                sequenceDB+= "E_";
-                engine.speak("indica outra instrução ou indica terminar ciclo",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-            }
-            else if ((speechResult.contains("cima") || speechResult.contains("frente"))  && loop == 1){
-                sequenceDB+= "C_";
-                engine.speak("indica outra instrução ou indica terminar ciclo",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-            }
-
-            else if ((speechResult.contains("baixo") || speechResult.contains("trás"))  && loop == 1){
-                sequenceDB+= "B_";
-                engine.speak("indica outra instrução ou indica terminar ciclo",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-            }
-
-
-            else if (speechResult.contains("direita")){
-                instrucao = "D_";
-                engine.speak("queres ir para a direita quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-
-            }
-            else if (speechResult.contains("esquerda")){
-                instrucao = "E_";
-                engine.speak("queres ir para a esquerda quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-            }
-           else if (speechResult.contains("cima") || speechResult.contains("frente")){
-                instrucao = "C_";
-                engine.speak("queres ir para a frente quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-            }
-
-            else if (speechResult.contains("baixo") || speechResult.contains("trás")){
-                instrucao = "B_";
-                engine.speak("queres ir para a baixo quantas vezes?",TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
-            }
-
-            else if (speechResult.contains("vezes") ||speechResult.contains("vez") ){
-
-                if(loop == 1 ){
-                    sequenceDB+=getNumberOfTimes(speechResult)+"_";
-                    engine.speak("diga uma instrução do loop",TextToSpeech.QUEUE_FLUSH, null, null);
+            if(Levels.equals("level1Voz")){
+                if (speechResult.contains("esquerda")){
+                    sequenceDB += "E_";
+                    engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
+                }
 
-                }else{
-                    sequenceDB+=getRepeatedStringByTimesNumber(instrucao,getNumberOfTimes(speechResult));
-                    engine.speak("o que queres que faça agora?",TextToSpeech.QUEUE_FLUSH, null, null);
+                else if(speechResult.contains("direita")){
+                    sequenceDB += "D_";
+                    engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
+                }
 
+                else if(speechResult.contains("frente") || speechResult.contains("cima")){
+                    sequenceDB += "C_";
+                    engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                }
+                else if (speechResult.contains("não")){
+                    engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                }
+                else if (speechResult.contains("sim")){
+                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                }
+
+                else if (speechResult.contains("terminar")){
+                    sequenceDB += "F";
+                    if (!sequenceDB.equals("")) {
+                        Handler mHandler = new Handler(getMainLooper());
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                intent.putExtra("message", boardRec);
+                                intent.putExtra("map", tabuleiro);
+                                intent.putExtra("sequencia", sequenceDB);
+                                intent.putExtra("roboLinha", robotLine);
+                                intent.putExtra("roboColuna", robotCollumn);
+                                startActivity(intent);
+                            }
+                        });
+                    }
                 }
 
 
-            }
 
-            else if (speechResult.contains("terminar")){
-                sequenceDB+= "F";
-                if (!sequenceDB.equals("")){
-                    Handler mHandler = new Handler(getMainLooper());
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent intent = new Intent(MainActivity.this, BoardDraw.class);
-                            intent.putExtra("message", boardRec);
-                            intent.putExtra("map", tabuleiro);
-                            intent.putExtra("sequencia", sequenceDB);
-                            intent.putExtra("roboLinha", robotLine);
-                            intent.putExtra("roboColuna", robotCollumn);
-                            startActivity(intent);
-                        }
-                    });
+
+
+
+            }else{
+
+
+                if (speechResult.contains("terminar ciclo")) {
+                    sequenceDB += "LE_";
+                    loop = 0;
+                    engine.speak("o que queres que faça agora?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if (speechResult.contains("ciclo")) {
+                    sequenceDB += "LB_";
+                    loop = 1;
+                    engine.speak("queres executar o ciclo quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if (speechResult.contains("direita") && loop == 1) {
+                    sequenceDB += "D_";
+                    //sequenceDB+= getRepeatedStringByTimesNumber("D_",getNumberOfTimes());
+                    engine.speak("indica outra instrução ou indica terminar ciclo", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
+                } else if (speechResult.contains("esquerda") && loop == 1) {
+                    sequenceDB += "E_";
+                    engine.speak("indica outra instrução ou indica terminar ciclo", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if ((speechResult.contains("cima") || speechResult.contains("frente")) && loop == 1) {
+                    sequenceDB += "C_";
+                    engine.speak("indica outra instrução ou indica terminar ciclo", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if ((speechResult.contains("baixo") || speechResult.contains("trás")) && loop == 1) {
+                    sequenceDB += "B_";
+                    engine.speak("indica outra instrução ou indica terminar ciclo", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if (speechResult.contains("direita")) {
+                    instrucao = "D_";
+                    engine.speak("queres ir para a direita quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
+                } else if (speechResult.contains("esquerda")) {
+                    instrucao = "E_";
+                    engine.speak("queres ir para a esquerda quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if (speechResult.contains("cima") || speechResult.contains("frente")) {
+                    instrucao = "C_";
+                    engine.speak("queres ir para a frente quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if (speechResult.contains("baixo") || speechResult.contains("trás")) {
+                    instrucao = "B_";
+                    engine.speak("queres ir para a baixo quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if (speechResult.contains("vezes") || speechResult.contains("vez")) {
+
+                    if (loop == 1) {
+                        sequenceDB += getNumberOfTimes(speechResult) + "_";
+                        engine.speak("diga uma instrução do loop", TextToSpeech.QUEUE_FLUSH, null, null);
+                        lauchSpeechRecognition();
+
+                    } else {
+                        sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
+                        engine.speak("o que queres que faça agora?", TextToSpeech.QUEUE_FLUSH, null, null);
+                        lauchSpeechRecognition();
+
+                    }
+
+
+                } else if (speechResult.contains("terminar")) {
+                    sequenceDB += "F";
+                    if (!sequenceDB.equals("")) {
+                        Handler mHandler = new Handler(getMainLooper());
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                intent.putExtra("message", boardRec);
+                                intent.putExtra("map", tabuleiro);
+                                intent.putExtra("sequencia", sequenceDB);
+                                intent.putExtra("roboLinha", robotLine);
+                                intent.putExtra("roboColuna", robotCollumn);
+                                startActivity(intent);
+                            }
+                        });
+
+                    }
 
                 }
-
-            }
-
+        }
 
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -1663,6 +1613,55 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+    }
+
+
+    private void introSpeach() {
+
+
+        engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                engine.setLanguage(new Locale("pt", "PT"));
+            }
+        });
+
+
+        final Timer t = new Timer("Timer");
+        taskTalk = new TimerTask() {
+            public void run() {
+                if (speechCount == 0){
+                    engine.speak("EU SOU A TORRE DE CONTROLO DO ROBÔ! O ROBÔ PRECISA DA TUA AJUDA!",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if(speechCount == 1){
+                    engine.speak("ESTOU NO PLANETA NABIDA PRECISO DE SAIR DESTE AUTÊNTICO DESERTO! AJUDA-ME!",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount == 2){
+                    engine.speak("ELE NÂO CONSEGUE ANDAR SOZINHO SEM AS MINHAS INSTRUÇÕES! MAS EU NÃO CONSIGO VER O CAMINHO PARA LHE DIZER AO ROBÔ! ",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount == 3){
+                    engine.speak("PRECISO DA TUA AJUDA PARA DIZER O CAMINHO AO ROBÔ! ",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount == 4){
+                    engine.speak("O ROBÔ ESTÁ A PEDIR AJUDA! PODES AJUDAR-NOS A DIZER O CAMINHO AO ROBÔ? ",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount == 5){
+                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR PARA  A ESQUERDA?",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount > 5){
+
+                    taskTalk.cancel();
+                    t.cancel();
+                }
+                speechCount++;
+            }
+        };
+
+
+        long delay = 10000;
+        long period = 10000;
+
+        t.scheduleAtFixedRate(taskTalk, delay, period);
+
+
+
+
 
 
     }
