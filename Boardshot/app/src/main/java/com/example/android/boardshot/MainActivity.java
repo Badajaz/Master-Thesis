@@ -511,6 +511,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         intent.putExtra("sequencia", sequenceDB);
                                         intent.putExtra("roboLinha", robotLine);
                                         intent.putExtra("roboColuna", robotCollumn);
+                                        intent.putExtra("levels", Levels);
                                         startActivity(intent);
                                     }
                                 });}

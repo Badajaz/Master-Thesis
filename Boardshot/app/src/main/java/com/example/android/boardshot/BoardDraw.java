@@ -65,6 +65,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     private String orientation;
     private int currentLine;
     private int currentCollumn;
+    private String levels;
 
 
 
@@ -82,6 +83,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         String[] messageArray = message.split(" ");
         int linha = bundle.getInt("roboLinha");
         int coluna = bundle.getInt("roboColuna");
+        levels = bundle.getString("levels");
 
 
         //Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
@@ -1048,7 +1050,10 @@ private void speakAudioFeedbackInstructions(){
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
-        super.onBackPressed();
+        //super.onBackPressed();
+        Intent intent = new Intent(BoardDraw.this, MainActivity.class);
+        intent.putExtra("levels", "level1Voz");
+        startActivity(intent);
     }
 
     @Override
