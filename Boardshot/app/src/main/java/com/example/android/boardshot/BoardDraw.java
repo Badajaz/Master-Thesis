@@ -66,6 +66,8 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     private int currentLine;
     private int currentCollumn;
     private String levels;
+    private int speechCount = 0;
+    private  TimerTask taskTalk;
 
 
 
@@ -144,7 +146,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         //ArrayList<String> comp =  computationBoard(hashMap,sequencia,linha,coluna);
         ArrayList<String> comp =  computationEgocentric(hashMap,sequencia,linha,coluna);
         writeInstructionsFile(comp);
-
+        introSpeach();
         speakAudioFeedbackInstructions();
 
 
@@ -971,7 +973,7 @@ private void speakAudioFeedbackInstructions(){
 
     };
 
-    long delay = 25000;
+    long delay = 40000;
     long period = 2000;
 
     t.scheduleAtFixedRate(task, delay, period);
@@ -1066,4 +1068,46 @@ private void speakAudioFeedbackInstructions(){
         gd.onTouchEvent(motionEvent);
         return true;
     }
+
+    private void introSpeach() {
+
+
+        engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                engine.setLanguage(new Locale("pt", "PT"));
+            }
+        });
+
+
+        final Timer t = new Timer("Timer");
+        taskTalk = new TimerTask() {
+            public void run() {
+                if (speechCount == 0){
+                    engine.speak("JÁ TENHO AS INSTRUÇÔES! AGORA PRECISO DE COMUNICAR AO ROBÔ!",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if(speechCount == 1){
+                    engine.speak("COLOCA O ROBÔ NO TABLET!",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount == 2){
+                    engine.speak("O ROBÔ NA CASA DE PARTIDA!",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount == 3){
+                    taskTalk.cancel();
+                    t.cancel();
+                }
+                speechCount++;
+            }
+        };
+
+
+        long delay = 10000;
+        long period = 10000;
+
+        t.scheduleAtFixedRate(taskTalk, delay, period);
+
+
+
+
+
+
+    }
+
 }
