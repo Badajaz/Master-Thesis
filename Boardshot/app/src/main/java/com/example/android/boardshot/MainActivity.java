@@ -205,6 +205,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
     private StorageReference mStorageRef;
+    private String user;
+
 
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
@@ -234,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         Levels = bundle.getString("levels");
+        user = bundle.getString("user");
         Toast.makeText(getApplicationContext(),Levels,Toast.LENGTH_LONG).show();
 
         if (OpenCVLoader.initDebug()){
@@ -1667,7 +1670,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     }
 
-
-
-
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(MainActivity.this, LevelsActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+        super.onBackPressed();
+    }
 }
