@@ -18,26 +18,27 @@ public class LogIn extends AppCompatActivity {
 
     private DatabaseReference database;
     private StorageReference mStorageRef;
+    User u = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
         Button btnLogIn = (Button) findViewById(R.id.buttonLogIn);
-        database = FirebaseDatabase.getInstance().getReference("");
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        database = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        final EditText userName = (EditText) findViewById(R.id.userNameEditText);
+
 
 
         btnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                EditText userName = (EditText) findViewById(R.id.userNameEditText);
                 String userNameStr = userName.getText().toString();
-                User u = new User();
                 u.setName(userNameStr);
-                database.child("users").child(userNameStr).child("points").setValue("");
-                database.child("users").child(userNameStr).child("levels").setValue("");
+                u.setPoints(0);
+                u.setLevels("");
+                database.child(userNameStr).setValue(u);
                 Intent intent = new Intent(LogIn.this, LevelsActivity.class);
                 intent.putExtra("user", userNameStr);
                 startActivity(intent);
