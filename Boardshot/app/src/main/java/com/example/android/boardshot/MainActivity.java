@@ -207,6 +207,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private StorageReference mStorageRef;
     private String user;
 
+    private int contador;
+
 
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
@@ -234,10 +236,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        Levels = bundle.getString("levels");
-        user = bundle.getString("user");
+        Levels = intent.getStringExtra("levels");
+        user = intent.getStringExtra("user");
+        contador = intent.getIntExtra("contador",0);
         Toast.makeText(getApplicationContext(),Levels,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Main forward = "+user,Toast.LENGTH_LONG).show();
+
 
         if (OpenCVLoader.initDebug()){
 
@@ -1672,9 +1676,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         Intent intent = new Intent(MainActivity.this, LevelsActivity.class);
         intent.putExtra("user", user);
-        startActivity(intent);
-        super.onBackPressed();
+        intent.putExtra("contador", contador);
+        setResult(RESULT_OK,intent);
+        finish();
     }
 }
