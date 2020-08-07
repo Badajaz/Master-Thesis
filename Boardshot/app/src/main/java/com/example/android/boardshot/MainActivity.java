@@ -42,7 +42,9 @@ import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
@@ -1283,7 +1285,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         handler.postDelayed(new Runnable() {
             public void run() {
 
-
                 Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-PT");
                 speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speach to text");
@@ -1675,12 +1676,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(MainActivity.this, LevelsActivity.class);
-        intent.putExtra("user", user);
-        intent.putExtra("contador", contador);
-        setResult(RESULT_OK,intent);
-        finish();
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(MainActivity.this, LevelsActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

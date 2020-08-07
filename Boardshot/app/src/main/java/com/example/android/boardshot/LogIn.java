@@ -26,7 +26,6 @@ public class LogIn extends AppCompatActivity {
 
     private DatabaseReference database;
     private User u = new User();
-    private long userLength;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
