@@ -42,65 +42,46 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View view) {
                 EditText userName = (EditText) findViewById(R.id.userNameEditText);
                 final String userNameStr = userName.getText().toString();
+                if(userNameStr.equals("") || userNameStr.equals(" ")){
+                    Toast.makeText(getApplicationContext(),"Têm de inserir algum utilizador",Toast.LENGTH_LONG).show();
+                }else{
 
-                database.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        boolean exists = false;
-                        for(DataSnapshot data: dataSnapshot.getChildren()){
+                    database.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            boolean exists = false;
+                            for(DataSnapshot data: dataSnapshot.getChildren()){
 
-                            if (data.getKey().equals(userNameStr)) {
-                                exists = true;
+                                if (data.getKey().equals(userNameStr)) {
+                                    exists = true;
+                                }
+
+
                             }
 
-
-                        }
-
-                        if(exists){
-                            Toast.makeText(getApplicationContext(),"existe",Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(LogIn.this, LevelsActivity.class);
-                            intent.putExtra("user", userNameStr);
-                            intent.putExtra("contador", 0);
-                            startActivity(intent);
-                        }
-
-                        else{
-                            Toast.makeText(getApplicationContext()," Não existe",Toast.LENGTH_LONG).show();
-                            u.setName(userNameStr);
-                            u.setLevels("");
-                            database.child(userNameStr).setValue(u);
-                        }
-
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            /*    database.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot data: dataSnapshot.getChildren()){
-                            if (data.child(userNameStr).exists()) {
-                                Toast.makeText(getApplicationContext(),"exists",Toast.LENGTH_LONG).show();
+                            if(exists){
                                 Intent intent = new Intent(LogIn.this, LevelsActivity.class);
                                 intent.putExtra("user", userNameStr);
                                 intent.putExtra("contador", 0);
                                 startActivity(intent);
                             }
+
+                            else{
+                                u.setName(userNameStr);
+                                u.setLevels("");
+                                database.child(userNameStr).setValue(u);
+                            }
+
+
+
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-
-
-                });*/
+                        }
+                    });
+                }
 
 
 
