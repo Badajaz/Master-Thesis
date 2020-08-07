@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -44,6 +45,7 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -240,9 +242,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Intent intent = getIntent();
         Levels = intent.getStringExtra("levels");
         user = intent.getStringExtra("user");
-        contador = intent.getIntExtra("contador",0);
-        Toast.makeText(getApplicationContext(),Levels,Toast.LENGTH_LONG).show();
-        Toast.makeText(getApplicationContext(),"Main forward = "+user,Toast.LENGTH_LONG).show();
+        String barTitle = getSupportActionBar().getTitle().toString();
+        invalidateOptionsMenu();
+        ColorDrawable c = new ColorDrawable();
+        c.setColor(Color.parseColor("#ff781f"));
+        getSupportActionBar().setBackgroundDrawable(c);
+
+
 
 
         if (OpenCVLoader.initDebug()){
@@ -1676,12 +1682,32 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_item_one);
+        if (item.getTitle().equals("Camera")) {
+            item.setTitle(user);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 Intent intent = new Intent(MainActivity.this, LevelsActivity.class);
                 intent.putExtra("user", user);
                 startActivity(intent);
+                return true;
+            case R.id.action_item_one:
                 return true;
 
             default:

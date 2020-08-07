@@ -1,11 +1,16 @@
 package com.example.android.boardshot;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,7 +27,10 @@ public class LevelsActivity extends AppCompatActivity {
         Button btnLevel1 = (Button) findViewById(R.id.buttonLevel1Voz);
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
-        Toast.makeText(getApplicationContext(),"level strait = "+user,Toast.LENGTH_LONG).show();
+        invalidateOptionsMenu();
+        ColorDrawable c = new ColorDrawable();
+        c.setColor(Color.parseColor("#ff781f"));
+        getSupportActionBar().setBackgroundDrawable(c);
 
 
 
@@ -38,6 +46,38 @@ public class LevelsActivity extends AppCompatActivity {
         });
 
 
+
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_item_one) {
+
+            // Do something
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_item_one);
+        if (item.getTitle().equals("Camera")) {
+            item.setTitle(user);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
 
 }

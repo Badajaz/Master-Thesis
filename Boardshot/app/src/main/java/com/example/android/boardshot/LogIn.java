@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +35,9 @@ public class LogIn extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
         Button btnLogIn = (Button) findViewById(R.id.buttonLogIn);
         database = FirebaseDatabase.getInstance().getReference().child("Users");
+        ColorDrawable c = new ColorDrawable();
+        c.setColor(Color.parseColor("#ff781f"));
+        getSupportActionBar().setBackgroundDrawable(c);
 
 
 
