@@ -63,6 +63,7 @@ public class LevelsActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_item_one) {
             Intent intent = new Intent(LevelsActivity.this, EditUser.class);
+            intent.putExtra("user", user);
             startActivity(intent);
         }
 

@@ -1708,6 +1708,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 startActivity(intent);
                 return true;
             case R.id.action_item_one:
+                Intent intent2 = new Intent(MainActivity.this, EditUser.class);
+                startActivity(intent2);
                 return true;
 
             default:

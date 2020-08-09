@@ -10,19 +10,22 @@
         android:id="@+id/EditUserTextView"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="400dp"
         android:background="#ff781f"
-        android:padding="50dp"
-        android:text="Gonçalo"
         android:gravity="center"
+        android:padding="50dp"
+        android:text=""
         android:textColor="#FFF"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/editUserImageView"
         android:layout_width="47dp"
         android:layout_height="39dp"
         app:layout_constraintEnd_toEndOf="@+id/EditUserTextView"
@@ -38,4 +41,31 @@
         app:layout_constraintStart_toStartOf="@+id/EditUserTextView"
         app:layout_constraintTop_toTopOf="@+id/EditUserTextView"
         app:srcCompat="@drawable/ic_action_name" />
+
+    <EditText
+        android:id="@+id/editTextUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFF"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@+id/EditUserTextView"
+        app:layout_constraintEnd_toEndOf="@+id/EditUserTextView"
+        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/EditUserTextView"
+        app:layout_constraintVertical_bias="0.494" />
+
+    <TextView
+        android:id="@+id/textViewOK"
+        android:layout_width="41dp"
+        android:layout_height="25dp"
+        android:text="OK"
+        android:gravity="center"
+        android:textColor="#FFF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/EditUserTextView"
+        app:layout_constraintEnd_toEndOf="@+id/editTextUser"
+        app:layout_constraintTop_toBottomOf="@+id/editTextUser" />
 </androidx.constraintlayout.widget.ConstraintLayout>
