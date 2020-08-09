@@ -20,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_web"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".EditUser"></activity>
         <activity android:name=".LevelsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

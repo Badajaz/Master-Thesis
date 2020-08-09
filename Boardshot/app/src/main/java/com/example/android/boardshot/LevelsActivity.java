@@ -62,9 +62,8 @@ public class LevelsActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_item_one) {
-
-            // Do something
-            return true;
+            Intent intent = new Intent(LevelsActivity.this, EditUser.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
