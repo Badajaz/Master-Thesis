@@ -69,7 +69,7 @@ public class LevelsActivity extends AppCompatActivity {
         if (id == R.id.action_item_one) {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(LevelsActivity.this, EditUser.class);
-            bundle.putString("userEDIT", user);
+            bundle.putString("user", user);
             intent.putExtras(bundle);
             startActivity(intent);
 

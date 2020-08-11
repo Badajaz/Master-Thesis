@@ -46,7 +46,7 @@ public class EditUser extends AppCompatActivity {
 
 
         Bundle intent = getIntent().getExtras();
-        user = intent.getString("userEDIT");
+        user = intent.getString("user");
         Toast.makeText(getApplicationContext(),"UserEdit = "+user,Toast.LENGTH_LONG).show();
 
         final TextView userText = (TextView)  findViewById(R.id.EditUserTextView);
@@ -81,6 +81,9 @@ public class EditUser extends AppCompatActivity {
                                 userSnapshot.getRef().removeValue();
                                 User u = new User(user,points,level);
                                 database.child(user).setValue(u);
+                                Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
+                                intent.putExtra("user", user);
+                                startActivity(intent);
                             }
                         }
                     }
