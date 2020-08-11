@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +26,10 @@ import com.google.firebase.storage.StorageReference;
 public class LogIn extends AppCompatActivity {
 
     private DatabaseReference database;
-    private User u = new User();
+    private User u;
+    private boolean exists = false;
+    private ValueEventListener mListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +44,19 @@ public class LogIn extends AppCompatActivity {
 
 
         btnLogIn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                EditText userName = (EditText) findViewById(R.id.userNameEditText);
+                final EditText userName = (EditText) findViewById(R.id.userNameEditText);
                 final String userNameStr = userName.getText().toString();
                 if(userNameStr.equals("") || userNameStr.equals(" ")){
                     Toast.makeText(getApplicationContext(),"Têm de inserir algum utilizador",Toast.LENGTH_LONG).show();
                 }else{
 
-                    database.addValueEventListener(new ValueEventListener() {
+                    mListener = database.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            boolean exists = false;
+
                             for(DataSnapshot data: dataSnapshot.getChildren()){
 
                                 if (data.getKey().equals(userNameStr)) {
@@ -64,15 +67,16 @@ public class LogIn extends AppCompatActivity {
                             }
 
                             if(exists){
+                                Bundle bundle = new Bundle();
                                 Intent intent = new Intent(LogIn.this, LevelsActivity.class);
-                                intent.putExtra("user", userNameStr);
-                                intent.putExtra("contador", 0);
+                                bundle.putString("user", userNameStr);
+                                intent.putExtras(bundle);
                                 startActivity(intent);
+
                             }
 
                             else{
-                                u.setName(userNameStr);
-                                u.setLevels("");
+                                u = new User(userNameStr,0,"");
                                 database.child(userNameStr).setValue(u);
                             }
 
@@ -88,9 +92,19 @@ public class LogIn extends AppCompatActivity {
                 }
 
 
-
+                userName.setText("");
             }
+
+
         });
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        database.removeEventListener(mListener);
 
 
     }

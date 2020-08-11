@@ -6,11 +6,14 @@ public class User {
     private int points;
     private String levels;
 
-
-    public User() {
-
+    public User(String name, int points, String levels) {
+        this.name = name;
+        this.points = points;
+        this.levels = levels;
     }
 
+    public User() {
+    }
 
     public String getName() {
         return name;

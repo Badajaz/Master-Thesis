@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -25,8 +26,8 @@ public class LevelsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_levels);
         Button btnLevel1 = (Button) findViewById(R.id.buttonLevel1Voz);
-        Intent intent = getIntent();
-        user = intent.getStringExtra("user");
+        Bundle bundle = getIntent().getExtras();
+        user = bundle.getString("user");
         invalidateOptionsMenu();
         ColorDrawable c = new ColorDrawable();
         c.setColor(Color.parseColor("#ff781f"));
@@ -35,13 +36,17 @@ public class LevelsActivity extends AppCompatActivity {
 
 
 
+
         btnLevel1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
                 Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                intent.putExtra("levels", "level1Voz");
-                intent.putExtra("user", user);
-                startActivityForResult(intent,RESULT_OK);
+                bundle.putString("user", user);
+                bundle.putString("levels", "level1Voz");
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
@@ -62,9 +67,13 @@ public class LevelsActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_item_one) {
+            Bundle bundle = new Bundle();
             Intent intent = new Intent(LevelsActivity.this, EditUser.class);
-            intent.putExtra("user", user);
+            bundle.putString("userEDIT", user);
+            intent.putExtras(bundle);
             startActivity(intent);
+
+
         }
 
         return super.onOptionsItemSelected(item);

@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/goncalocardoso/Documents/GitHub/android-OpenCV/Boardshot/java/build/intermediates/res/merged/debug/values_values.arsc.flat",
+            "outputFile": "/Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/build/intermediates/res/merged/debug/values_values.arsc.flat",
             "map": [
                 {
-                    "source": "/Users/goncalocardoso/Documents/GitHub/android-OpenCV/Boardshot/java/src/main/res/values/attrs.xml",
+                    "source": "/Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/res/values/attrs.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

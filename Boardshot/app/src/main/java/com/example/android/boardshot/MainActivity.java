@@ -239,9 +239,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        Levels = intent.getStringExtra("levels");
-        user = intent.getStringExtra("user");
+        Bundle intent = getIntent().getExtras();
+        Levels = intent.getString("levels");
+        user = intent.getString("user");
         String barTitle = getSupportActionBar().getTitle().toString();
         invalidateOptionsMenu();
         ColorDrawable c = new ColorDrawable();

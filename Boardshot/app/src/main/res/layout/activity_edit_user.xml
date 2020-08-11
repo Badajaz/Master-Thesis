@@ -50,6 +50,8 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text=""
+        android:textCursorDrawable="@color/ic_launcher_background"
+        android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="@+id/EditUserTextView"
         app:layout_constraintEnd_toEndOf="@+id/EditUserTextView"
         app:layout_constraintHorizontal_bias="0.454"
