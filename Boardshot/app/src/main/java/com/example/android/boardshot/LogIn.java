@@ -52,8 +52,47 @@ public class LogIn extends AppCompatActivity {
                 if(userNameStr.equals("") || userNameStr.equals(" ")){
                     Toast.makeText(getApplicationContext(),"Têm de inserir algum utilizador",Toast.LENGTH_LONG).show();
                 }else{
+                    database.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getChildrenCount() > 0){
+                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
+                                    User g = userSnapshot.getValue(User.class);
+                                    if (g.getName().equals(userNameStr)) {
+                                        exists = true;
+                                        Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
+                                        intent.putExtra("user", userNameStr);
+                                        startActivity(intent);
 
-                    mListener = database.addValueEventListener(new ValueEventListener() {
+                                    }
+                                }
+                                if (exists == false) {
+                                    User u = new User(userNameStr, 0, "");
+                                    database.child(userNameStr).setValue(u);
+                                    Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
+                                    intent.putExtra("user", userNameStr);
+                                    startActivity(intent);
+                                }
+
+
+                            }else {
+                                User u = new User(userNameStr, 0, "");
+                                database.child(userNameStr).setValue(u);
+                                Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
+                                intent.putExtra("user", userNameStr);
+                                startActivity(intent);
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    /*mListener = database.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -88,7 +127,10 @@ public class LogIn extends AppCompatActivity {
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
-                    });
+                    });*/
+
+
+
                 }
 
 
