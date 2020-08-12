@@ -527,6 +527,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         intent.putExtra("roboLinha", robotLine);
                                         intent.putExtra("roboColuna", robotCollumn);
                                         intent.putExtra("levels", Levels);
+                                        intent.putExtra("user", user);
                                         startActivity(intent);
                                     }
                                 });}
@@ -538,7 +539,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                         //Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
 
-                        /*Uri filed = Uri.fromFile(file);
+                        Uri filed = Uri.fromFile(file);
 
                         StorageReference riversRef = mStorageRef.child("images");
                         Toast.makeText(MainActivity.this, "chego aqui", Toast.LENGTH_SHORT).show();
@@ -560,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         // ...
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
-                                });*/
+                                });
 
 
 
@@ -1184,6 +1185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("sequencia", sequenceDB);
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
+                                intent.putExtra("user", user);
                                 startActivity(intent);
                             }
                         });

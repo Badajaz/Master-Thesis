@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class EditUser extends AppCompatActivity {
 
 
@@ -30,7 +32,12 @@ public class EditUser extends AppCompatActivity {
     private DatabaseReference database;
     private boolean existe;
     private String activityReturn;
-
+    private HashMap<String, String> map;
+    private String sequence;
+    private String message;
+    private int linha;
+    private int coluna;
+    private String levels;
 
 
     @Override
@@ -46,10 +53,19 @@ public class EditUser extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(c);
 
 
-        Bundle intent = getIntent().getExtras();
-        user = intent.getString("user");
-        activityReturn = intent.getString("activity");
-        Toast.makeText(getApplicationContext(),"UserEdit = "+user,Toast.LENGTH_LONG).show();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        user = bundle.getString("user");
+        activityReturn = bundle.getString("activity");
+        if (activityReturn.equals("BoardDraw")){
+
+            map  = (HashMap<String, String>)intent.getSerializableExtra("map");;
+            sequence = bundle.getString("sequence");
+            message = bundle.getString("message");
+            linha = bundle.getInt("roboLinha");
+            coluna = bundle.getInt("roboColuna");
+            levels = bundle.getString("levels");
+        }
 
         final TextView userText = (TextView)  findViewById(R.id.EditUserTextView);
         userText.setText(user);
@@ -86,15 +102,32 @@ public class EditUser extends AppCompatActivity {
                                 Intent intentSend = null;
                                 if (activityReturn.equals("LevelsActivity")){
                                     intentSend = new Intent(getApplicationContext(), LevelsActivity.class);
+                                    intentSend.putExtra("user", user);
+                                    startActivity(intentSend);
                                 }
 
                                 if (activityReturn.equals("MainActivity")){
                                     intentSend = new Intent(getApplicationContext(), MainActivity.class);
+                                    intentSend.putExtra("user", user);
+                                    startActivity(intentSend);
+                                }
+
+                                if (activityReturn.equals("BoardDraw")){
+                                    Intent intent = new Intent(EditUser.this, BoardDraw.class);
+                                    intent.putExtra("map", map);
+                                    intent.putExtra("user", user);
+                                    intent.putExtra("activity", "BoardDraw");
+                                    intent.putExtra("sequence", sequence);
+                                    intent.putExtra("message", message);
+                                    intent.putExtra("roboLinha", linha);
+                                    intent.putExtra("roboColuna", coluna);
+                                    intent.putExtra("levels", levels);
+                                    startActivity(intent);
+
                                 }
 
 
-                                intentSend.putExtra("user", user);
-                                startActivity(intentSend);
+
                             }
                         }
                     }

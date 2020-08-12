@@ -1,5 +1,6 @@
 package com.example.android.boardshot;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ArgbEvaluator;
@@ -18,6 +19,8 @@ import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -66,8 +69,14 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     private int currentLine;
     private int currentCollumn;
     private String levels;
+    private String user;
     private int speechCount = 0;
     private  TimerTask taskTalk;
+    private String message;
+    private String sequencia;
+    private int linha;
+    private int coluna;
+    private HashMap<String, String> hashMap;
 
 
 
@@ -75,17 +84,22 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_draw);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        invalidateOptionsMenu();
+        ColorDrawable c = new ColorDrawable();
+        c.setColor(Color.parseColor("#ff781f"));
+        getSupportActionBar().setBackgroundDrawable(c);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        String message = bundle.getString("message");
-        HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("map");
-        String sequencia = bundle.getString("sequencia");
+        message = bundle.getString("message");
+        hashMap = (HashMap<String, String>)intent.getSerializableExtra("map");
+        sequencia = bundle.getString("sequencia");
         String[] messageArray = message.split(" ");
-        int linha = bundle.getInt("roboLinha");
-        int coluna = bundle.getInt("roboColuna");
+        linha = bundle.getInt("roboLinha");
+        coluna = bundle.getInt("roboColuna");
         levels = bundle.getString("levels");
+        user = bundle.getString("user");
 
 
         //Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
@@ -1055,6 +1069,7 @@ private void speakAudioFeedbackInstructions(){
         //super.onBackPressed();
         Intent intent = new Intent(BoardDraw.this, MainActivity.class);
         intent.putExtra("levels", "level1Voz");
+        intent.putExtra("user", user);
         startActivity(intent);
     }
 
@@ -1109,5 +1124,47 @@ private void speakAudioFeedbackInstructions(){
 
 
     }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_item_one) {
+            Intent intent = new Intent(BoardDraw.this, EditUser.class);
+            intent.putExtra("map", hashMap);
+            intent.putExtra("user", user);
+            intent.putExtra("activity", "BoardDraw");
+            intent.putExtra("sequence", sequencia);
+            intent.putExtra("message", message);
+            intent.putExtra("roboLinha", linha);
+            intent.putExtra("roboColuna", coluna);
+            intent.putExtra("levels", levels);
+            startActivity(intent);
+
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_item_one);
+        if (item.getTitle().equals("Camera")) {
+            item.setTitle(user);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
 
 }
