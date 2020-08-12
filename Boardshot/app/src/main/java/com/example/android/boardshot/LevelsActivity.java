@@ -70,6 +70,7 @@ public class LevelsActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(LevelsActivity.this, EditUser.class);
             bundle.putString("user", user);
+            bundle.putString("activity", "LevelsActivity");
             intent.putExtras(bundle);
             startActivity(intent);
 

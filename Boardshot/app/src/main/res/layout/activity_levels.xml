@@ -8,41 +8,66 @@
 
 
     <Button
-        android:id="@+id/buttonLevel1Voz"
+        android:id="@+id/buttonLevel2Voz"
         android:layout_width="113dp"
         android:layout_height="71dp"
-        android:layout_marginStart="56dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="124dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 1"
         android:gravity="center"
+        android:text="Nível 2"
         android:textColor="#FFF"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonLevel1Voz"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/buttonLevel6Voz"
+        android:layout_width="113dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#ff781f"
+        android:gravity="center"
+        android:text="Nível 6"
+        android:textColor="#FFF"
+        app:layout_constraintStart_toEndOf="@+id/buttonLevel5Voz"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLevel4Voz" />
 
     <Button
         android:id="@+id/buttonLevel4Voz"
         android:layout_width="113dp"
         android:layout_height="71dp"
-        android:layout_marginStart="76dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="28dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 4"
         android:gravity="center"
+        android:text="Nível 4"
         android:textColor="#FFF"
         app:layout_constraintStart_toEndOf="@+id/buttonLevel3Voz"
         app:layout_constraintTop_toBottomOf="@+id/buttonLevel2Voz" />
 
     <Button
+        android:id="@+id/buttonLevel1Voz"
+        android:layout_width="113dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginTop="124dp"
+        android:backgroundTint="#ff781f"
+        android:gravity="center"
+        android:text="Nível 1"
+        android:textColor="#FFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/buttonLevel3Voz"
         android:layout_width="113dp"
         android:layout_height="71dp"
-        android:layout_marginStart="56dp"
+        android:layout_marginStart="136dp"
         android:layout_marginTop="28dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 3"
         android:gravity="center"
+        android:text="Nível 3"
         android:textColor="#FFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLevel1Voz" />
@@ -51,104 +76,51 @@
         android:id="@+id/buttonLevel5Voz"
         android:layout_width="113dp"
         android:layout_height="71dp"
-        android:layout_marginStart="56dp"
+        android:layout_marginStart="136dp"
         android:layout_marginTop="28dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 5"
         android:gravity="center"
+        android:text="Nível 5"
         android:textColor="#FFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLevel3Voz" />
-
-    <Button
-        android:id="@+id/buttonLevel6Voz"
-        android:layout_width="113dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="28dp"
-        android:backgroundTint="#ff781f"
-        android:text="Nível 6"
-        android:gravity="center"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel5Voz"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel4Voz" />
-
-    <Button
-        android:id="@+id/buttonLevel2Voz"
-        android:layout_width="113dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="124dp"
-        android:backgroundTint="#ff781f"
-        android:text="Nível 2"
-        android:gravity="center"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel1Voz"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
         android:id="@+id/textViewVoz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Reconhecimeto de voz"
         android:textSize="30dp"
-        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/buttonLevel1Voz"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/textViewPecas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Reconhecimeto com peças"
-        android:textSize="30dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel5Voz" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.506" />
 
     <Button
-        android:id="@+id/buttonLevel1Pecas"
+        android:id="@+id/buttonLevel2Pecas"
         android:layout_width="113dp"
         android:layout_height="71dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:backgroundTint="#ff781f"
-        android:text="Nível 1"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPecas" />
-
-    <Button
-        android:id="@+id/buttonLevel4Pecas"
-        android:layout_width="113dp"
-        android:layout_height="71dp"
-        android:gravity="center"
         android:layout_marginStart="76dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="36dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 4"
+        android:gravity="center"
+        android:text="Nível 2"
         android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel3Pecas"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel2Pecas" />
+        app:layout_constraintStart_toEndOf="@+id/buttonLevel1Pecas"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPecas" />
 
     <Button
         android:id="@+id/buttonLevel3Pecas"
         android:layout_width="113dp"
         android:layout_height="71dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 3"
         android:gravity="center"
+        android:text="Nível 3"
         android:textColor="#FFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLevel1Pecas" />
@@ -157,11 +129,11 @@
         android:id="@+id/buttonLevel5Pecas"
         android:layout_width="113dp"
         android:layout_height="71dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 5"
         android:gravity="center"
+        android:text="Nível 5"
         android:textColor="#FFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLevel3Pecas" />
@@ -171,26 +143,52 @@
         android:layout_width="113dp"
         android:layout_height="71dp"
         android:layout_marginStart="76dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 6"
         android:gravity="center"
+        android:text="Nível 6"
         android:textColor="#FFF"
         app:layout_constraintStart_toEndOf="@+id/buttonLevel5Pecas"
         app:layout_constraintTop_toBottomOf="@+id/buttonLevel4Pecas" />
 
     <Button
-        android:id="@+id/buttonLevel2Pecas"
+        android:id="@+id/buttonLevel1Pecas"
+        android:layout_width="113dp"
+        android:layout_height="71dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="36dp"
+        android:backgroundTint="#ff781f"
+        android:gravity="center"
+        android:text="Nível 1"
+        android:textColor="#FFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPecas" />
+
+    <Button
+        android:id="@+id/buttonLevel4Pecas"
         android:layout_width="113dp"
         android:layout_height="71dp"
         android:layout_marginStart="76dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="#ff781f"
-        android:text="Nível 2"
         android:gravity="center"
+        android:text="Nível 4"
         android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel1Pecas"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPecas" />
+        app:layout_constraintStart_toEndOf="@+id/buttonLevel3Pecas"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLevel2Pecas" />
+
+    <TextView
+        android:id="@+id/textViewPecas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:gravity="center"
+        android:text="Reconhecimeto com peças"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLevel5Voz" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

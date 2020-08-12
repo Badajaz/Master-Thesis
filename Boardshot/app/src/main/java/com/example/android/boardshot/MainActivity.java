@@ -1710,6 +1710,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             case R.id.action_item_one:
                 Intent intent2 = new Intent(MainActivity.this, EditUser.class);
                 intent2.putExtra("user", user);
+                intent2.putExtra("activity", "MainActivity");
                 startActivity(intent2);
                 return true;
 

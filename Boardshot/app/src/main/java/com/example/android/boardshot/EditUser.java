@@ -29,6 +29,7 @@ public class EditUser extends AppCompatActivity {
     private String user;
     private DatabaseReference database;
     private boolean existe;
+    private String activityReturn;
 
 
 
@@ -47,6 +48,7 @@ public class EditUser extends AppCompatActivity {
 
         Bundle intent = getIntent().getExtras();
         user = intent.getString("user");
+        activityReturn = intent.getString("activity");
         Toast.makeText(getApplicationContext(),"UserEdit = "+user,Toast.LENGTH_LONG).show();
 
         final TextView userText = (TextView)  findViewById(R.id.EditUserTextView);
@@ -81,9 +83,18 @@ public class EditUser extends AppCompatActivity {
                                 userSnapshot.getRef().removeValue();
                                 User u = new User(user,points,level);
                                 database.child(user).setValue(u);
-                                Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
-                                intent.putExtra("user", user);
-                                startActivity(intent);
+                                Intent intentSend = null;
+                                if (activityReturn.equals("LevelsActivity")){
+                                    intentSend = new Intent(getApplicationContext(), LevelsActivity.class);
+                                }
+
+                                if (activityReturn.equals("MainActivity")){
+                                    intentSend = new Intent(getApplicationContext(), MainActivity.class);
+                                }
+
+
+                                intentSend.putExtra("user", user);
+                                startActivity(intentSend);
                             }
                         }
                     }
