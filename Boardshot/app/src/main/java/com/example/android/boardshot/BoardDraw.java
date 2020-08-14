@@ -89,6 +89,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         ColorDrawable c = new ColorDrawable();
         c.setColor(Color.parseColor("#ff781f"));
         getSupportActionBar().setBackgroundDrawable(c);
+        getSupportActionBar().setTitle("Descarregar Sequência");
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();

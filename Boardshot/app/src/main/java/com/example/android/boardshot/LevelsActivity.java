@@ -32,6 +32,7 @@ public class LevelsActivity extends AppCompatActivity {
         ColorDrawable c = new ColorDrawable();
         c.setColor(Color.parseColor("#ff781f"));
         getSupportActionBar().setBackgroundDrawable(c);
+        getSupportActionBar().setTitle("Níveis");
 
 
 

@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         ColorDrawable c = new ColorDrawable();
         c.setColor(Color.parseColor("#ff781f"));
         getSupportActionBar().setBackgroundDrawable(c);
+        getSupportActionBar().setTitle("Reconhecimento");
 
 
 
