@@ -25,7 +25,7 @@ public class LevelsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_levels);
-        Button btnLevel1 = (Button) findViewById(R.id.buttonLevel1Voz);
+        Button btnLevel1 = (Button) findViewById(R.id.level1);
         Bundle bundle = getIntent().getExtras();
         user = bundle.getString("user");
         invalidateOptionsMenu();
