@@ -103,7 +103,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         user = bundle.getString("user");
 
 
-        //Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
 
         textViewID = findViewById(R.id.TextViewID);
         textViewID.setOnTouchListener(this);

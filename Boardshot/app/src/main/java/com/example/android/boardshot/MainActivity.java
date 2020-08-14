@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private String user;
 
     private int contador;
+    private boolean times = false;
 
 
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
@@ -477,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             boardRec = boardRecognition();
 
                             introSpeach();
-                            while (speechCount< 6);
+                            while (speechCount< getNumberOfWaitingLines());
                             lauchSpeechRecognition();
 
 
@@ -1146,7 +1147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             speechResult = matches.get(0);
 
-            if(Levels.equals("level1Voz")){
+            if(Levels.equals("level1")){
                 if (speechResult.contains("esquerda")){
                     sequenceDB += "E_";
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
@@ -1162,6 +1163,67 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 else if(speechResult.contains("frente") || speechResult.contains("cima")){
                     sequenceDB += "C_";
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                }
+                else if (speechResult.contains("não")){
+                    engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                }
+                else if (speechResult.contains("sim")){
+                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                }
+
+                else if (speechResult.contains("terminar")){
+                    sequenceDB += "F";
+                    if (!sequenceDB.equals("")) {
+                        Handler mHandler = new Handler(getMainLooper());
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                intent.putExtra("message", boardRec);
+                                intent.putExtra("map", tabuleiro);
+                                intent.putExtra("sequencia", sequenceDB);
+                                intent.putExtra("roboLinha", robotLine);
+                                intent.putExtra("roboColuna", robotCollumn);
+                                intent.putExtra("user", user);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                }
+
+
+            }else if(Levels.equals("level2")) {
+
+
+                if (speechResult.contains("esquerda")){
+                    instrucao = "E_";
+                    times = true;
+                    engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
+                }
+
+                else if(speechResult.contains("direita")){
+                    instrucao = "D_";
+                    times = true;
+                    engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                }
+
+                else if(speechResult.contains("frente") || speechResult.contains("cima")){
+                    instrucao = "C_";
+                    times = true;
+                    engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                }
+
+                else if(times && (speechResult.contains("vezes") || speechResult.contains("vez"))){
+                    times = false;
+                    sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
+                    engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
                 }
                 else if (speechResult.contains("não")){
@@ -1302,7 +1364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 startActivityForResult(speechIntent, RECOGNIZER_RESULT);
 
             }
-        }, 4000);
+        }, 5000);
     }
 
     
@@ -1650,24 +1712,43 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         final Timer t = new Timer("Timer");
         taskTalk = new TimerTask() {
             public void run() {
-                if (speechCount == 0){
-                    engine.speak("Eu sou a torre de controlo do robô! O roBô precisa da tua Ajuda!",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if(speechCount == 1){
-                    engine.speak("Estou no planeta nabida, preciso de sair deste autêntico deserto! Ajuda-me",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if (speechCount == 2){
-                    engine.speak("Ele não consegue andar sozinho sem as minhas instruções! MAS eu não consigo ver o caminho para lhe dizer ao robô! ",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if (speechCount == 3){
-                    engine.speak("Preciso da tua ajudas para dizer o caminho ao robô! ",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if (speechCount == 4){
-                    engine.speak("O robô está a pedir ajuda! Podes ajudar-nos a dizer o caminho ao robô? ",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if (speechCount == 5){
-                    engine.speak("Achas que deva ir para a frente ou virar para a direita ou virar para a esquerda?",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if (speechCount > 5){
 
-                    taskTalk.cancel();
-                    t.cancel();
+                if (Levels.equals("level1")) {
+
+
+                    if (speechCount == 0) {
+                        engine.speak("Eu sou a torre de controlo do robô! O roBô precisa da tua Ajuda!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount == 1) {
+                        engine.speak("Estou no planeta nabida, preciso de sair deste autêntico deserto! Ajuda-me", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount == 2) {
+                        engine.speak("Ele não consegue andar sozinho sem as minhas instruções! MAS eu não consigo ver o caminho para lhe dizer ao robô! ", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount == 3) {
+                        engine.speak("Preciso da tua ajudas para dizer o caminho ao robô! ", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount == 4) {
+                        engine.speak("O robô está a pedir ajuda! Podes ajudar-nos a dizer o caminho ao robô? ", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount == 5) {
+                        engine.speak("Achas que deva ir para a frente ou virar para a direita ou virar para a esquerda?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount > 5) {
+
+                        taskTalk.cancel();
+                        t.cancel();
+                    }
+                    speechCount++;
                 }
-                speechCount++;
+                else if(Levels.equals("level2")){
+
+                    if (speechCount == 0) {
+                        engine.speak("O robot chegou ao planeta Dorlo mas..Oh nao!..está ser perseguido por darlianos maus. ajuda-me a dizer-lhe o caminho correto para escapar?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount == 1) {
+                        engine.speak("Achas que deva ir para a frente ou virar para a direita ou virar para a esquerda?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    }else if (speechCount > 1) {
+                        taskTalk.cancel();
+                        t.cancel();
+                    }
+                    speechCount++;
+
+                }
+
             }
         };
 
@@ -1678,11 +1759,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         t.scheduleAtFixedRate(taskTalk, delay, period);
 
 
-
-
-
-
     }
+
+    private int getNumberOfWaitingLines(){
+        int number = 0;
+
+        if (Levels.equals("level1")){
+            number = 6;
+        }else if(Levels.equals("level2")){
+            number = 2;
+        }
+        return  number;
+    }
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

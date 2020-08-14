@@ -26,6 +26,7 @@ public class LevelsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_levels);
         Button btnLevel1 = (Button) findViewById(R.id.level1);
+        Button btnLevel2 = (Button) findViewById(R.id.level2);
         Bundle bundle = getIntent().getExtras();
         user = bundle.getString("user");
         invalidateOptionsMenu();
@@ -45,7 +46,20 @@ public class LevelsActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
                 bundle.putString("user", user);
-                bundle.putString("levels", "level1Voz");
+                bundle.putString("levels", "level1");
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        btnLevel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                bundle.putString("user", user);
+                bundle.putString("levels", "level2");
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
