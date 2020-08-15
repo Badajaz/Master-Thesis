@@ -243,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Bundle intent = getIntent().getExtras();
         Levels = intent.getString("levels");
         user = intent.getString("user");
-        String barTitle = getSupportActionBar().getTitle().toString();
         invalidateOptionsMenu();
         ColorDrawable c = new ColorDrawable();
         c.setColor(Color.parseColor("#ff781f"));
@@ -1738,7 +1737,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 else if(Levels.equals("level2")){
 
                     if (speechCount == 0) {
-                        engine.speak("O robot chegou ao planeta Dorlo mas..Oh nao!..está ser perseguido por darlianos maus. ajuda-me a dizer-lhe o caminho correto para escapar?", TextToSpeech.QUEUE_FLUSH, null, null);
+                        engine.speak("O robot chegou ao planeta Dorlo!Oh nao!Está ser perseguido por darlianos maus! Ajuda-me a dizer-lhe o caminho correto para escapar!", TextToSpeech.QUEUE_FLUSH, null, null);
                     } else if (speechCount == 1) {
                         engine.speak("Achas que deva ir para a frente ou virar para a direita ou virar para a esquerda?", TextToSpeech.QUEUE_FLUSH, null, null);
                     }else if (speechCount > 1) {

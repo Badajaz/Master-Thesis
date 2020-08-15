@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class EditUser extends AppCompatActivity {
 
@@ -94,10 +95,9 @@ public class EditUser extends AppCompatActivity {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
                             User g = userSnapshot.getValue(User.class);
                             if (g.getName().equals(userAux)) {
-                                String level = g.getLevels();
-                                int points = g.getPoints();
+                                List<Integer> level = g.getLevels();
                                 userSnapshot.getRef().removeValue();
-                                User u = new User(user,points,level);
+                                User u = new User(user,level);
                                 database.child(user).setValue(u);
                                 Intent intentSend = null;
                                 if (activityReturn.equals("LevelsActivity")){

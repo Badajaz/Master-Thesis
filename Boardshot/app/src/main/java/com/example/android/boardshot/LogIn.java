@@ -23,6 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LogIn extends AppCompatActivity {
 
     private DatabaseReference database;
@@ -68,7 +71,8 @@ public class LogIn extends AppCompatActivity {
                                     }
                                 }
                                 if (exists == false) {
-                                    User u = new User(userNameStr, 0, "");
+                                    List<Integer> points =  new ArrayList<>();
+                                    User u = new User(userNameStr,points);
                                     database.child(userNameStr).setValue(u);
                                     Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
                                     intent.putExtra("user", userNameStr);
@@ -77,7 +81,8 @@ public class LogIn extends AppCompatActivity {
 
 
                             }else {
-                                User u = new User(userNameStr, 0, "");
+                                List<Integer> points = new ArrayList<>();
+                                User u = new User(userNameStr,points);
                                 database.child(userNameStr).setValue(u);
                                 Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
                                 intent.putExtra("user", userNameStr);
@@ -151,4 +156,14 @@ public class LogIn extends AppCompatActivity {
 
 
     }
+
+    private List<Integer> getInitializeList(){
+        List<Integer> points = new ArrayList<>();
+        for (int i =0;i< 12;i++ ){
+            points.add(0);
+        }
+
+        return points;
+    }
+
 }

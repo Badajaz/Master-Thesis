@@ -1,15 +1,19 @@
 package com.example.android.boardshot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
 
     private String name;
-    private int points;
-    private String levels;
+    private List<Integer> levels;
 
-    public User(String name, int points, String levels) {
+    public User(String name, List<Integer> levels) {
         this.name = name;
-        this.points = points;
         this.levels = levels;
+        for (int i =0;i< 12;i++ ){
+            levels.add(0);
+        }
     }
 
     public User() {
@@ -23,19 +27,12 @@ public class User {
         this.name = name;
     }
 
-    public int getPoints() {
-        return points;
-    }
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    public String getLevels() {
+    public List<Integer> getLevels() {
         return levels;
     }
 
-    public void setLevels(String levels) {
+    public void setLevels(List<Integer> levels) {
         this.levels = levels;
     }
 }

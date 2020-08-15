@@ -32,6 +32,8 @@ import android.widget.Toast;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,7 +79,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     private int linha;
     private int coluna;
     private HashMap<String, String> hashMap;
-
+    private DatabaseReference database;
 
 
     @Override
@@ -90,6 +92,9 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         c.setColor(Color.parseColor("#ff781f"));
         getSupportActionBar().setBackgroundDrawable(c);
         getSupportActionBar().setTitle("Descarregar Sequência");
+
+        database = FirebaseDatabase.getInstance().getReference("");
+
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -353,6 +358,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         }
         if(board.get(linha+""+coluna).equals("F") ){
             feedbackAudios.add("Chegou ao objectivo");
+            database.child(user).child("levels").setValue("100");
         }
 
         else if(board.get(linha+""+coluna).equals("X") ){
@@ -525,6 +531,8 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             if(board.get(currentLine+""+currentCollumn).equals("F") ){
                 feedbackAudios.add("Chegou ao objectivo");
+                database.child("Users").child(user).child("levels").setValue("100");
+
             }
 
             else if(board.get(currentLine+""+currentCollumn).equals("X") ){
