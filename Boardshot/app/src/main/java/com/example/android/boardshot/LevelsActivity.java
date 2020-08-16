@@ -3,11 +3,13 @@ package com.example.android.boardshot;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -43,6 +45,7 @@ public class LevelsActivity extends AppCompatActivity {
     private Button btnLevel11;
     private Button btnLevel12;
     private ArrayList<Integer> pointsLevels;
+    private ArrayList<Boolean> chegouFim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,7 @@ public class LevelsActivity extends AppCompatActivity {
         c.setColor(Color.parseColor("#ff781f"));
         getSupportActionBar().setBackgroundDrawable(c);
         getSupportActionBar().setTitle("Níveis");
-
+        btnLevel1.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
         database = FirebaseDatabase.getInstance().getReference().child("Users");
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -77,6 +80,7 @@ public class LevelsActivity extends AppCompatActivity {
                         User g = userSnapshot.getValue(User.class);
                         if (g.getName().equals(user)) {
                             pointsLevels = g.getLevels();
+                            chegouFim = g.getChegouFim();
 
                             btnLevel1.setText(btnLevel1.getText()+"\n Recorde: "+pointsLevels.get(0));
                             btnLevel2.setText(btnLevel2.getText()+"\n Recorde: "+pointsLevels.get(1));
@@ -90,6 +94,81 @@ public class LevelsActivity extends AppCompatActivity {
                             btnLevel10.setText(btnLevel10.getText()+"\n Recorde: "+pointsLevels.get(9));
                             btnLevel11.setText(btnLevel11.getText()+"\n Recorde: "+pointsLevels.get(10));
                             btnLevel12.setText(btnLevel12.getText()+"\n Recorde: "+pointsLevels.get(11));
+
+                            if (chegouFim.get(0) == false){
+                                btnLevel1.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel1.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+                            if (chegouFim.get(1) == false){
+                                btnLevel2.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel2.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+                            if (chegouFim.get(2) == false){
+                                btnLevel3.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel3.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+                            if (chegouFim.get(3) == false){
+                                btnLevel4.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel4.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+                            if (chegouFim.get(4) == false){
+                                btnLevel5.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel5.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+                            if (chegouFim.get(5) == false){
+                                btnLevel6.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel6.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+                            if (chegouFim.get(6) == false){
+                                btnLevel7.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel7.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+                            if (chegouFim.get(7) == false){
+                                btnLevel8.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel8.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+                            if (chegouFim.get(8) == false){
+                                btnLevel9.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel9.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+                            if (chegouFim.get(9) == false){
+                                btnLevel10.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel10.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+                            if (chegouFim.get(10) == false){
+                                btnLevel11.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel11.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+                            if (chegouFim.get(11) == false){
+                                btnLevel12.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
+                            }else{
+                                btnLevel12.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.fullstar);
+                            }
+
+
+
+
+
+
                         }
                     }
 
