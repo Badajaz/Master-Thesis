@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -8,138 +8,147 @@
     android:columnCount="3"
     tools:context=".LevelsActivity">
 
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:columnCount="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/level1"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 1"
+            android:textColor="#FFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/level2"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 2"
+            android:textColor="#FFF" />
+
+        <Button
+            android:id="@+id/level3"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 3"
+            android:textColor="#FFF"
+            tools:layout_editor_absoluteX="411dp"
+            tools:layout_editor_absoluteY="60dp" />
+
+        <Button
+            android:id="@+id/level4"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 4"
+            android:textColor="#FFF" />
+
+        <Button
+            android:id="@+id/level5"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 5"
+            android:textColor="#FFF"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/level6"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 6"
+            android:textColor="#FFF" />
+
+        <Button
+            android:id="@+id/level7"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 7"
+            android:textColor="#FFF"
+            tools:layout_editor_absoluteY="506dp" />
+
+        <Button
+            android:id="@+id/level8"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 8"
+            android:textColor="#FFF" />
+
+        <Button
+            android:id="@+id/level9"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 9"
+            android:textColor="#FFF"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/level10"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 10"
+            android:textColor="#FFF" />
+
+        <Button
+            android:id="@+id/level11"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 11"
+            android:textColor="#FFF"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="506dp" />
+
+        <Button
+            android:id="@+id/level12"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:backgroundTint="#ff781f"
+            android:gravity="center"
+            android:text="Nível 12"
+            android:textColor="#FFF" />
+
+    </GridLayout>
+
     <Button
-        android:id="@+id/level1"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:id="@+id/freestyle"
+        android:layout_width="450dp"
+        android:layout_height="100dp"
         android:backgroundTint="#ff781f"
         android:gravity="center"
-        android:text="Nível 1"
+        android:text="freestyle"
         android:textColor="#FFF"
+        app:layout_constraintBottom_toTopOf="@+id/gridLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/level2"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 2"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel1Voz"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/level3"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 3"
-        android:textColor="#FFF"
-        tools:layout_editor_absoluteX="411dp"
-        tools:layout_editor_absoluteY="60dp" />
-
-    <Button
-        android:id="@+id/level4"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 4"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel3Voz"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel2Voz" />
-
-    <Button
-        android:id="@+id/level5"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 5"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel3Voz" />
-
-    <Button
-        android:id="@+id/level6"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 6"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel5Voz"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel4Voz" />
-
-
-    <Button
-        android:id="@+id/level7"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 7"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel1Pecas"
-        tools:layout_editor_absoluteY="506dp" />
-
-    <Button
-        android:id="@+id/level8"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 8"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel1Pecas" />
-
-    <Button
-        android:id="@+id/level9"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 9"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel3Pecas" />
-
-    <Button
-        android:id="@+id/level10"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 10"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel5Pecas"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel4Pecas" />
-
-    <Button
-        android:id="@+id/level11"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 11"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="506dp" />
-
-    <Button
-        android:id="@+id/level12"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:backgroundTint="#ff781f"
-        android:gravity="center"
-        android:text="Nível 12"
-        android:textColor="#FFF"
-        app:layout_constraintStart_toEndOf="@+id/buttonLevel3Pecas"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLevel2Pecas" />
-
-
-</GridLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

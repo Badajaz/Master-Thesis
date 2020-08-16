@@ -452,6 +452,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
 
     private ArrayList<String> computationEgocentric(HashMap board,String sequence,int linha,int coluna){
+
         countLoop = 0;
         String[] instructions = sequence.split("_");
         ArrayList<String> robotInstructions = new ArrayList<>();
@@ -542,33 +543,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
                 //points.set(indexLevelPoints(),point);
                 //database.child("Users").child(user).child("levels").setValue(point);
 
-               database.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
-                                User g = userSnapshot.getValue(User.class);
-                                if (g.getName().equals(user)) {
-                                    List<Integer> pointsLevels = g.getLevels();
-                                    int index = indexLevelPoints();
-                                    int previousPoints =  pointsLevels.get(index) + 100;
-                                    pointsLevels.set(index,previousPoints);
-                                    //Toast.makeText(getApplicationContext(),previousPoints+"",Toast.LENGTH_LONG).show();
-                                    //pointsLevels.set(indexLevelPoints(),currentPoints);
-                                    //g.setLevels(pointsLevels);
-                                   database.child(user).child("levels").setValue(pointsLevels);
-
-                                }
-                            }
-
-                        }
-
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+              
             }
 
             else if(board.get(currentLine+""+currentCollumn).equals("X") ){
@@ -577,6 +552,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             else if(instructions[countLoop].equals("F")){
                 feedbackAudios.add("sequencia terminou numa casa possível");
+
             }
 
 
