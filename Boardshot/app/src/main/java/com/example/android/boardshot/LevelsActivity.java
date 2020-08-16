@@ -195,7 +195,7 @@ public class LevelsActivity extends AppCompatActivity {
                         Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
                         bundle.putString("user", user);
                         bundle.putString("levels", "level2");
-                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        //bundle.putIntegerArrayList("pointsList",pointsLevels);
                         intent.putExtras(bundle);
                         startActivity(intent);
                     }

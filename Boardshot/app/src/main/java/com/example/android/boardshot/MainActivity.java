@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Bundle intent = getIntent().getExtras();
         Levels = intent.getString("levels");
         user = intent.getString("user");
-        pointsList = intent.getIntegerArrayList("pointsList");
+        //pointsList = intent.getIntegerArrayList("pointsList");
         invalidateOptionsMenu();
         ColorDrawable c = new ColorDrawable();
         c.setColor(Color.parseColor("#ff781f"));
@@ -533,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         intent.putExtra("roboColuna", robotCollumn);
                                         intent.putExtra("levels", Levels);
                                         intent.putExtra("user", user);
-                                        intent.putIntegerArrayListExtra("pointsList",pointsList);
+                                        //intent.putIntegerArrayListExtra("pointsList",pointsList);
                                         startActivity(intent);
                                     }
                                 });}
@@ -1192,7 +1192,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
-                                intent.putIntegerArrayListExtra("pointsList",pointsList);
+                                //intent.putIntegerArrayListExtra("pointsList",pointsList);
                                 startActivity(intent);
                             }
                         });
@@ -1254,7 +1254,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
-                                intent.putIntegerArrayListExtra("pointsList",pointsList);
+                                //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
                             }
@@ -1343,7 +1343,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("sequencia", sequenceDB);
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
-                                intent.putIntegerArrayListExtra("pointsList",pointsList);
+                                //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
                             }
@@ -1690,7 +1690,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
 
-            Button tv = (Button) layout.findViewById(R.id.cross);
+            ImageView tv = layout.findViewById(R.id.cross);
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

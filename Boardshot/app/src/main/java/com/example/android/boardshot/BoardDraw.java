@@ -98,7 +98,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         getSupportActionBar().setBackgroundDrawable(c);
         getSupportActionBar().setTitle("Descarregar Sequência");
 
-        database = FirebaseDatabase.getInstance().getReference("");
+        database = FirebaseDatabase.getInstance().getReference("").child("Users");
 
 
         Intent intent = getIntent();
@@ -111,10 +111,10 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         coluna = bundle.getInt("roboColuna");
         levels = bundle.getString("levels");
         user = bundle.getString("user");
-        pointsList = (ArrayList<Integer>)intent.getIntegerArrayListExtra("pointsList");
+        //pointsList = (ArrayList<Integer>)intent.getIntegerArrayListExtra("pointsList");
 
 
-        Toast.makeText(getApplicationContext(),"Deu = "+pointsList.get(0)+"",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),"Deu = "+pointsList.get(0)+"",Toast.LENGTH_LONG).show();
 
         textViewID = findViewById(R.id.TextViewID);
         textViewID.setOnTouchListener(this);
@@ -537,37 +537,38 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             if(board.get(currentLine+""+currentCollumn).equals("F") ){
                 feedbackAudios.add("Chegou ao objectivo");
-                ArrayList<Integer> points = pointsList;
-                int point = pointsList.get(indexLevelPoints())+100;
-                points.set(indexLevelPoints(),point);
-                database.child("Users").child(user).child("levels").setValue(point);
+                //ArrayList<Integer> points = pointsList;
+                //int point = pointsList.get(indexLevelPoints())+100;
+                //points.set(indexLevelPoints(),point);
+                //database.child("Users").child(user).child("levels").setValue(point);
 
-                /*database.addListenerForSingleValueEvent(new ValueEventListener() {
+               database.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getChildrenCount() > 0){
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
                                 User g = userSnapshot.getValue(User.class);
                                 if (g.getName().equals(user)) {
                                     List<Integer> pointsLevels = g.getLevels();
-                                    int previousPoints =  pointsLevels.get(indexLevelPoints());
-                                    int currentPoints = previousPoints+100;
+                                    int index = indexLevelPoints();
+                                    int previousPoints =  pointsLevels.get(index) + 100;
+                                    pointsLevels.set(index,previousPoints);
+                                    //Toast.makeText(getApplicationContext(),previousPoints+"",Toast.LENGTH_LONG).show();
                                     //pointsLevels.set(indexLevelPoints(),currentPoints);
                                     //g.setLevels(pointsLevels);
-                                   //database.child("Users").child(user).child("levels").setValue(pointsLevels);
+                                   database.child(user).child("levels").setValue(pointsLevels);
 
                                 }
                             }
 
                         }
 
-                    }
+
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                });*/
+                });
             }
 
             else if(board.get(currentLine+""+currentCollumn).equals("X") ){
