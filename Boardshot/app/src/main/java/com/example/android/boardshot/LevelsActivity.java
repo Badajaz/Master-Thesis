@@ -70,7 +70,6 @@ public class LevelsActivity extends AppCompatActivity {
         c.setColor(Color.parseColor("#ff781f"));
         getSupportActionBar().setBackgroundDrawable(c);
         getSupportActionBar().setTitle("Níveis");
-        btnLevel1.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.emptystar);
         database = FirebaseDatabase.getInstance().getReference().child("Users");
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
