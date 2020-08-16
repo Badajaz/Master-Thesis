@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LevelsActivity extends AppCompatActivity {
@@ -41,6 +42,7 @@ public class LevelsActivity extends AppCompatActivity {
     private Button btnLevel10;
     private Button btnLevel11;
     private Button btnLevel12;
+    private ArrayList<Integer> pointsLevels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,7 @@ public class LevelsActivity extends AppCompatActivity {
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
                         User g = userSnapshot.getValue(User.class);
                         if (g.getName().equals(user)) {
-                            List<Integer> pointsLevels = g.getLevels();
+                            pointsLevels = g.getLevels();
 
                             btnLevel1.setText(btnLevel1.getText()+"\n Recorde: "+pointsLevels.get(0));
                             btnLevel2.setText(btnLevel2.getText()+"\n Recorde: "+pointsLevels.get(1));
@@ -93,6 +95,176 @@ public class LevelsActivity extends AppCompatActivity {
 
                 }
 
+                btnLevel1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level1");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+                btnLevel2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level2");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+                btnLevel3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level3");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+                btnLevel4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level4");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+                btnLevel5.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level5");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+                btnLevel6.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level6");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+
+                btnLevel7.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level7");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+
+
+                btnLevel8.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level8");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+                btnLevel9.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level9");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+                btnLevel10.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level10");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+
+                btnLevel11.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level11");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+
+                btnLevel12.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "level12");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
@@ -106,164 +278,6 @@ public class LevelsActivity extends AppCompatActivity {
 
 
 
-        btnLevel1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level1");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-        btnLevel2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level2");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-        btnLevel3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level3");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-        btnLevel4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level4");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-        btnLevel5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level5");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-        btnLevel6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level6");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-
-        btnLevel7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level7");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-
-
-        btnLevel8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level8");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-        btnLevel9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level9");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-        btnLevel10.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level10");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-
-        btnLevel11.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level11");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-
-        btnLevel12.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
-                bundle.putString("user", user);
-                bundle.putString("levels", "level12");
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
 
     }
 

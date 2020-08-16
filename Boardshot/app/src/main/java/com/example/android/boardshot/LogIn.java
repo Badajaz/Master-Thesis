@@ -71,8 +71,9 @@ public class LogIn extends AppCompatActivity {
                                     }
                                 }
                                 if (exists == false) {
-                                    List<Integer> points =  new ArrayList<>();
-                                    User u = new User(userNameStr,points);
+                                    ArrayList<Integer> points =  new ArrayList<>();
+                                    ArrayList<Boolean> chegouFim =  new ArrayList<>();
+                                    User u = new User(userNameStr,points,chegouFim);
                                     database.child(userNameStr).setValue(u);
                                     Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
                                     intent.putExtra("user", userNameStr);
@@ -81,8 +82,9 @@ public class LogIn extends AppCompatActivity {
 
 
                             }else {
-                                List<Integer> points = new ArrayList<>();
-                                User u = new User(userNameStr,points);
+                                ArrayList<Integer> points = new ArrayList<>();
+                                ArrayList<Boolean> chegouFim =  new ArrayList<>();
+                                User u = new User(userNameStr,points,chegouFim);
                                 database.child(userNameStr).setValue(u);
                                 Intent intent = new Intent(getApplicationContext(), LevelsActivity.class);
                                 intent.putExtra("user", userNameStr);

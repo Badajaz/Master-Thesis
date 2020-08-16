@@ -32,8 +32,11 @@ import android.widget.Toast;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,6 +46,7 @@ import java.io.RandomAccessFile;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
@@ -80,6 +84,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     private int coluna;
     private HashMap<String, String> hashMap;
     private DatabaseReference database;
+    private ArrayList<Integer> pointsList;
 
 
     @Override
@@ -106,9 +111,10 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         coluna = bundle.getInt("roboColuna");
         levels = bundle.getString("levels");
         user = bundle.getString("user");
+        pointsList = (ArrayList<Integer>)intent.getIntegerArrayListExtra("pointsList");
 
 
-        Toast.makeText(getApplicationContext(),sequencia,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Deu = "+pointsList.get(0)+"",Toast.LENGTH_LONG).show();
 
         textViewID = findViewById(R.id.TextViewID);
         textViewID.setOnTouchListener(this);
@@ -358,7 +364,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         }
         if(board.get(linha+""+coluna).equals("F") ){
             feedbackAudios.add("Chegou ao objectivo");
-            database.child(user).child("levels").setValue("100");
+            //database.child(user).child("levels").setValue("100");
         }
 
         else if(board.get(linha+""+coluna).equals("X") ){
@@ -531,8 +537,37 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             if(board.get(currentLine+""+currentCollumn).equals("F") ){
                 feedbackAudios.add("Chegou ao objectivo");
-                database.child("Users").child(user).child("levels").setValue("100");
+                ArrayList<Integer> points = pointsList;
+                int point = pointsList.get(indexLevelPoints())+100;
+                points.set(indexLevelPoints(),point);
+                database.child("Users").child(user).child("levels").setValue(point);
 
+                /*database.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getChildrenCount() > 0){
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
+                                User g = userSnapshot.getValue(User.class);
+                                if (g.getName().equals(user)) {
+                                    List<Integer> pointsLevels = g.getLevels();
+                                    int previousPoints =  pointsLevels.get(indexLevelPoints());
+                                    int currentPoints = previousPoints+100;
+                                    //pointsLevels.set(indexLevelPoints(),currentPoints);
+                                    //g.setLevels(pointsLevels);
+                                   //database.child("Users").child(user).child("levels").setValue(pointsLevels);
+
+                                }
+                            }
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });*/
             }
 
             else if(board.get(currentLine+""+currentCollumn).equals("X") ){
@@ -1174,6 +1209,51 @@ private void speakAudioFeedbackInstructions(){
         }
         return super.onPrepareOptionsMenu(menu);
     }
+
+    private int indexLevelPoints(){
+        int level = 0;
+        if (levels.equals("level1")){
+            level = 0;
+        }
+        if (levels.equals("level2")){
+            level = 1;
+        }
+        if (levels.equals("level3")){
+            level = 2;
+        }
+        if (levels.equals("level4")){
+            level = 3;
+        }
+        if (levels.equals("level5")){
+            level = 4;
+        }
+        if (levels.equals("level6")){
+            level = 5;
+        }
+        if (levels.equals("level7")){
+            level = 6;
+        }
+        if (levels.equals("level8")){
+            level = 7;
+        }
+        if (levels.equals("level9")){
+            level = 8;
+        }
+        if (levels.equals("level10")){
+            level = 9;
+        }
+        if (levels.equals("level11")){
+            level = 10;
+        }
+        if (levels.equals("level12")){
+            level = 11;
+        }
+    return level;
+
+    }
+
+
+
 
 
 }

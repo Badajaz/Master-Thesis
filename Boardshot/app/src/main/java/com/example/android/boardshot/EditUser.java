@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,9 +96,10 @@ public class EditUser extends AppCompatActivity {
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
                             User g = userSnapshot.getValue(User.class);
                             if (g.getName().equals(userAux)) {
-                                List<Integer> level = g.getLevels();
+                                ArrayList<Integer> level = g.getLevels();
+                                ArrayList<Boolean> ChegouFim = g.getChegouFim();
                                 userSnapshot.getRef().removeValue();
-                                User u = new User(user,level);
+                                User u = new User(user,level,ChegouFim);
                                 database.child(user).setValue(u);
                                 Intent intentSend = null;
                                 if (activityReturn.equals("LevelsActivity")){

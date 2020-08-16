@@ -6,14 +6,21 @@ import java.util.List;
 public class User {
 
     private String name;
-    private List<Integer> levels;
+    private ArrayList<Integer> levels;
+    private ArrayList<Boolean> chegouFim;
 
-    public User(String name, List<Integer> levels) {
+    public User(String name, ArrayList<Integer> levels,ArrayList<Boolean> chegouFim) {
         this.name = name;
         this.levels = levels;
         for (int i =0;i< 12;i++ ){
             levels.add(0);
         }
+
+        this.chegouFim = chegouFim;
+        for (int i =0;i< 12;i++ ){
+            chegouFim.add(false);
+        }
+
     }
 
     public User() {
@@ -27,12 +34,19 @@ public class User {
         this.name = name;
     }
 
-
-    public List<Integer> getLevels() {
+    public ArrayList<Integer> getLevels() {
         return levels;
     }
 
-    public void setLevels(List<Integer> levels) {
+    public void setLevels(ArrayList<Integer> levels) {
         this.levels = levels;
+    }
+
+    public ArrayList<Boolean> getChegouFim() {
+        return chegouFim;
+    }
+
+    public void setChegouFim(ArrayList<Boolean> chegouFim) {
+        this.chegouFim = chegouFim;
     }
 }
