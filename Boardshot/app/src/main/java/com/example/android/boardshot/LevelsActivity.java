@@ -291,6 +291,11 @@ public class LevelsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
+        if ( id ==  android.R.id.home){
+            Intent i = new Intent(LevelsActivity.this, LogIn.class);
+            startActivity(i);
+        }
+
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_item_one) {

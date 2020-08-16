@@ -100,44 +100,6 @@ public class LogIn extends AppCompatActivity {
                         }
                     });
 
-                    /*mListener = database.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                            for(DataSnapshot data: dataSnapshot.getChildren()){
-
-                                if (data.getKey().equals(userNameStr)) {
-                                    exists = true;
-                                }
-
-
-                            }
-
-                            if(exists){
-                                Bundle bundle = new Bundle();
-                                Intent intent = new Intent(LogIn.this, LevelsActivity.class);
-                                bundle.putString("user", userNameStr);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-
-                            }
-
-                            else{
-                                u = new User(userNameStr,0,"");
-                                database.child(userNameStr).setValue(u);
-                            }
-
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });*/
-
-
 
                 }
 
@@ -154,18 +116,8 @@ public class LogIn extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        database.removeEventListener(mListener);
+        //database.removeEventListener(mListener);
 
-
-    }
-
-    private List<Integer> getInitializeList(){
-        List<Integer> points = new ArrayList<>();
-        for (int i =0;i< 12;i++ ){
-            points.add(0);
-        }
-
-        return points;
     }
 
 }
