@@ -44,6 +44,7 @@ public class LevelsActivity extends AppCompatActivity {
     private Button btnLevel10;
     private Button btnLevel11;
     private Button btnLevel12;
+    private Button freestylebtn;
     private ArrayList<Integer> pointsLevels;
     private ArrayList<Boolean> chegouFim;
 
@@ -63,6 +64,7 @@ public class LevelsActivity extends AppCompatActivity {
         btnLevel10 = (Button) findViewById(R.id.level10);
         btnLevel11 = (Button) findViewById(R.id.level11);
         btnLevel12 = (Button) findViewById(R.id.level12);
+        freestylebtn = (Button) findViewById(R.id.freestyle);
         Bundle bundle = getIntent().getExtras();
         user = bundle.getString("user");
         invalidateOptionsMenu();
@@ -343,6 +345,22 @@ public class LevelsActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+
+                freestylebtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "freestyle");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+
             }
 
             @Override
