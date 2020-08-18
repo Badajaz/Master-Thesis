@@ -1248,6 +1248,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             }
                         });
                     }
+                }else{
+                    engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
                 }
 
 
@@ -1316,6 +1320,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             }
                         });
                     }
+                }else{
+                    engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
                 }
 
 
@@ -1381,6 +1389,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             }
                         });
                     }
+                }else{
+                    engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
                 }
 
 
@@ -1472,6 +1484,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         });
 
                     }
+
+                }else{
+                    engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
 
                 }
         }
