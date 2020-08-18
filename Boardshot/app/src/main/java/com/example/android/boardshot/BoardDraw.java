@@ -433,6 +433,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             if(board.get(currentLine+""+currentCollumn).equals("F") ){
                 feedbackAudios.add("Chegou ao objectivo");
+                incrementLevel();
                 database.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -455,6 +456,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
                                     g.setLevels(pointsList);
                                     database.child(user).setValue(g);
+
                                     //Toast.makeText(getApplicationContext(),pointsList.get(0)+"",Toast.LENGTH_LONG).show();
                                     //Toast.makeText(getApplicationContext(),chegouFim.get(0)+"",Toast.LENGTH_LONG).show();
 
@@ -1028,8 +1030,8 @@ private void speakAudioFeedbackInstructions(){
     public void onLongPress(MotionEvent motionEvent) {
         //super.onBackPressed();
         Intent intent = new Intent(BoardDraw.this, MainActivity.class);
-        intent.putExtra("levels", "level1Voz");
         intent.putExtra("user", user);
+        intent.putExtra("levels", levels);
         startActivity(intent);
     }
 
@@ -1097,9 +1099,12 @@ private void speakAudioFeedbackInstructions(){
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_item_one) {
+        if ( id ==  android.R.id.home){
+            Intent i = new Intent(BoardDraw.this, MainActivity.class);
+            i.putExtra("user", user);
+            i.putExtra("levels", levels);
+            startActivity(i);
+        }else if (id == R.id.action_item_one) {
             Intent intent = new Intent(BoardDraw.this, EditUser.class);
             intent.putExtra("map", hashMap);
             intent.putExtra("user", user);
@@ -1166,6 +1171,45 @@ private void speakAudioFeedbackInstructions(){
         }
     return level;
 
+    }
+
+    private void incrementLevel(){
+        if (levels.equals("level1")){
+            levels = "level2";
+        }
+        else if (levels.equals("level2")){
+            levels = "level3";
+        }
+        else if (levels.equals("level3")){
+            levels = "level4";
+        }
+        else if (levels.equals("level4")){
+            levels = "level5";
+        }
+        else if (levels.equals("level5")){
+            levels = "level6";
+        }
+        else if (levels.equals("level6")){
+            levels = "level7";
+        }
+        else if (levels.equals("level7")){
+            levels = "level8";
+        }
+        else if (levels.equals("level8")){
+            levels = "level9";
+        }
+        else if (levels.equals("level9")){
+            levels = "level10";
+        }
+        else if (levels.equals("level10")){
+            levels = "level11";
+        }
+        else if (levels.equals("level11")){
+            levels = "level12";
+        }
+        else if (levels.equals("level12")){
+            levels = "level1";
+        }
     }
 
 

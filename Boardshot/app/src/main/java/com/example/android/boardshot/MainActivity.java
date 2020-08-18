@@ -252,6 +252,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         getSupportActionBar().setBackgroundDrawable(c);
         getSupportActionBar().setTitle("Reconhecimento");
 
+        Toast.makeText(getApplicationContext(),Levels,Toast.LENGTH_LONG).show();
+
 
 
 
