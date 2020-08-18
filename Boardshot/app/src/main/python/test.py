@@ -1,2 +1,2 @@
 def b():
-    print("funciona")
+    return "aaaa"

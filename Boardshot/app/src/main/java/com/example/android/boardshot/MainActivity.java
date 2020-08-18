@@ -478,28 +478,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     if (recPieces == 1 || board == 1) {
 
                         if(board == 1) {
-                            boardRec = boardRecognition();
+                           boardRec = boardRecognition();
 
                             introSpeach();
                             while (speechCount< getNumberOfWaitingLines());
                             lauchSpeechRecognition();
-
-
-
-
-
-
-
-                                /*engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-                                    @Override
-                                    public void onInit(int status) {
-                                        engine.setLanguage(new Locale("pt", "PT"));
-                                        engine.speak("o que queres que faça agora?",
-                                                TextToSpeech.QUEUE_FLUSH, null, null);
-                                    }
-                                });*/
-
-
+                            
 
                             }
 
@@ -1192,6 +1176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
+                                intent.putExtra("levels", Levels);
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
                                 startActivity(intent);
                             }
@@ -1254,6 +1239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
+                                intent.putExtra("levels", Levels);
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
@@ -1321,6 +1307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
+                                intent.putExtra("levels", Levels);
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
@@ -1385,6 +1372,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
+                                intent.putExtra("levels", Levels);
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
@@ -1473,6 +1461,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("sequencia", sequenceDB);
                                 intent.putExtra("roboLinha", robotLine);
                                 intent.putExtra("roboColuna", robotCollumn);
+                                intent.putExtra("levels", Levels);
+                                intent.putExtra("user", user);
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);

@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -85,6 +86,10 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     private HashMap<String, String> hashMap;
     private DatabaseReference database;
     private ArrayList<Integer> pointsList;
+    private ArrayList<Boolean> chegouFim;
+    private int points;
+    private int index;
+
 
 
     @Override
@@ -92,6 +97,16 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_draw);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (!Python.isStarted()){
+            Python.start(new AndroidPlatform(getApplicationContext()));
+        }
+
+        if (Python.isStarted()){
+            //Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
+        }
+
+
         invalidateOptionsMenu();
         ColorDrawable c = new ColorDrawable();
         c.setColor(Color.parseColor("#ff781f"));
@@ -111,6 +126,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         coluna = bundle.getInt("roboColuna");
         levels = bundle.getString("levels");
         user = bundle.getString("user");
+        index = indexLevelPoints();
         //pointsList = (ArrayList<Integer>)intent.getIntegerArrayListExtra("pointsList");
 
 
@@ -119,53 +135,6 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         textViewID = findViewById(R.id.TextViewID);
         textViewID.setOnTouchListener(this);
         gd = new GestureDetector(this,this);
-
-
-        /*left = 50; // initial start position of rectangles (50 pixels from left)
-         top = 50; // 50 pixels from the top
-         width = 80;
-         height = 80;
-        Bitmap bg = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
-        int index = 0;
-        int col;
-        for (int row = 0; row < 8; row++) { // draw 2 rows
-            for(col = 0; col < 6; col++) { // draw 4 columns
-                Paint paint = new Paint();
-                if (messageArray[index].contains("O")){
-
-                    Log.d("AA","O"+index);
-                    paint.setColor(Color.parseColor("#008000"));
-
-                }else if(messageArray[index].contains("X")){
-                    Log.d("AA","X"+index);
-                    paint.setColor(Color.parseColor("#CD5C5C"));
-
-                }else if(messageArray[index].contains("F")) {
-                    Log.d("AA","F"+index);
-                    paint.setColor(Color.parseColor("#3792cb"));
-
-                }else if(messageArray[index].contains("R")) {
-                    Log.d("AA", "R"+index);
-                    paint.setColor(Color.parseColor("#000000"));
-                }
-
-
-                Canvas canvas = new Canvas(bg);
-                canvas.drawRect(left, top, left+width, top+height, paint);
-                left = (left + width  +10); // set new left co-ordinate + 10 pixel gap
-                // Do other things here
-                // i.e. change colour
-                index++;
-            }
-
-            top = top + height + 10; // move to new row by changing the top co-ordinate
-            left = 50;
-        }
-
-        RelativeLayout ll = (RelativeLayout) findViewById(R.id.rect);
-        ImageView iV = new ImageView(this);
-        iV.setImageBitmap(bg);
-        ll.addView(iV);*/
 
 
 
@@ -177,85 +146,11 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
 
 
-
-
         Python py= Python.getInstance();
         PyObject initModule = py.getModule("Runnable");
         PyObject runCall= initModule.callAttr("test",Environment.getExternalStorageDirectory().toString()+"/Pictures/"+"test.ozopy");
         colorCode = runCall.toString();
 
-
-
-
-
-        /*Button b = findViewById(R.id.loadRobot);
-
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Timer timer = new Timer("Timer");
-                //Toast.makeText(getApplicationContext(), "DEPOIS BUTTON = " + colorCode, Toast.LENGTH_LONG).show();
-                Log.d("COLOR", colorCode);
-                TimerTask repeatedTask = null;
-                count = 0;
-                if (count < colorCode.length()) {
-                     repeatedTask = new TimerTask() {
-                        public void run() {
-                            if (count < colorCode.length()) {
-                                int colorTo = getColor(colorCode.charAt(count));
-
-                                GradientDrawable tvBackground2 = (GradientDrawable) textViewID.getBackground();
-                                tvBackground2.setColor(colorTo);
-
-                                //textView.setBackgroundColor(colorTo);
-                                count += 1;
-                            }
-                        }
-
-
-                    } ;
-                }else{
-                    repeatedTask.cancel();
-                    timer.cancel();
-
-
-                }
-
-
-                long delay = 0;
-                long period = 50;
-                timer.scheduleAtFixedRate(repeatedTask, delay, period);
-
-
-
-                }
-               // colorAnimation.start();
-
-
-
-             /*   for (int i = 1; i < colorCode.length(); i+=2){
-                    Log.d("TEST",i+"");
-                    int colorFrom = Color.parseColor(String.valueOf(colormap.get(colorCode.charAt(i-1))));
-                    int colorTo = Color.parseColor(String.valueOf(colormap.get(colorCode.charAt(i))));
-                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                    colorAnimation.setDuration(50); // milliseconds
-                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animator) {
-                            textView.setBackgroundColor((int) animator.getAnimatedValue());
-                        }
-
-                    });
-                    colorAnimation.start();
-
-                }
-
-
-
-
-        });*/
 
 
 
@@ -538,6 +433,50 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             if(board.get(currentLine+""+currentCollumn).equals("F") ){
                 feedbackAudios.add("Chegou ao objectivo");
+                database.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
+                                final User g = userSnapshot.getValue(User.class);
+                                if (g.getName().equals(user)) {
+                                    //ArrayList<Integer> pointLevelsAux = pointLevels;
+                                    //ArrayList<Boolean> ChegouFim = g.getChegouFim();
+                                    //int incrementPoints = pointLevels.get(indexLevelPoints())+100;
+                                    //pointLevelsAux.set(indexLevelPoints(),incrementPoints);
+
+                                    pointsList = g.getLevels();
+                                    chegouFim = g.getChegouFim();
+                                    points = pointsList.get(index) + 100;
+                                    pointsList.set(index,points);
+                                    chegouFim.set(index,true);
+                                    Toast.makeText(getApplicationContext(),pointsList.get(index)+"",Toast.LENGTH_LONG).show();
+
+
+
+                                    g.setLevels(pointsList);
+                                    database.child(user).setValue(g);
+                                    //Toast.makeText(getApplicationContext(),pointsList.get(0)+"",Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(),chegouFim.get(0)+"",Toast.LENGTH_LONG).show();
+
+
+
+                                }
+                            }
+
+
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
                 //ArrayList<Integer> points = pointsList;
                 //int point = pointsList.get(indexLevelPoints())+100;
                 //points.set(indexLevelPoints(),point);
@@ -1192,37 +1131,37 @@ private void speakAudioFeedbackInstructions(){
         if (levels.equals("level1")){
             level = 0;
         }
-        if (levels.equals("level2")){
+        else if (levels.equals("level2")){
             level = 1;
         }
-        if (levels.equals("level3")){
+        else if (levels.equals("level3")){
             level = 2;
         }
-        if (levels.equals("level4")){
+        else if (levels.equals("level4")){
             level = 3;
         }
-        if (levels.equals("level5")){
+        else if (levels.equals("level5")){
             level = 4;
         }
-        if (levels.equals("level6")){
+        else if (levels.equals("level6")){
             level = 5;
         }
-        if (levels.equals("level7")){
+        else if (levels.equals("level7")){
             level = 6;
         }
-        if (levels.equals("level8")){
+        else if (levels.equals("level8")){
             level = 7;
         }
-        if (levels.equals("level9")){
+        else if (levels.equals("level9")){
             level = 8;
         }
-        if (levels.equals("level10")){
+        else if (levels.equals("level10")){
             level = 9;
         }
-        if (levels.equals("level11")){
+        else if (levels.equals("level11")){
             level = 10;
         }
-        if (levels.equals("level12")){
+        else if (levels.equals("level12")){
             level = 11;
         }
     return level;
