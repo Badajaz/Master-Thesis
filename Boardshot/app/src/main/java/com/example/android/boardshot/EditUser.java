@@ -40,6 +40,7 @@ public class EditUser extends AppCompatActivity {
     private int linha;
     private int coluna;
     private String levels;
+    private int increment;
 
 
     @Override
@@ -67,6 +68,8 @@ public class EditUser extends AppCompatActivity {
             linha = bundle.getInt("roboLinha");
             coluna = bundle.getInt("roboColuna");
             levels = bundle.getString("levels");
+            levels = bundle.getString("levels");
+            increment = bundle.getInt("increment");
         }
 
         final TextView userText = (TextView)  findViewById(R.id.EditUserTextView);
@@ -118,14 +121,14 @@ public class EditUser extends AppCompatActivity {
                                     Intent intent = new Intent(EditUser.this, BoardDraw.class);
                                     intent.putExtra("map", map);
                                     intent.putExtra("user", user);
-                                    intent.putExtra("activity", "BoardDraw");
-                                    intent.putExtra("sequence", sequence);
+                                    intent.putExtra("sequencia", sequence);
                                     intent.putExtra("message", message);
                                     intent.putExtra("roboLinha", linha);
                                     intent.putExtra("roboColuna", coluna);
                                     intent.putExtra("levels", levels);
+                                    intent.putExtra("increment", increment);
+                                    intent.putExtra("activity", "BoardDraw");
                                     startActivity(intent);
-
                                 }
 
 

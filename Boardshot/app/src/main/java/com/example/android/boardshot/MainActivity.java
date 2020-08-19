@@ -1179,6 +1179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
                                 intent.putExtra("levels", Levels);
+                                intent.putExtra("activity", "MainActivity");
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
                                 startActivity(intent);
                             }
@@ -1242,6 +1243,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
                                 intent.putExtra("levels", Levels);
+                                intent.putExtra("activity", "MainActivity");
+
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
@@ -1253,11 +1256,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     lauchSpeechRecognition();
 
                 }
-
-
-
-
-
 
             }else if(Levels.equals("level3")){
 
@@ -1314,6 +1312,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
                                 intent.putExtra("levels", Levels);
+                                intent.putExtra("activity", "MainActivity");
+
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
@@ -1325,8 +1325,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     lauchSpeechRecognition();
 
                 }
-
-
 
             }else if(Levels.equals("level3")){
 
@@ -1383,6 +1381,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("user", user);
                                 intent.putExtra("levels", Levels);
+                                intent.putExtra("activity", "MainActivity");
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
@@ -1394,9 +1393,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     lauchSpeechRecognition();
 
                 }
-
-
-
 
 
             } else{
@@ -1477,6 +1473,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 intent.putExtra("roboColuna", robotCollumn);
                                 intent.putExtra("levels", Levels);
                                 intent.putExtra("user", user);
+                                intent.putExtra("activity", "MainActivity");
                                 //intent.putIntegerArrayListExtra("pointsList",pointsList);
 
                                 startActivity(intent);
@@ -1862,9 +1859,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                 if (Levels.equals("level1")) {
 
-
                     if (speechCount == 0) {
-                        engine.speak("Eu sou a torre de controlo do robô! O roBô precisa da tua Ajuda!", TextToSpeech.QUEUE_FLUSH, null, null);
+                        engine.speak("Eu sou a torre de controlo do robô! O robô precisa da tua Ajuda!", TextToSpeech.QUEUE_FLUSH, null, null);
                     } else if (speechCount == 1) {
                         engine.speak("Estou no planeta nabida, preciso de sair deste autêntico deserto! Ajuda-me", TextToSpeech.QUEUE_FLUSH, null, null);
                     } else if (speechCount == 2) {

@@ -89,7 +89,8 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
     private ArrayList<Boolean> chegouFim;
     private int points;
     private int index;
-
+    private int increment = 0;
+    private String activity;
 
 
     @Override
@@ -126,6 +127,11 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
         coluna = bundle.getInt("roboColuna");
         levels = bundle.getString("levels");
         user = bundle.getString("user");
+        activity = bundle.getString("activity");
+        if(activity.equals("BoardDraw")){
+            increment = bundle.getInt("increment");
+        }
+
         index = indexLevelPoints();
         //pointsList = (ArrayList<Integer>)intent.getIntegerArrayListExtra("pointsList");
 
@@ -431,42 +437,41 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
             }
 
-            if(board.get(currentLine+""+currentCollumn).equals("F") ){
+            if(board.get(currentLine+""+currentCollumn).equals("F") ) {
                 feedbackAudios.add("Chegou ao objectivo");
-                incrementLevel();
+                if(increment == 0){
+                    increment++;
+                    incrementLevel();
+
+
                 database.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()){
-                                final User g = userSnapshot.getValue(User.class);
-                                if (g.getName().equals(user)) {
-                                    //ArrayList<Integer> pointLevelsAux = pointLevels;
-                                    //ArrayList<Boolean> ChegouFim = g.getChegouFim();
-                                    //int incrementPoints = pointLevels.get(indexLevelPoints())+100;
-                                    //pointLevelsAux.set(indexLevelPoints(),incrementPoints);
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            final User g = userSnapshot.getValue(User.class);
+                            if (g.getName().equals(user)) {
+                                //ArrayList<Integer> pointLevelsAux = pointLevels;
+                                //ArrayList<Boolean> ChegouFim = g.getChegouFim();
+                                //int incrementPoints = pointLevels.get(indexLevelPoints())+100;
+                                //pointLevelsAux.set(indexLevelPoints(),incrementPoints);
 
-                                    pointsList = g.getLevels();
-                                    chegouFim = g.getChegouFim();
-                                    points = pointsList.get(index) + 100;
-                                    pointsList.set(index,points);
-                                    chegouFim.set(index,true);
-                                    Toast.makeText(getApplicationContext(),pointsList.get(index)+"",Toast.LENGTH_LONG).show();
-
-
-
-                                    g.setLevels(pointsList);
-                                    database.child(user).setValue(g);
-
-                                    //Toast.makeText(getApplicationContext(),pointsList.get(0)+"",Toast.LENGTH_LONG).show();
-                                    //Toast.makeText(getApplicationContext(),chegouFim.get(0)+"",Toast.LENGTH_LONG).show();
+                                pointsList = g.getLevels();
+                                chegouFim = g.getChegouFim();
+                                points = pointsList.get(index) + 100;
+                                pointsList.set(index, points);
+                                chegouFim.set(index, true);
+                                Toast.makeText(getApplicationContext(), pointsList.get(index) + "", Toast.LENGTH_LONG).show();
 
 
+                                g.setLevels(pointsList);
+                                database.child(user).setValue(g);
 
-                                }
+                                //Toast.makeText(getApplicationContext(),pointsList.get(0)+"",Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(),chegouFim.get(0)+"",Toast.LENGTH_LONG).show();
+
+
                             }
-
-
-
+                        }
 
 
                     }
@@ -476,7 +481,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
 
                     }
                 });
-
+            }
 
 
                 //ArrayList<Integer> points = pointsList;
@@ -1114,6 +1119,7 @@ private void speakAudioFeedbackInstructions(){
             intent.putExtra("roboLinha", linha);
             intent.putExtra("roboColuna", coluna);
             intent.putExtra("levels", levels);
+            intent.putExtra("increment", increment);
             startActivity(intent);
 
 
@@ -1207,8 +1213,8 @@ private void speakAudioFeedbackInstructions(){
         else if (levels.equals("level11")){
             levels = "level12";
         }
-        else if (levels.equals("level12")){
-            levels = "level1";
+        else if (levels.equals("freestyle")){
+            levels = "freestyle";
         }
     }
 
