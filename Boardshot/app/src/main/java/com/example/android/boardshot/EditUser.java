@@ -102,8 +102,10 @@ public class EditUser extends AppCompatActivity {
                                 ArrayList<Integer> level = g.getLevels();
                                 ArrayList<Boolean> ChegouFim = g.getChegouFim();
                                 userSnapshot.getRef().removeValue();
-                                User u = new User(user,level,ChegouFim);
-                                database.child(user).setValue(u);
+                                //User u = new User(user,level,ChegouFim);
+                                g.setLevels(level);
+                                g.setChegouFim(ChegouFim);
+                                database.child(user).setValue(g);
                                 Intent intentSend = null;
                                 if (activityReturn.equals("LevelsActivity")){
                                     intentSend = new Intent(getApplicationContext(), LevelsActivity.class);
