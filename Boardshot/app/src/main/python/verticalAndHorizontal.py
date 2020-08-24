@@ -160,8 +160,8 @@ def squares(file):
     j = 1
     while x1 < fourCorners[1][0] and x2 < fourCorners[3][0]:
 
-        x1 += 158
-        x2 += 158
+        x1 += 155
+        x2 += 155
 
 
         if count2 < 11:

@@ -1067,11 +1067,15 @@ private void speakAudioFeedbackInstructions(){
             public void run() {
                 if (speechCount == 0){
                     engine.speak("JÁ TENHO AS INSTRUÇÔES! AGORA PRECISO DE COMUNICAR AO ROBÔ!",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if(speechCount == 1){
-                    engine.speak("COLOCA O ROBÔ NO TABLET!",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if (speechCount == 2){
-                    engine.speak("O ROBÔ NA CASA DE PARTIDA!",TextToSpeech.QUEUE_FLUSH,null,null);
-                }else if (speechCount == 3){
+                }else if (speechCount == 1) {
+                    engine.speak("Carrega uma vez no robô até aparecer uma luz branca piscar", TextToSpeech.QUEUE_FLUSH, null, null);
+                }else if (speechCount == 2) {
+                    engine.speak("Agora volta a carregar e coloca o robô no tablet", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if(speechCount == 3){
+                    engine.speak("Para passar as instruções ao robô carrega duas vezes no ecrã",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount == 4){
+                    engine.speak("Coloca na casa de partida e carrega duas vezes no butão do robô ",TextToSpeech.QUEUE_FLUSH,null,null);
+                }else if (speechCount == 5){
                     taskTalk.cancel();
                     t.cancel();
                 }
@@ -1081,7 +1085,7 @@ private void speakAudioFeedbackInstructions(){
 
 
         long delay = 10000;
-        long period = 10000;
+        long period = 20000;
 
         t.scheduleAtFixedRate(taskTalk, delay, period);
 
