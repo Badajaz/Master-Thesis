@@ -268,7 +268,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 if (arg0 == TextToSpeech.SUCCESS) {
                     //speech.setLanguage(Locale.US);
                     speech.setLanguage(new Locale("pt", "PT"));
-                    gameExplanation();
+
+                    if(Levels.equals("freestyle")){
+                        gameExplanationFreestyle();
+                    }else{
+                        gameExplanation();
+                    }
                 }
             }
         });
@@ -2240,6 +2245,50 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
     }
+
+
+    public void gameExplanationFreestyle(){
+        final int levelInt = indexLevelPoints();
+        timerExplanation = new Timer("Timer");
+        task = new TimerTask() {
+            public void run() {
+
+                if (explanationCount == 0) {
+                    speech.speak("Eu sou o botnik, e o robô é o ozobot!", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if (explanationCount == 1) {
+                    speech.speak("Ele precisa da tua ajuda para voltar para casa!", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if (explanationCount == 2) {
+                    speech.speak("Para iniciar modo por voz  carrega uma vez no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if (explanationCount == 3 ) {
+                    speech.speak("Para iniciar modo por blocos  carrega duas vezes no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
+                }else if (explanationCount == 4) {
+                    speech.speak("Para ouvir a que instrução corresponde o bloco pressiona o ecrã durante alguns segundos", TextToSpeech.QUEUE_FLUSH, null, null);
+                }else if (explanationCount == 5) {
+                    speech.speak("Boa sorte nesta aventura!", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if (explanationCount > 5) {
+
+                    task.cancel();
+                    timerExplanation.cancel();
+                }
+                explanationCount++;
+            }
+        };
+
+
+        long delay = 3000 ;
+        long period = 5000;
+
+        timerExplanation.scheduleAtFixedRate(task, delay, period);
+
+
+
+
+    }
+
+
+
+
+
 
     private int indexLevelPoints(){
         int level = 0;
