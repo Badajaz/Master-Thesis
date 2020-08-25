@@ -1585,10 +1585,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 }
 
 
-            }else{
+            }else if(Levels.equals("freestyle")){
 
 
-                /*if (speechResult.contains("terminar ciclo")) {
+                if (speechResult.contains("terminar ciclo")) {
                     sequenceDB += "LE_";
                     loop = 0;
                     engine.speak("o que queres que faça agora?", TextToSpeech.QUEUE_FLUSH, null, null);
@@ -1676,7 +1676,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
-                }*/
+                }
         }
 
 
@@ -2132,6 +2132,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         t.cancel();
                     }
                     speechCount++;
+                }else if(Levels.equals("freestyle")){
+
+                    if (speechCount == 0) { //ESTOU A  ULTRAPASSAR UMA CINTURA DE ASTEROIDES! AJUDA-ME! !
+                        engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount > 0) {
+                        taskTalk.cancel();
+                        t.cancel();
+                    }
+                    speechCount++;
                 }
 
 
@@ -2163,6 +2172,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             number = 2;
         }else if(Levels.equals("level5")){
             number = 5;
+        }else if(Levels.equals("freestyle")){
+            number = 1;
         }
         return  number;
     }
