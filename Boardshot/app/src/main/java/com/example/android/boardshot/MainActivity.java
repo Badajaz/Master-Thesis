@@ -1,7 +1,6 @@
 package com.example.android.boardshot;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,10 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.camera2.CameraAccessException;
@@ -33,17 +29,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.renderscript.Sampler;
 import android.speech.RecognizerIntent;
-import android.speech.RecognizerResultsIntent;
-import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.GestureDetector;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,7 +45,6 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -65,21 +57,19 @@ import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firebase.storage.internal.Util;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -93,30 +83,23 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import com.chaquo.python.*;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
+import org.opencv.photo.Photo;
 
 import static android.speech.SpeechRecognizer.ERROR_NETWORK_TIMEOUT;
-import static android.speech.SpeechRecognizer.ERROR_NO_MATCH;
-import static android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener,GestureDetector.OnGestureListener,
@@ -220,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private TimerTask task;
     private TextToSpeech speech;
     Timer timerExplanation = new Timer("Timer");
+    private Bitmap myBitmap;
 
 
 
@@ -382,6 +366,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
+                        myBitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length,null);
                         save(bytes);
 
                     }
@@ -416,17 +401,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
 
-
-                    //tv.setText(rec);
-
-
-                    //Mat gray = new Mat();
-                    //Imgproc.cvtColor(matrix,gray,Imgproc.COLOR_RGB2GRAY,20);
-
                     if(recBoardPopup == 1){
                         boardAux = "";
                         recBoardPopup = 0;
-                        boardAux = boardRecognition();
+                        boardAux = boardRecognition2();
                         ShowPopUpBoard();
 
                     }
@@ -505,11 +483,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     if (recPieces == 1 || board == 1) {
 
                         if(board == 1) {
-                           //boardRec = boardRecognition();
+                            boardRec = boardRecognition2();
 
-                            introSpeach();
-                            while (speechCount< getNumberOfWaitingLines());
-                            lauchSpeechRecognition();
+                            //introSpeach();
+                            //while (speechCount< getNumberOfWaitingLines());
+                            //lauchSpeechRecognition();
                             
 
                             }
@@ -920,57 +898,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         PyObject numpy = py.getModule("numpy");
 
 
-        /*PyObject tab = py.getModule("BoardRecognition");
-        PyObject obj= tab.callAttr("boardRecognition",file.getPath());
-        List<PyObject> fourCorners = obj.asList();
-
-        int x1 = fourCorners.get(0).asList().get(0).toInt();
-        int y1 = fourCorners.get(0).asList().get(1).toInt();
-        int x2 = fourCorners.get(0).asList().get(2).toInt();
-        int y2 = fourCorners.get(0).asList().get(3).toInt();
-
-        Log.d("corners",x1+" "+y1+" "+x2+" "+y2);*/
 
         Mat matrix = Imgcodecs.imread(file.getPath());
-        
 
 
-        //hsv
-        //Imgproc.cvtColor(matrix,matrix,Imgproc.COLOR_BGR2HSV);
+
 
         List<MatOfPoint> contours = new ArrayList<>();
 
-        //Mat hierachy = new Mat();
-        //Imgproc.findContours(matrix, contours, matrix, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        //Imgproc.rectangle(matrix,new Point(x1, y1),new Point(x2, y2),new Scalar(0, 0, 255),10);
 
-       /* PyObject vhlines = py.getModule("verticalAndHorizontal");
-        PyObject obj1= vhlines.callAttr("boardRecognition",file.getPath());
-        List<PyObject> Horizontal = obj1.asList();
-
-
-        for (int i = 0;i < Horizontal.size();i++){
-
-
-            int Hy1 = Horizontal.get(i).toInt();
-
-            //Imgproc.rectangle(matrix,new Point(x1, Hy1),new Point(x2, Hy1),new Scalar(0, 0, 255),10);
-            //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
-        }
-
-
-        PyObject obj2= vhlines.callAttr("verticalLines",file.getPath());
-        List<PyObject> vertical = obj2.asList();
-
-
-        for (int i = 0;i < vertical.size();i++){
-
-
-            int Hx1 = vertical.get(i).toInt();
-
-            //Imgproc.rectangle(matrix,new Point(Hx1, y1),new Point(Hx1, y2),new Scalar(0, 0, 255),10);
-            //Toast.makeText(getApplicationContext(),verticalAndHorizontal.get(i).toInt()+"",Toast.LENGTH_LONG).show();
-        }*/
         PyObject vhlines = py.getModule("verticalAndHorizontal");
         TextView tv = findViewById(R.id.textoo);
         PyObject obj3= vhlines.callAttr("squares",file.getPath());
@@ -982,7 +918,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         matrix.convertTo(matrixBright, -1, 1, 200);
 
         Mat matrixRobot = new Mat();
-        //matrix.convertTo(matrixRobot, -1, alfa, beta);
         matrix.convertTo(matrixRobot, -1, 1, 0);
 
 
@@ -1148,6 +1083,241 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         return rec;
     }
+
+
+    private String boardRecognition2() throws IOException {
+
+        if (!Python.isStarted()) {
+            Python.start(new AndroidPlatform(getApplicationContext()));
+        }
+
+        if (Python.isStarted()) {
+            //Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
+        }
+
+        Python py = Python.getInstance();
+        PyObject cv2 = py.getModule("cv2");
+        PyObject numpy = py.getModule("numpy");
+
+        
+
+        Mat matrix = Imgcodecs.imread(file.getPath());
+        Mat matrixBrightAttempt = new Mat();
+
+        PyObject image = py.getModule("improvedImage");
+        PyObject imageAlphaBeta = image.callAttr("automatic_brightness_and_contrast", file.getPath());
+        List<PyObject> alphaBeta = imageAlphaBeta.asList();
+        matrix.convertTo(matrixBrightAttempt, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
+
+        Mat matrixBrightAttempt2 = new Mat();
+        matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
+
+        savePhoto(matrixBrightAttempt2, file);
+
+        int brightness = getValueOfLuminosity(file);
+        Log.d("Brightness", brightness + "");
+
+        Mat matrixBrightAttempt3 = new Mat();
+        //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,200);
+        //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,100);
+        if(brightness>= 0 && brightness <= 115){
+
+            matrixBrightAttempt.convertTo(matrixBrightAttempt3,-1,1,1);
+
+        }else if(brightness > 115 && brightness <= 200){
+            matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,3,228);
+        }else{
+            matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,200);
+
+        }
+
+        //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,2,500);
+
+
+
+
+        //matrix.convertTo(matrixBrightAttempt,-1,1,1);
+
+        /*if (brightness >= 0 && brightness <= 42){
+            matrix.convertTo(matrixBrightAttempt,-1,5,50);
+
+        }else if (brightness > 42 && brightness <= 84){
+
+            matrix.convertTo(matrixBrightAttempt,-1,5,0);
+
+        }else if (brightness > 84 && brightness <= 116){
+            if (brightness > 84 && brightness <= 99 ){
+
+                matrix.convertTo(matrixBrightAttempt,-1,0.5,50);
+
+            }else if (brightness > 99 && brightness <= 116 ){
+
+                matrix.convertTo(matrixBrightAttempt,-1,2,50);
+
+            }
+
+        }else if (brightness > 116 && brightness <= 158){
+            matrix.convertTo(matrixBrightAttempt,-1,1.5,50);
+
+        }else if (brightness > 158 && brightness <= 200){
+           matrix.convertTo(matrixBrightAttempt,-1,1,0);
+
+        }else if (brightness > 200 && brightness <= 242){
+            matrix.convertTo(matrixBrightAttempt,-1,1,0);
+
+        }else if (brightness > 242 && brightness <= 255){
+            matrix.convertTo(matrixBrightAttempt,-1,1,0);
+        }*/
+
+        savePhoto(matrixBrightAttempt3,file);
+
+
+        //Toast.makeText(getApplicationContext(),brightness+"",Toast.LENGTH_LONG).show();
+
+        PyObject vhlines = py.getModule("verticalAndHorizontal");
+        TextView tv = findViewById(R.id.textoo);
+        PyObject obj3= vhlines.callAttr("squares",file.getPath());
+        List<PyObject> squares = obj3.asList();
+
+
+        //brigth image
+        ///Mat matrixBright = new Mat();
+        //matrix.convertTo(matrixBright, -1, 1, 200);
+
+        //Mat matrixRobot = new Mat();
+        //matrix.convertTo(matrixRobot, -1, 1, 0);
+
+
+
+        Mat cropped= null;
+        Mat croppedNormal= null;
+        rec = "";
+        int count = 0;
+        Map<String,Integer> blackareas = new HashMap();
+        tabuleiro = new HashMap();
+
+
+        //Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
+        int linha = 0;
+
+        for (int i = 0;i < squares.size();i++){
+            int a = squares.get(i).asList().get(0).toInt();
+            int b = squares.get(i).asList().get(1).toInt();
+            int c = squares.get(i).asList().get(2).toInt();
+            int d = squares.get(i).asList().get(3).toInt();
+
+
+            Rect roi = new Rect(a, b,c - a , d - b);
+            cropped = new Mat(matrixBrightAttempt3, roi);
+
+
+
+            int w = c - a, h = d - b;
+
+
+            Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+            Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
+            Canvas canvas = new Canvas(bmp);
+            Utils.matToBitmap(cropped,bmp);
+
+
+            int redColors = 0;
+            int greenColors = 0;
+            int blueColors = 0;
+            int pixelCount = 0;
+
+            for (int y = 0; y < bmp.getHeight(); y++)
+            {
+                for (int x = 0; x < bmp.getWidth(); x++)
+                {
+                    int color = bmp.getPixel(x, y);
+                    pixelCount++;
+                    redColors += Color.red(color);
+                    greenColors += Color.green(color);
+                    blueColors += Color.blue(color);
+
+
+                }
+            }
+
+
+            int red = (redColors/pixelCount);
+            int green = (greenColors/pixelCount);
+            int blue = (blueColors/pixelCount);
+            Log.d("PIXEL",linha+""+count+" "+"("+redColors+","+greenColors+","+blueColors+")");
+            Log.d("PIXEL",linha+""+count+" "+"("+red+","+green+","+blue+")");
+            //int yellow = ((redColors+greenColors)/pixelCount);
+
+            int difGreenRed = Math.abs(green - red);
+            int difGreenBlue = Math.abs(green - blue);
+            int difRedBlue = Math.abs(red - blue);
+
+            //|| (difGreenRed < 20 && difGreenBlue < 20 && difRedBlue < 20 )
+
+            if((green >= red && green >=  blue) ){
+                tabuleiro.put(""+linha+""+count,"O");
+                Log.d("PIXEL","O");
+
+            }
+
+            else if (red >= green && red >= blue){
+                tabuleiro.put(""+linha+""+count,"F");
+                Log.d("PIXEL","F");
+
+            }
+
+            else if(blue >= red && blue >= green){
+                tabuleiro.put(""+linha+""+count,"X");
+                Log.d("PIXEL","X");
+
+            }
+
+
+            savePhoto(cropped,file);
+
+
+            PyObject orangeLines = py.getModule("OrangeLines");
+            PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition",file.getPath());
+            int orangeAux = orangeLinesMod.toInt();
+            // Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
+
+
+            if (orangeArea < orangeAux){
+                orangeArea = orangeAux;
+                robotLine = linha;
+                robotCollumn = count;
+            }
+
+
+
+            count++;
+            if (count == 12){
+                rec+="\n";
+                count = 0;
+                linha++;
+            }
+
+        }
+        //String robotCoordenates = getRobotCoordenates(blackareas);
+        //tabuleiro.put((""+robotLine+""+robotCollumn),"R");
+
+        rec= "";
+        for (int i = 0;i < 12;i++){
+
+            for (int j = 0;j < 12;j++){
+                rec+= tabuleiro.get(""+i+""+j)+" ";
+
+
+            }
+            rec+="\n";
+
+        }
+
+        savePhoto(matrixBrightAttempt3,file);
+
+        return rec;
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -2443,6 +2613,64 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return level;
 
     }
+
+    private int getValueOfLuminosity(File photo){
+
+        Mat matOriginal = Imgcodecs.imread(photo.getPath());
+        org.opencv.core.Size s = matOriginal.size();
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+        Bitmap bmp = Bitmap.createBitmap((int)s.width, (int)s.height, conf); // this creates a MUTABLE bitmap
+        Canvas canvas = new Canvas(bmp);
+        Utils.matToBitmap(matOriginal,bmp);
+        int sumPixels = 0;
+        for (int y = 0; y < bmp.getHeight(); y++)
+        {
+            for (int x = 0; x < bmp.getWidth(); x++)
+            {
+                int color = bmp.getPixel(x, y);
+                sumPixels+=(Color.red(color) + Color.green(color) + Color.blue(color))/3;
+            }
+        }
+
+        int level = sumPixels/(int)(s.width*s.height);
+        return level;
+    }
+
+
+
+    private String getImageString(Bitmap bitmap) {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
+        byte[] imagesBytes = baos.toByteArray();
+        String encodedImage = android.util.Base64.encodeToString(imagesBytes,Base64.DEFAULT);
+        return encodedImage;
+
+    }
+
+    private void savePhoto(Mat mat,File f) throws IOException {
+
+
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".jpg", mat, matOfByte);
+        byte[] byteArray = matOfByte.toArray();
+
+        //save method
+        OutputStream outputStream2 = null;
+        try {
+            outputStream2 = new FileOutputStream(f);
+            outputStream2.write(byteArray);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream2 != null)
+                outputStream2.close();
+        }
+    }
+
+
 
 
 
