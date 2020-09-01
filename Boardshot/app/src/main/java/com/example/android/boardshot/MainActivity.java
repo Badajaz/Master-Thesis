@@ -1099,77 +1099,51 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         PyObject cv2 = py.getModule("cv2");
         PyObject numpy = py.getModule("numpy");
 
-        
 
         Mat matrix = Imgcodecs.imread(file.getPath());
         Mat matrixBrightAttempt = new Mat();
+
 
         PyObject image = py.getModule("improvedImage");
         PyObject imageAlphaBeta = image.callAttr("automatic_brightness_and_contrast", file.getPath());
         List<PyObject> alphaBeta = imageAlphaBeta.asList();
         matrix.convertTo(matrixBrightAttempt, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
-
-        Mat matrixBrightAttempt2 = new Mat();
-        matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
-
-        savePhoto(matrixBrightAttempt2, file);
-
         int brightness = getValueOfLuminosity(file);
         Log.d("Brightness", brightness + "");
 
-        Mat matrixBrightAttempt3 = new Mat();
+        Mat matrixBrightAttempt2 = new Mat();
+        //matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
+
+        //savePhoto(matrixBrightAttempt2, file);
+
+        ;
+
+        //Mat matrixBrightAttempt3 = new Mat();
         //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,200);
         //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,100);
-        if(brightness>= 0 && brightness <= 115){
+        /*if(brightness>= 0 && brightness <= 115){
 
-            matrixBrightAttempt.convertTo(matrixBrightAttempt3,-1,1,1);
+            matrixBrightAttempt.convertTo(matrixBrightAttempt3,-1,1,120);
 
         }else if(brightness > 115 && brightness <= 200){
             matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,3,228);
         }else{
             matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,200);
 
-        }
-
-        //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,2,500);
-
-
-
-
-        //matrix.convertTo(matrixBrightAttempt,-1,1,1);
-
-        /*if (brightness >= 0 && brightness <= 42){
-            matrix.convertTo(matrixBrightAttempt,-1,5,50);
-
-        }else if (brightness > 42 && brightness <= 84){
-
-            matrix.convertTo(matrixBrightAttempt,-1,5,0);
-
-        }else if (brightness > 84 && brightness <= 116){
-            if (brightness > 84 && brightness <= 99 ){
-
-                matrix.convertTo(matrixBrightAttempt,-1,0.5,50);
-
-            }else if (brightness > 99 && brightness <= 116 ){
-
-                matrix.convertTo(matrixBrightAttempt,-1,2,50);
-
-            }
-
-        }else if (brightness > 116 && brightness <= 158){
-            matrix.convertTo(matrixBrightAttempt,-1,1.5,50);
-
-        }else if (brightness > 158 && brightness <= 200){
-           matrix.convertTo(matrixBrightAttempt,-1,1,0);
-
-        }else if (brightness > 200 && brightness <= 242){
-            matrix.convertTo(matrixBrightAttempt,-1,1,0);
-
-        }else if (brightness > 242 && brightness <= 255){
-            matrix.convertTo(matrixBrightAttempt,-1,1,0);
         }*/
 
-        savePhoto(matrixBrightAttempt3,file);
+        //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,2,500);
+        if(brightness >= 70 && brightness <= 90 ){
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,180);
+        }else if(brightness > 90 && brightness < 100 ){
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,150);
+        } else if(brightness >=100 && brightness <= 200 ){
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,100);
+        }
+
+
+
+        savePhoto(matrixBrightAttempt2,file);
 
 
         //Toast.makeText(getApplicationContext(),brightness+"",Toast.LENGTH_LONG).show();
@@ -1208,7 +1182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
             Rect roi = new Rect(a, b,c - a , d - b);
-            cropped = new Mat(matrixBrightAttempt3, roi);
+            cropped = new Mat(matrixBrightAttempt2, roi);
 
 
 
@@ -1313,7 +1287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         }
 
-        savePhoto(matrixBrightAttempt3,file);
+        savePhoto(matrixBrightAttempt,file);
 
         return rec;
     }
