@@ -1112,33 +1112,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Log.d("Brightness", brightness + "");
 
         Mat matrixBrightAttempt2 = new Mat();
-        //matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
 
-        //savePhoto(matrixBrightAttempt2, file);
-
-        ;
-
-        //Mat matrixBrightAttempt3 = new Mat();
-        //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,200);
-        //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,100);
-        /*if(brightness>= 0 && brightness <= 115){
-
-            matrixBrightAttempt.convertTo(matrixBrightAttempt3,-1,1,120);
-
-        }else if(brightness > 115 && brightness <= 200){
-            matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,3,228);
-        }else{
-            matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,1,200);
-
-        }*/
-
-        //matrixBrightAttempt2.convertTo(matrixBrightAttempt3,-1,2,500);
-        if(brightness >= 70 && brightness <= 90 ){
-            matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,180);
-        }else if(brightness > 90 && brightness < 100 ){
+        if (brightness >= 0 && brightness < 70) {
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 240);
+        }
+        else if (brightness >= 70 && brightness < 75) {
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 220);
+        }else  if (brightness >= 75 && brightness < 90) {
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 150);
+        }else if(brightness >= 95 && brightness < 100 ){
             matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,150);
         } else if(brightness >=100 && brightness <= 200 ){
             matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,100);
+        }else if(brightness >200 ){
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,1);
         }
 
 
@@ -1146,7 +1133,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         savePhoto(matrixBrightAttempt2,file);
 
 
-        //Toast.makeText(getApplicationContext(),brightness+"",Toast.LENGTH_LONG).show();
 
         PyObject vhlines = py.getModule("verticalAndHorizontal");
         TextView tv = findViewById(R.id.textoo);
@@ -1154,21 +1140,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         List<PyObject> squares = obj3.asList();
 
 
-        //brigth image
-        ///Mat matrixBright = new Mat();
-        //matrix.convertTo(matrixBright, -1, 1, 200);
-
-        //Mat matrixRobot = new Mat();
-        //matrix.convertTo(matrixRobot, -1, 1, 0);
-
 
 
         Mat cropped= null;
-        Mat croppedNormal= null;
+        Mat croppedRobot= null;
         rec = "";
         int count = 0;
         Map<String,Integer> blackareas = new HashMap();
         tabuleiro = new HashMap();
+        Mat croppedRobotFinal = new Mat();
+        if(brightness >=100 && brightness <= 200 ) {
+            matrixBrightAttempt.convertTo(croppedRobotFinal, -1, 1, 1);
+
+        }
+
 
 
         //Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
@@ -1183,6 +1168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             Rect roi = new Rect(a, b,c - a , d - b);
             cropped = new Mat(matrixBrightAttempt2, roi);
+            croppedRobot = new Mat(croppedRobotFinal, roi);
 
 
 
@@ -1193,6 +1179,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
             Canvas canvas = new Canvas(bmp);
             Utils.matToBitmap(cropped,bmp);
+
+
 
 
             int redColors = 0;
@@ -1246,8 +1234,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             }
 
+            savePhoto(croppedRobot,file);
 
-            savePhoto(cropped,file);
+            int robotBrightness = getValueOfLuminosity(file);
+            Log.d("robotBrightness",robotBrightness+"   "+linha+","+count);
+
 
 
             PyObject orangeLines = py.getModule("OrangeLines");
@@ -1262,6 +1253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 robotCollumn = count;
             }
 
+            savePhoto(cropped,file);
 
 
             count++;
@@ -1273,7 +1265,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         }
         //String robotCoordenates = getRobotCoordenates(blackareas);
-        //tabuleiro.put((""+robotLine+""+robotCollumn),"R");
+        tabuleiro.put((""+robotLine+""+robotCollumn),"R");
 
         rec= "";
         for (int i = 0;i < 12;i++){
@@ -1287,7 +1279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         }
 
-        savePhoto(matrixBrightAttempt,file);
+        savePhoto(matrixBrightAttempt2,file);
 
         return rec;
     }
