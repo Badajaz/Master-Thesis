@@ -1259,7 +1259,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //String robotCoordenates = getRobotCoordenates(blackareas);
         tabuleiro.put((""+robotLine+""+robotCollumn),"R");
 
-        boardCorrection(coordenadas);
+        //boardCorrection(coordenadas);
 
 
         rec= "";
