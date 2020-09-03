@@ -460,7 +460,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
                                 points = pointsList.get(index) + 100;
                                 pointsList.set(index, points);
                                 chegouFim.set(index, true);
-                                Toast.makeText(getApplicationContext(), pointsList.get(index) + "", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), pointsList.get(index) + "", Toast.LENGTH_LONG).show();
 
 
                                 g.setLevels(pointsList);
@@ -954,7 +954,7 @@ private void speakAudioFeedbackInstructions(){
 
     };
 
-    long delay = 40000;
+    long delay = 25000;
     long period = 2000;
 
     t.scheduleAtFixedRate(task, delay, period);
@@ -1084,14 +1084,10 @@ private void speakAudioFeedbackInstructions(){
         };
 
 
-        long delay = 10000;
-        long period = 20000;
+        long delay = 0;
+        long period = 6000;
 
         t.scheduleAtFixedRate(taskTalk, delay, period);
-
-
-
-
 
 
     }

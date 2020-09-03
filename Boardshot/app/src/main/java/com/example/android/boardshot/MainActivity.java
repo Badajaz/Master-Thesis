@@ -209,10 +209,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
 
-
-
-
-
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
@@ -1348,6 +1344,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             }
                         });
                     }
+                }else{
+                    engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+
                 }
 
 
@@ -2462,18 +2462,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         timerExplanation = new Timer("Timer");
         task = new TimerTask() {
             public void run() {
-
-                if (explanationCount == 0) {
-                    speech.speak("Eu sou o botnik, e o robô é o ozobot!", TextToSpeech.QUEUE_FLUSH, null, null);
+                if(explanationCount == 0){
+                    speech.speak("Bem vind ao Nível " + indexLevelPoints(), TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount == 1) {
+                    speech.speak("Eu sou o botnik, e o robô é o ozobot!", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if (explanationCount == 2) {
                     speech.speak("Ele precisa da tua ajuda para voltar para casa!", TextToSpeech.QUEUE_FLUSH, null, null);
-                } else if (explanationCount == 2 && levelInt <= 6) {
+                } else if (explanationCount == 3 && levelInt <= 6) {
                     speech.speak("Para iniciar o nível  carrega uma vez no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
-                } else if (explanationCount == 2 && levelInt > 6) {
+                } else if (explanationCount == 3 && levelInt > 6) {
                     speech.speak("Para iniciar o nível  carrega duas vezes no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
-                }else if (explanationCount == 3) {
+                }else if (explanationCount == 4) {
                     speech.speak("Boa sorte nesta aventura!", TextToSpeech.QUEUE_FLUSH, null, null);
-                } else if (explanationCount > 3) {
+                } else if (explanationCount > 4) {
 
                     task.cancel();
                     timerExplanation.cancel();
@@ -2500,19 +2501,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         task = new TimerTask() {
             public void run() {
 
-                if (explanationCount == 0) {
+                if(explanationCount == 0) {
+                    speech.speak("Bem vind ao Nível de estilo livre", TextToSpeech.QUEUE_FLUSH, null, null);
+                }else if (explanationCount == 1) {
                     speech.speak("Eu sou o botnik, e o robô é o ozobot!", TextToSpeech.QUEUE_FLUSH, null, null);
-                } else if (explanationCount == 1) {
-                    speech.speak("Ele precisa da tua ajuda para voltar para casa!", TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount == 2) {
+                    speech.speak("Ele precisa da tua ajuda para voltar para casa!", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if (explanationCount == 3) {
                     speech.speak("Para iniciar modo por voz  carrega uma vez no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
-                } else if (explanationCount == 3 ) {
+                } else if (explanationCount == 4 ) {
                     speech.speak("Para iniciar modo por blocos  carrega duas vezes no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
-                }else if (explanationCount == 4) {
-                    speech.speak("Para ouvir a que instrução corresponde o bloco pressiona o ecrã durante alguns segundos", TextToSpeech.QUEUE_FLUSH, null, null);
                 }else if (explanationCount == 5) {
+                    speech.speak("Para ouvir a que instrução corresponde o bloco pressiona o ecrã durante alguns segundos", TextToSpeech.QUEUE_FLUSH, null, null);
+                }else if (explanationCount == 6) {
                     speech.speak("Boa sorte nesta aventura!", TextToSpeech.QUEUE_FLUSH, null, null);
-                } else if (explanationCount > 5) {
+                } else if (explanationCount > 6) {
 
                     task.cancel();
                     timerExplanation.cancel();
@@ -2664,7 +2667,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     condition = (tabuleiro.get((linha)+""+(coluna+1)).equals("O") && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X") )
                             || (tabuleiro.get((linha-1)+""+(coluna)).equals("O") && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X") )
                             || (tabuleiro.get((linha)+""+(coluna-1)).equals("O") && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X") )
-                            ||(tabuleiro.get((linha+1)+""+(coluna)).equals("O") && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X") );
+                            || (tabuleiro.get((linha+1)+""+(coluna)).equals("O") && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X") );
                 }
 
                 if(condition ){
