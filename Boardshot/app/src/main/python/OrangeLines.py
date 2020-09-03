@@ -6,6 +6,8 @@ def getStartPosition(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     mask_orange = cv2.inRange(hsv, (10, 100, 20), (25, 255, 255))
+    #mask_orange = cv2.inRange(image, (5,100,100), (40,150,255))
+
 
 
     orange_area = -1

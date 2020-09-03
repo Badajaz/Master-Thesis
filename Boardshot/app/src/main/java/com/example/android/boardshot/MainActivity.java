@@ -74,6 +74,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -204,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private TextToSpeech speech;
     Timer timerExplanation = new Timer("Timer");
     private Bitmap myBitmap;
+    private List<Integer> coordenadas = new ArrayList<>();
 
 
 
@@ -485,10 +487,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         if(board == 1) {
                             boardRec = boardRecognition2();
 
-                            //introSpeach();
-                            //while (speechCount< getNumberOfWaitingLines());
-                            //lauchSpeechRecognition();
-                            
+                            introSpeach();
+                            while (speechCount< getNumberOfWaitingLines());
+                            lauchSpeechRecognition();
+
 
                             }
 
@@ -508,7 +510,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             //database.child("sequencia").setValue(sequenceDB);
 
                             recPieces = 0;
-                            boardRec = boardRecognition();
+                            boardRec = boardRecognition2();
                             if (!sequenceDB.equals("")){
                                 Handler mHandler = new Handler(getMainLooper());
                                 mHandler.post(new Runnable() {
@@ -534,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                         //Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
 
-                        Uri filed = Uri.fromFile(file);
+                        /*Uri filed = Uri.fromFile(file);
 
                         StorageReference riversRef = mStorageRef.child("images");
                         Toast.makeText(MainActivity.this, "chego aqui", Toast.LENGTH_SHORT).show();
@@ -556,7 +558,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         // ...
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
-                                });
+                                });*/
 
 
 
@@ -1150,7 +1152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         tabuleiro = new HashMap();
         Mat croppedRobotFinal = new Mat();
         if(brightness >=100 && brightness <= 200 ) {
-            matrixBrightAttempt.convertTo(croppedRobotFinal, -1, 1, 1);
+            matrix.convertTo(croppedRobotFinal, -1, 1, 1);
 
         }
 
@@ -1169,7 +1171,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Rect roi = new Rect(a, b,c - a , d - b);
             cropped = new Mat(matrixBrightAttempt2, roi);
             croppedRobot = new Mat(croppedRobotFinal, roi);
-
 
 
             int w = c - a, h = d - b;
@@ -1206,38 +1207,29 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int red = (redColors/pixelCount);
             int green = (greenColors/pixelCount);
             int blue = (blueColors/pixelCount);
-            Log.d("PIXEL",linha+""+count+" "+"("+redColors+","+greenColors+","+blueColors+")");
-            Log.d("PIXEL",linha+""+count+" "+"("+red+","+green+","+blue+")");
-            //int yellow = ((redColors+greenColors)/pixelCount);
-
-            int difGreenRed = Math.abs(green - red);
-            int difGreenBlue = Math.abs(green - blue);
-            int difRedBlue = Math.abs(red - blue);
-
-            //|| (difGreenRed < 20 && difGreenBlue < 20 && difRedBlue < 20 )
+            //Log.d("PIXEL",linha+""+count+" "+"("+redColors+","+greenColors+","+blueColors+")");
+            //Log.d("PIXEL",linha+""+count+" "+"("+red+","+green+","+blue+")");
 
             if((green >= red && green >=  blue) ){
                 tabuleiro.put(""+linha+""+count,"O");
-                Log.d("PIXEL","O");
+                //Log.d("PIXEL","O");
 
             }
 
             else if (red >= green && red >= blue){
                 tabuleiro.put(""+linha+""+count,"F");
-                Log.d("PIXEL","F");
+                //Log.d("PIXEL","F");
 
             }
 
             else if(blue >= red && blue >= green){
                 tabuleiro.put(""+linha+""+count,"X");
-                Log.d("PIXEL","X");
+                //Log.d("PIXEL","X");
 
             }
 
             savePhoto(croppedRobot,file);
 
-            int robotBrightness = getValueOfLuminosity(file);
-            Log.d("robotBrightness",robotBrightness+"   "+linha+","+count);
 
 
 
@@ -1247,10 +1239,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             // Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
 
 
-            if (orangeArea < orangeAux){
+            if (orangeArea <= orangeAux ){
                 orangeArea = orangeAux;
                 robotLine = linha;
                 robotCollumn = count;
+                Log.d("AREA",orangeArea+""+linha+","+count);
+                coordenadas.add(linha);
+                coordenadas.add(count);
+
             }
 
             savePhoto(cropped,file);
@@ -1267,6 +1263,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //String robotCoordenates = getRobotCoordenates(blackareas);
         tabuleiro.put((""+robotLine+""+robotCollumn),"R");
 
+        boardCorrection(coordenadas);
+
+
         rec= "";
         for (int i = 0;i < 12;i++){
 
@@ -1279,7 +1278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         }
 
-        savePhoto(matrixBrightAttempt2,file);
+        savePhoto(matrix,file);
 
         return rec;
     }
@@ -1938,7 +1937,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }, 8000);
     }
 
-    
+
 
     private String getRepeatedStringByTimesNumber(String ins,int numberTimes){
         String concat = "";
@@ -2635,6 +2634,59 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 outputStream2.close();
         }
     }
+
+    private void boardCorrection(List<Integer> coordenadas){
+
+
+        boolean condition = false;
+        for (int i = coordenadas.size()-1 ;i >= 1;i-=2){
+
+            int linha = coordenadas.get(i-1);
+            int coluna = coordenadas.get(i);
+            Log.d("ROBOTLINES",linha+","+coluna);
+
+
+
+                if((coluna ==  0 && linha == 0) || (coluna ==  11 && linha == 0)|| (coluna ==  11 && linha == 11) || (coluna ==  0 && linha == 11)){
+                     condition = false;
+
+                }else if(coluna == 0 && (linha!= 11|| linha!= 0) ){
+                    condition = (tabuleiro.get((linha)+""+(coluna+1)).equals("O") && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X") );
+                }else if(coluna == 11 && (linha!= 11|| linha!= 0)){
+                    condition = (tabuleiro.get((linha)+""+(coluna-1)).equals("O") && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X") );
+                }else if(linha == 0 &&(coluna!= 11|| coluna!= 0)){
+                    condition = (tabuleiro.get((linha+1)+""+(coluna)).equals("O") && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X") );
+
+                }else if(linha == 11 && (coluna!= 11|| coluna!= 0)){
+                    condition = (tabuleiro.get((linha-1)+""+(coluna)).equals("O") && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X") );
+
+                }else{
+                    condition = (tabuleiro.get((linha)+""+(coluna+1)).equals("O") && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X") )
+                            || (tabuleiro.get((linha-1)+""+(coluna)).equals("O") && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X") )
+                            || (tabuleiro.get((linha)+""+(coluna-1)).equals("O") && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X") )
+                            ||(tabuleiro.get((linha+1)+""+(coluna)).equals("O") && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X") );
+                }
+
+                if(condition ){
+                    tabuleiro.put(linha+""+coluna,"R");
+                    robotLine = linha;
+                    robotCollumn = coluna;
+                    Log.d("ROBOTLINES","ESTE = "+robotLine+","+robotCollumn);
+                    break;
+                }
+
+
+
+
+        }
+
+
+
+
+
+
+
+            }
 
 
 
