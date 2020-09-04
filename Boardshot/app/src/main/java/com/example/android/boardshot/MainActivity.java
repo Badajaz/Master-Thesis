@@ -532,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                         //Toast.makeText(MainActivity.this, "saved", Toast.LENGTH_SHORT).show();
 
-                        /*Uri filed = Uri.fromFile(file);
+                        Uri filed = Uri.fromFile(file);
 
                         StorageReference riversRef = mStorageRef.child("images");
                         Toast.makeText(MainActivity.this, "chego aqui", Toast.LENGTH_SHORT).show();
@@ -554,7 +554,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         // ...
                                         Toast.makeText(MainActivity.this, "image Upload falhou", Toast.LENGTH_SHORT).show();
                                     }
-                                });*/
+                                });
 
 
 
@@ -1147,10 +1147,27 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Map<String,Integer> blackareas = new HashMap();
         tabuleiro = new HashMap();
         Mat croppedRobotFinal = new Mat();
-        if(brightness >=100 && brightness <= 200 ) {
-            matrix.convertTo(croppedRobotFinal, -1, 1, 1);
 
+
+        if (brightness >= 0 && brightness < 70) {
+            matrix.convertTo(croppedRobotFinal, -1, 1, 100);
         }
+        else if (brightness >= 70 && brightness < 75) {
+            matrix.convertTo(croppedRobotFinal, -1, 1, 50);
+        }else  if (brightness >= 75 && brightness < 90) {
+            matrix.convertTo(croppedRobotFinal, -1, 1, 50);
+        }else if(brightness >= 95 && brightness < 100 ){
+            matrix.convertTo(croppedRobotFinal, -1, 1, 1);
+        } else if(brightness >=100 && brightness <= 200 ){
+            matrix.convertTo(croppedRobotFinal, -1, 1, 1);
+        }else if(brightness >200 ){
+            matrix.convertTo(croppedRobotFinal, -1, 1, 1);
+        }
+
+
+        //if(brightness >=100 && brightness <= 200 ) {
+
+        //}
 
 
 
@@ -1274,7 +1291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         }
 
-        savePhoto(matrix,file);
+        savePhoto(matrixBrightAttempt,file);
 
         return rec;
     }
