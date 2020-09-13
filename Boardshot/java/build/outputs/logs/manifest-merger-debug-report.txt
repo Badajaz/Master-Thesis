@@ -4,6 +4,7 @@ ADDED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/s
 INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml:2:1-6:12
 INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml:2:1-6:12
 INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml:2:1-6:12
+MERGED from [:openCVLibrary349] /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/openCVLibrary349/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml:2:1-6:12
 INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml:2:1-6:12
 INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml:2:1-6:12
@@ -21,3 +22,7 @@ INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/jav
 		ADDED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml:4:7-33
 		INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml
 		INJECTED from /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/java/src/main/AndroidManifest.xml
+uses-sdk
+ADDED from [:openCVLibrary349] /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/openCVLibrary349/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-47
+	android:targetSdkVersion
+		ADDED from [:openCVLibrary349] /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/openCVLibrary349/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:15-44

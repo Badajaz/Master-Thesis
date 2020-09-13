@@ -4,4 +4,6 @@
     android:versionCode="4200"
     android:versionName="4.2.0" >
 
+    <uses-sdk android:targetSdkVersion="29" />
+
 </manifest>

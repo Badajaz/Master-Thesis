@@ -4,8 +4,6 @@
     android:versionCode="3490"
     android:versionName="3.4.9" >
 
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="29" />
+    <uses-sdk android:targetSdkVersion="29" />
 
 </manifest>

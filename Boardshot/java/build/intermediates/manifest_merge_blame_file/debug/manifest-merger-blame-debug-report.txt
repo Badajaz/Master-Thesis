@@ -4,4 +4,8 @@
 4    android:versionCode="4200"
 5    android:versionName="4.2.0" >
 6
-7</manifest>
+7    <uses-sdk android:targetSdkVersion="29" />
+7-->[:openCVLibrary349] /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/openCVLibrary349/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-47
+7-->[:openCVLibrary349] /Users/goncalocardoso/Documents/GitHub/Master-Thesis/Boardshot/openCVLibrary349/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:15-44
+8
+9</manifest>
