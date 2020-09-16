@@ -1,4 +1,4 @@
-package com.examples.android.boardshot;
+package com.example.android.boardshot;
 
 import android.Manifest;
 import android.content.Context;
@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     if(recBoardPopup == 1){
                         boardAux = "";
                         recBoardPopup = 0;
-                        boardAux = boardRecognitionTopCode();
+                        boardAux = getTopCodeCorners(file);
                         ShowPopUpBoard();
 
                     }
@@ -476,11 +476,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     if (recPieces == 1 || board == 1) {
 
                         if(board == 1) {
-                            boardRec = boardRecognitionTopCode();
+                            //boardRec = boardRecognition2();
+                            boardRec =getTopCodeCorners(file);
 
-                            introSpeach();
-                            while (speechCount< getNumberOfWaitingLines());
-                            lauchSpeechRecognition();
+
+                           // introSpeach();
+                            //while (speechCount< getNumberOfWaitingLines());
+                            //lauchSpeechRecognition();
 
 
                             }
@@ -1286,7 +1288,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         }
 
-        savePhoto(matrixBrightAttempt,file);
+        savePhoto(matrix,file);
 
         return rec;
     }
@@ -2768,6 +2770,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             List<TopCode> topcodeCrop = scanTopcode.scan(bmp);
 
+
             if(topcodeCrop.isEmpty()){
                 tabuleiro.put(""+linha+""+count,"O");
             }else{
@@ -2812,6 +2815,251 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         return rec;
     }
+
+
+    private String getTopCodeCorners(File file) throws IOException {
+
+        if (!Python.isStarted()) {
+            Python.start(new AndroidPlatform(getApplicationContext()));
+        }
+
+        if (Python.isStarted()) {
+            //Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
+        }
+
+
+
+
+        Mat matrixTop = Imgcodecs.imread(file.getPath());
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),bmOptions);
+        bitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
+
+        Scanner scanTopcode = new Scanner();
+        List<TopCode> topcodePhoto = scanTopcode.scan(bitmap);
+
+        int topLeftX = 0;
+        int topLeftY = 0;
+
+        int topRightX = 0;
+        int topRightY = 0;
+
+        int bottomRightX = 0;
+        int bottomRightY = 0;
+
+        int bottomLeftX = 0;
+        int bottomLeftY = 0;
+
+        boolean topleft = false;
+        boolean topRight = false;
+
+        boolean bottomRight = false;
+        boolean bottomLeft = false;
+
+        for (TopCode t: topcodePhoto){
+            if(t.getCode() == 425){
+                Log.d("Topcodes","TOP_LEFT ("+t.getCenterX()+" ,"+t.getCenterY()+")");
+                topLeftX = (int)t.getCenterX();
+                topLeftY = (int)t.getCenterY();
+                topleft = true;
+
+            }else if(t.getCode() == 805){
+                Log.d("Topcodes","TOP_RIGHT ("+t.getCenterX()+" ,"+t.getCenterY()+")");
+                topRight = true;
+                topRightX = (int)t.getCenterX();
+                topRightY = (int)t.getCenterY();
+
+            }if(t.getCode() ==713){
+                Log.d("Topcodes","BOTTOM_LEFT ("+t.getCenterX()+" ,"+t.getCenterY()+")");
+                bottomLeft = true;
+                bottomLeftX = (int)t.getCenterX();
+                bottomLeftY = (int)t.getCenterY();
+
+            }if(t.getCode() == 793){
+                Log.d("Topcodes","BOTTOM_RIGHT ("+t.getCenterX()+" ,"+t.getCenterY()+")");
+                bottomRightX = (int)t.getCenterX();
+                bottomRightY = (int)t.getCenterY();
+                bottomRight = true;
+            }
+
+
+        }
+
+        int h = 0,w = 0;
+        Mat cropped = null;
+
+
+      if ((topleft == true && bottomLeft == true && bottomRight == false && topRight == false) ||
+              topleft == false && bottomLeft == false && bottomRight == true && topRight == true||
+      topcodePhoto.size() < 1){
+          Toast.makeText(getApplicationContext(),"NÂO É POSSIVEL DETECTAR CODIGOS", Toast.LENGTH_LONG).show();
+
+
+      }else {
+          int beginX = 0, beginY = 0;
+          int endX = 0, endY = 0;
+
+          if ((topleft == false || bottomRight == false) && topRight == true && bottomLeft == true) {
+
+
+              h = Math.abs(topRightY - bottomLeftY);
+              w = Math.abs(bottomLeftX - topRightX);
+              //Rect roi = new Rect(bottomLeftX, topRightY, w, h);
+              //cropped = new Mat(matrixTop, roi);
+              Log.d("Topcodes","h = "+h+" w = "+w );
+
+              beginX = bottomLeftX;
+              beginY = topRightY;
+
+              endX = topRightX;
+              endY = bottomLeftY;
+
+          } else {
+              h = Math.abs(topLeftY - bottomRightY);
+              w = Math.abs(topLeftX - bottomRightX);
+              //Rect roi = new Rect(topLeftX, topLeftY, w, h);
+              //cropped = new Mat(matrixTop, roi);
+              Log.d("Topcodes","h = "+h+" w = "+w );
+
+              beginX = topLeftX;
+              beginY = topLeftY;
+
+              endX = bottomRightX;
+              endY = bottomRightY;
+
+
+          }
+
+
+          /*Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+          Bitmap bmp = Bitmap.createBitmap(w, h, conf);
+          Canvas canvas = new Canvas(bmp);
+          Utils.matToBitmap(cropped, bmp);
+          savePhoto(cropped, file);*/
+          savePhoto(matrixTop, file);
+
+          Python py = Python.getInstance();
+          PyObject vhlines = py.getModule("test");
+          PyObject obj3 = vhlines.callAttr("squares", file.getPath(),beginX,beginY,endX,endY);
+          List<PyObject> squares = obj3.asList();       PyObject image = py.getModule("improvedImage");
+
+          Mat matrixTopHistogram = new Mat();
+          PyObject imageAlphaBeta = image.callAttr("automatic_brightness_and_contrast", file.getPath());
+          List<PyObject> alphaBeta = imageAlphaBeta.asList();
+          matrixTop.convertTo(matrixTopHistogram, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
+          savePhoto(matrixTopHistogram,file);
+
+
+
+
+
+
+          Mat crop = null;
+          rec = "";
+          int count = 0;
+          tabuleiro = new HashMap();
+          Log.d("cropppp",squares.size()+"");
+
+
+          int linha = 0;
+
+          for (int i = 0; i < squares.size(); i++) {
+              int a = squares.get(i).asList().get(0).toInt();
+              int b = squares.get(i).asList().get(1).toInt();
+              int c = squares.get(i).asList().get(2).toInt();
+              int d = squares.get(i).asList().get(3).toInt();
+              Log.d("cropppp",a+", "+b+", "+c+", "+d);
+
+
+
+              Rect roi1 = new Rect(a, b, c - a, d - b);
+              crop = new Mat(matrixTopHistogram, roi1);
+
+
+              int w1 = c - a, h1 = d - b;
+
+              Bitmap.Config conf2 = Bitmap.Config.ARGB_8888; // see other conf types
+              Bitmap bmp2 = Bitmap.createBitmap(w1, h1, conf2); // this creates a MUTABLE bitmap
+              Canvas canvas2 = new Canvas(bmp2);
+              Utils.matToBitmap(crop, bmp2);
+
+
+              int redColors = 0;
+              int greenColors = 0;
+              int blueColors = 0;
+
+              int red = 0;
+              int green = 0;
+              int blue = 0;
+
+              for (int y = 0; y < bmp2.getHeight(); y++) {
+                  for (int x = 0; x < bmp2.getWidth(); x++) {
+                      int color = bmp2.getPixel(x, y);
+                      redColors = Color.red(color);
+                      greenColors = Color.green(color);
+                      blueColors = Color.blue(color);
+
+                      if ((greenColors >= redColors && greenColors >= blueColors)) {
+                          green++;
+                      } else if (redColors >= greenColors && redColors >= blueColors) {
+                          red++;
+                      } else if (blueColors >= redColors && blueColors >= greenColors) {
+                          blue++;
+                      }
+
+
+                  }
+              }
+
+
+              //Log.d("PIXEL",linha+""+count+" "+"("+redColors+","+greenColors+","+blueColors+")");
+              //Log.d("PIXEL",linha+""+count+" "+"("+red+","+green+","+blue+")");
+
+              if ((green >= red && green >= blue)) {
+                  tabuleiro.put("" + linha + "" + count, "O");
+                  //Log.d("PIXEL","O");
+
+              } else if (red >= green && red >= blue) {
+                  tabuleiro.put("" + linha + "" + count, "F");
+                  //Log.d("PIXEL","F");
+
+              } else if (blue >= red && blue >= green) {
+                  tabuleiro.put("" + linha + "" + count, "X");
+                  //Log.d("PIXEL","X");
+
+              }
+
+
+              savePhoto(crop, file);
+
+
+              count++;
+              if (count == 12) {
+                  rec += "\n";
+                  count = 0;
+                  linha++;
+              }
+          }
+
+
+          for (int i = 0; i < 12; i++) {
+
+              for (int j = 0; j < 12; j++) {
+                  rec += tabuleiro.get("" + i + "" + j) + " ";
+
+
+              }
+              rec += "\n";
+
+          }
+      }
+      savePhoto(matrixTop,file);
+
+        return rec;
+
+
+    }
+
 
 
     private boolean containTopCode(List<TopCode> topcodes, int codigo) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.examples.android.boardshot">
+    package="com.example.android.boardshot">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -20,30 +20,30 @@
         android:roundIcon="@mipmap/ic_launcher_web"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditUser"></activity>
-        <activity android:name=".LevelsActivity">
+        <activity android:name="com.example.android.boardshot.EditUser"></activity>
+        <activity android:name="com.example.android.boardshot.LevelsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LogIn" />
+                android:value="com.example.android.boardshot.LogIn" />
         </activity>
-        <activity android:name=".LogIn">
+        <activity android:name="com.example.android.boardshot.LogIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BoardDraw">
+        <activity android:name="com.example.android.boardshot.BoardDraw">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.examples.android.boardshot.MainActivity" />
+                android:value="com.example.android.boardshot.MainActivity" />
         </activity>
         <activity
-            android:name="com.examples.android.boardshot.MainActivity"
+            android:name="com.example.android.boardshot.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LevelsActivity" />
+                android:value="com.example.android.boardshot.LevelsActivity" />
         </activity>
     </application>
 

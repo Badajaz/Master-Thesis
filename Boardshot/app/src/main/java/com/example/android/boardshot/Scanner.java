@@ -22,7 +22,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package com.examples.android.boardshot;
+package com.example.android.boardshot;
 
 import java.util.List;
 import android.graphics.Bitmap;

@@ -1,4 +1,4 @@
-package com.examples.android.boardshot;
+package com.example.android.boardshot;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
