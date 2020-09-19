@@ -2891,10 +2891,17 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int h = 0,w = 0;
         Mat cropped = null;
 
+        boolean topcodeDected = (topleft == false && bottomLeft == false && bottomRight == true && topRight == true) ||
+                                (topleft == true && bottomLeft == true && bottomRight == false && topRight == false) ||
+                                (topleft == true && bottomLeft == false && bottomRight == false && topRight == true) ||
+                                (topleft == false && bottomLeft == true && bottomRight == true && topRight == false) ||
+                                topcodePhoto.size() < 1;
 
-      if ((topleft == true && bottomLeft == true && bottomRight == false && topRight == false) ||
-              topleft == false && bottomLeft == false && bottomRight == true && topRight == true||
-      topcodePhoto.size() < 1){
+
+
+
+
+      if (topcodeDected){
           Toast.makeText(getApplicationContext(),"NÂO É POSSIVEL DETECTAR CODIGOS", Toast.LENGTH_LONG).show();
 
 
