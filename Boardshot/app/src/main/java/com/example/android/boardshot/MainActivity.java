@@ -92,8 +92,11 @@ import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 import static android.speech.SpeechRecognizer.ERROR_NETWORK_TIMEOUT;
 
@@ -2951,9 +2954,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
 
-
-
-
           Mat crop = null;
           rec = "";
           int count = 0;
@@ -2968,15 +2968,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
               int b = squares.get(i).asList().get(1).toInt();
               int c = squares.get(i).asList().get(2).toInt();
               int d = squares.get(i).asList().get(3).toInt();
-              Log.d("cropppp",a+", "+b+", "+c+", "+d);
-
+              Log.d("cropppp", a + ", " + b + ", " + c + ", " + d);
 
 
               Rect roi1 = new Rect(a, b, c - a, d - b);
               crop = new Mat(matrixTopHistogram, roi1);
+             // Mat cropBright =  new Mat();
+              //crop.convertTo(cropBright, -1, 1, 50);
+
+
 
 
               int w1 = c - a, h1 = d - b;
+
+              //Mat cropBright = new Mat();
+
+              //crop.convertTo(cropBright,-1,1,50);
 
               Bitmap.Config conf2 = Bitmap.Config.ARGB_8888; // see other conf types
               Bitmap bmp2 = Bitmap.createBitmap(w1, h1, conf2); // this creates a MUTABLE bitmap
@@ -2987,10 +2994,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
               int redColors = 0;
               int greenColors = 0;
               int blueColors = 0;
+              int white = 0;
 
               int red = 0;
               int green = 0;
               int blue = 0;
+
+
+              Scanner scanBegin = new Scanner();
+              List<TopCode> topcodeBegin = scanBegin.scan(bmp2);
+
 
               for (int y = 0; y < bmp2.getHeight(); y++) {
                   for (int x = 0; x < bmp2.getWidth(); x++) {
@@ -2999,6 +3012,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                       greenColors = Color.green(color);
                       blueColors = Color.blue(color);
 
+                      /*if (greenColors >= 150 && redColors >= 150 && blueColors >= 150 ){
+                          white++;
+                      }else*/
                       if ((greenColors >= redColors && greenColors >= blueColors)) {
                           green++;
                       } else if (redColors >= greenColors && redColors >= blueColors) {
@@ -3010,11 +3026,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                   }
               }
+              Log.d("Topcodes","("+linha+" , "+count+") ="+red+" , "+green+" , "+blue+" , "+white);
 
 
-              //Log.d("PIXEL",linha+""+count+" "+"("+redColors+","+greenColors+","+blueColors+")");
-              //Log.d("PIXEL",linha+""+count+" "+"("+red+","+green+","+blue+")");
+              /*if (white >= green && white >= blue && white >= red){
+                  Log.d("Topcodes","("+linha+" , "+count+") = WHITTTTTTTTTE");
 
+                  tabuleiro.put("" + linha + "" + count, "R");*/
+
+
+              if(!topcodeBegin.isEmpty()){
+                if (topcodeBegin.get(0).code == 369 )
+                    tabuleiro.put("" + linha + "" + count, "R");
+
+              }else
               if ((green >= red && green >= blue)) {
                   tabuleiro.put("" + linha + "" + count, "O");
                   //Log.d("PIXEL","O");
@@ -3031,6 +3056,24 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
               savePhoto(crop, file);
+
+              Point inicio = new Point(a,b);
+              Point fim = new Point(c,b);
+              Imgproc.line(matrixTop,inicio,fim,new Scalar(255, 0, 0, 255));
+
+              Point inicio1 = new Point(a,d);
+              Point fim1 = new Point(c,d);
+              Imgproc.line(matrixTop,inicio1,fim1,new Scalar(255, 0, 0, 255));
+
+              Point inicio2 = new Point(a,b);
+              Point fim2 = new Point(a,d);
+              Imgproc.line(matrixTop,inicio2,fim2,new Scalar(255, 0, 0, 255));
+
+              Point inicio3 = new Point(c,b);
+              Point fim3 = new Point(c,d);
+              Imgproc.line(matrixTop,inicio3,fim3,new Scalar(255, 0, 0, 255));
+
+
 
 
               count++;

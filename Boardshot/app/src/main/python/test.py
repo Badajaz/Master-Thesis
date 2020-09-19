@@ -101,8 +101,8 @@ def squares(file,topLeftX,topLeftY,bottomRightX,bottomRightY):
 
     h =  abs(int(topLeftY - bottomRightY))
     w = abs(int(topLeftX - bottomRightX))
-    h1 = int(h/11)
-    w1 = int(w/11)
+    h1 = int(h/12)
+    w1 = int(w/12)
 
     if h1 < w1:
         px = h1
@@ -126,8 +126,8 @@ def squares(file,topLeftX,topLeftY,bottomRightX,bottomRightY):
     count = 0
     i = 1
     while y1 < fourCorners[2][1] and y2 < fourCorners[3][1]:
-        y1 += px
-        y2 += px
+        y1 += h1
+        y2 += h1
 
         if count < 11:
             cv2.line(image,(x1,y1),(x2,y2), (0, 255, 0), 9)
@@ -152,8 +152,8 @@ def squares(file,topLeftX,topLeftY,bottomRightX,bottomRightY):
     j = 1
     while x1 < fourCorners[1][0] and x2 < fourCorners[3][0]:
 
-        x1 += px
-        x2 += px
+        x1 += w1
+        x2 += w1
 
 
         if count2 < 11:
