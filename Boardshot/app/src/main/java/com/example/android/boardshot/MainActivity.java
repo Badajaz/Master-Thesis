@@ -112,11 +112,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     //Check state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-    static{
-        ORIENTATIONS.append(Surface.ROTATION_0,90);
-        ORIENTATIONS.append(Surface.ROTATION_90,0);
-        ORIENTATIONS.append(Surface.ROTATION_180,270);
-        ORIENTATIONS.append(Surface.ROTATION_270,180);
+
+    static {
+        ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        ORIENTATIONS.append(Surface.ROTATION_180, 270);
+        ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
     private String cameraId;
@@ -154,12 +155,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int tutorialPieces = 0;
     private String instruction = "";
     private String sequenceDB = "";
-    private boolean hasFinal =false;
+    private boolean hasFinal = false;
 
     private Python py;
     private String rec;
     private String boardRec;
-    HashMap<String,String> tabuleiro;
+    HashMap<String, String> tabuleiro;
     private int RECOGNIZER_RESULT = 1;
 
     private String speechResult = "";
@@ -173,8 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int orangeArea = -1;
     private int robotLine;
     private int robotCollumn;
-    private String boardAux= "";
-
+    private String boardAux = "";
 
 
     private GestureDetector gd;
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int speechCount = 0;
     private int explanationCount = 0;
 
-    private  TimerTask taskTalk;
+    private TimerTask taskTalk;
 
 
     private StorageReference mStorageRef;
@@ -204,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     Timer timerExplanation = new Timer("Timer");
     private Bitmap myBitmap;
     private List<Integer> coordenadas = new ArrayList<>();
-
 
 
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
@@ -222,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         @Override
         public void onError(@NonNull CameraDevice cameraDevice, int i) {
             cameraDevice.close();
-            cameraDevice=null;
+            cameraDevice = null;
         }
     };
 
@@ -241,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         c.setColor(Color.parseColor("#ff781f"));
         getSupportActionBar().setBackgroundDrawable(c);
         getSupportActionBar().setTitle("Reconhecimento");
-         speech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+        speech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
 
             @Override
             public void onInit(int arg0) {
@@ -249,9 +248,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     //speech.setLanguage(Locale.US);
                     speech.setLanguage(new Locale("pt", "PT"));
 
-                    if(Levels.equals("freestyle")){
+                    if (Levels.equals("freestyle")) {
                         gameExplanationFreestyle();
-                    }else{
+                    } else {
                         gameExplanation();
                     }
                 }
@@ -259,15 +258,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         });
 
 
+        if (OpenCVLoader.initDebug()) {
 
+            // Toast.makeText(getApplicationContext(),"sucesso",Toast.LENGTH_LONG).show();
 
-
-
-        if (OpenCVLoader.initDebug()){
-
-           // Toast.makeText(getApplicationContext(),"sucesso",Toast.LENGTH_LONG).show();
-
-        }else{
+        } else {
             //Toast.makeText(getApplicationContext(),"Insucesso",Toast.LENGTH_LONG).show();
 
         }
@@ -281,12 +276,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //Toast.makeText(getApplicationContext(),obj.toString(),Toast.LENGTH_LONG).show();
 
 
-
-
         database = FirebaseDatabase.getInstance().getReference("");
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        textureView = (TextureView)findViewById(R.id.textureView);
+        textureView = (TextureView) findViewById(R.id.textureView);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
 
@@ -301,45 +294,42 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
         touch.setOnTouchListener(this);
-        gd = new GestureDetector(this,this);
+        gd = new GestureDetector(this, this);
 
         final Button boardRecognition = (Button) findViewById(R.id.boarRecButton);
         boardRecognition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               recBoardPopup = 1;
-               takePicture();
+                recBoardPopup = 1;
+                takePicture();
             }
         });
-
-
 
 
     }
 
     private void takePicture() {
-        if(cameraDevice == null)
+        if (cameraDevice == null)
             return;
         MediaActionSound sound = new MediaActionSound();
         sound.play(MediaActionSound.SHUTTER_CLICK);
 
-        CameraManager manager = (CameraManager)getSystemService(Context.CAMERA_SERVICE);
-        try{
+        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        try {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraDevice.getId());
             Size[] jpegSizes = null;
-            if(characteristics != null)
+            if (characteristics != null)
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
                         .getOutputSizes(ImageFormat.JPEG);
 
             //Capture image with custom size
             int width = 640;
             int height = 480;
-            if(jpegSizes != null && jpegSizes.length > 0)
-            {
+            if (jpegSizes != null && jpegSizes.length > 0) {
                 width = jpegSizes[0].getWidth();
                 height = jpegSizes[0].getHeight();
             }
-            final ImageReader reader = ImageReader.newInstance(width,height,ImageFormat.JPEG,1);
+            final ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
             List<Surface> outputSurface = new ArrayList<>(2);
             outputSurface.add(reader.getSurface());
             outputSurface.add(new Surface(textureView.getSurfaceTexture()));
@@ -350,38 +340,34 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             //Check orientation base on device
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION,ORIENTATIONS.get(rotation));
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
 
-            file = new File(Environment.getExternalStorageDirectory()+"/"+UUID.randomUUID().toString()+".jpg");
+            file = new File(Environment.getExternalStorageDirectory() + "/" + UUID.randomUUID().toString() + ".jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader imageReader) {
                     Image image = null;
-                    try{
+                    try {
                         image = reader.acquireLatestImage();
                         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
-                        myBitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length,null);
+                        myBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
                         save(bytes);
 
-                    }
-                    catch (FileNotFoundException e)
-                    {
+                    } catch (FileNotFoundException e) {
                         e.printStackTrace();
-                    }
-                    catch (IOException e)
-                    {
+                    } catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    finally {
+                    } finally {
                         {
-                            if(image != null)
+                            if (image != null)
                                 image.close();
 
                         }
                     }
                 }
+
                 private void save(byte[] bytes) throws IOException {
                     OutputStream outputStream = null;
                     try {
@@ -395,17 +381,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     }
 
 
-
-
-                    if(recBoardPopup == 1){
+                    if (recBoardPopup == 1) {
                         boardAux = "";
                         recBoardPopup = 0;
                         boardAux = getTopCodeCorners(file);
                         ShowPopUpBoard();
 
                     }
-
-
 
 
                     if (recPieces == 1) {
@@ -423,10 +405,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 } else if (t == 55) {
                                     sequenceDB += "C_";
                                 } else if (t == 59) {
-                                    sequenceDB += "B_";
+                                    sequenceDB += "LE_";
                                 } else if (t == 107) {
                                     sequenceDB += "F";
-                                    //Toast.makeText(MainActivity.this, "FIMMMMMMM", Toast.LENGTH_SHORT).show();
+                                }else if (t == 61) {
+                                    sequenceDB += "LB_2_";
 
                                 }
                             }
@@ -461,9 +444,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
                                 @Override
                                 public void onInit(int status) {
-                                    if (status == TextToSpeech.SUCCESS){
+                                    if (status == TextToSpeech.SUCCESS) {
                                         engine.setLanguage(new Locale("pt", "PT"));
-                                        engine.speak("A peça corresponde à instrução "+instruction,
+                                        engine.speak("A peça corresponde à instrução " + instruction,
                                                 TextToSpeech.QUEUE_FLUSH, null, null);
                                     }
 
@@ -471,28 +454,25 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             });
 
 
-
-
                         }
                     }
 
                     if (recPieces == 1 || board == 1) {
 
-                        if(board == 1) {
+                        if (board == 1) {
                             //boardRec = boardRecognition2();
-                            boardRec =getTopCodeCorners(file);
+                            boardRec = getTopCodeCorners(file);
 
 
-                           // introSpeach();
-                            //while (speechCount< getNumberOfWaitingLines());
-                            //lauchSpeechRecognition();
+                            introSpeach();
+                            while (speechCount < getNumberOfWaitingLines());
+                            lauchSpeechRecognition();
 
 
-                            }
+                        }
 
 
-
-                        if (recPieces ==1 && hasFinal){
+                        if (recPieces == 1 && hasFinal) {
                             timer.cancel();
                             repeatedTask.cancel();
                             engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -506,8 +486,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             //database.child("sequencia").setValue(sequenceDB);
 
                             recPieces = 0;
-                            boardRec = boardRecognition2();
-                            if (!sequenceDB.equals("")){
+                            boardRec = getTopCodeCorners(file);
+                            if (!sequenceDB.equals("")) {
                                 Handler mHandler = new Handler(getMainLooper());
                                 mHandler.post(new Runnable() {
                                     @Override
@@ -520,12 +500,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         intent.putExtra("roboColuna", robotCollumn);
                                         intent.putExtra("levels", Levels);
                                         intent.putExtra("user", user);
+                                        intent.putExtra("activity", "MainActivity");
                                         //intent.putIntegerArrayListExtra("pointsList",pointsList);
                                         startActivity(intent);
                                     }
-                                });}
+                                });
+                            }
                         }
-
 
 
                         board = 0;
@@ -557,14 +538,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 });
 
 
-
-
-
                     }
                 }
             };
 
-            reader.setOnImageAvailableListener(readerListener,mBackgroundHandler);
+            reader.setOnImageAvailableListener(readerListener, mBackgroundHandler);
             final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
@@ -578,8 +556,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             cameraDevice.createCaptureSession(outputSurface, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    try{
-                        cameraCaptureSession.capture(captureBuilder.build(),captureListener,mBackgroundHandler);
+                    try {
+                        cameraCaptureSession.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
                     } catch (CameraAccessException e) {
                         e.printStackTrace();
                     }
@@ -589,7 +567,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
 
                 }
-            },mBackgroundHandler);
+            }, mBackgroundHandler);
 
 
         } catch (CameraAccessException e) {
@@ -598,19 +576,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-
     private void createCameraPreview() {
-        try{
+        try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
             assert texture != null;
-            texture.setDefaultBufferSize(imageDimension.getWidth(),imageDimension.getHeight());
+            texture.setDefaultBufferSize(imageDimension.getWidth(), imageDimension.getHeight());
             Surface surface = new Surface(texture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
             cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    if(cameraDevice == null)
+                    if (cameraDevice == null)
                         return;
                     cameraCaptureSessions = cameraCaptureSession;
                     updatePreview();
@@ -620,18 +597,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
                     Toast.makeText(MainActivity.this, "Changed", Toast.LENGTH_SHORT).show();
                 }
-            },null);
+            }, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
 
     private void updatePreview() {
-        if(cameraDevice == null)
+        if (cameraDevice == null)
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-        captureRequestBuilder.set(CaptureRequest.CONTROL_MODE,CaptureRequest.CONTROL_MODE_AUTO);
-        try{
-            cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(),null,mBackgroundHandler);
+        captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
+        try {
+            cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -639,8 +616,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
     private void openCamera() {
-        CameraManager manager = (CameraManager)getSystemService(Context.CAMERA_SERVICE);
-        try{
+        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        try {
 
             cameraId = manager.getCameraIdList()[0];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
@@ -648,15 +625,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             assert map != null;
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
             //Check realtime permission if run higher API 23
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(this,new String[]{
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{
                         Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
-                },REQUEST_CAMERA_PERMISSION);
+                }, REQUEST_CAMERA_PERMISSION);
                 return;
             }
-            manager.openCamera(cameraId,stateCallback,null);
+            manager.openCamera(cameraId, stateCallback, null);
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -687,10 +663,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == REQUEST_CAMERA_PERMISSION)
-        {
-            if(grantResults[0] != PackageManager.PERMISSION_GRANTED)
-            {
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "You can't use camera without permission", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -701,7 +675,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     protected void onResume() {
         super.onResume();
         startBackgroundThread();
-        if(textureView.isAvailable())
+        if (textureView.isAvailable())
             openCamera();
         else
             textureView.setSurfaceTextureListener(textureListener);
@@ -715,9 +689,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
-        try{
+        try {
             mBackgroundThread.join();
-            mBackgroundThread= null;
+            mBackgroundThread = null;
             mBackgroundHandler = null;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -731,21 +705,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-
-
-    private void deleteAllPhotos(){
+    private void deleteAllPhotos() {
         File cameraFolder = new File(CAMERA_PATH);
 
-        if (cameraFolder.isDirectory()){
+        if (cameraFolder.isDirectory()) {
             File[] photos = cameraFolder.listFiles();
-            if(photos != null) {
+            if (photos != null) {
                 String concatNameFiles = "";
                 for (File image : photos) {
                     image.delete();
 
                 }
 
-            }else{
+            } else {
                 Toast.makeText(getApplicationContext(), "Não contém fotos", Toast.LENGTH_LONG).show();
             }
 
@@ -754,23 +726,23 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-    private String getLastPhotoTaken(){
+    private String getLastPhotoTaken() {
 
         File cameraFolder = new File(CAMERA_PATH);
 
-        Map<String,Date> photoDates = new HashMap<>();
+        Map<String, Date> photoDates = new HashMap<>();
 
-        if (cameraFolder.isDirectory()){
+        if (cameraFolder.isDirectory()) {
             File[] photos = cameraFolder.listFiles();
-            if(photos != null) {
+            if (photos != null) {
                 String concatNameFiles = "";
                 for (File image : photos) {
                     Date date = new Date(image.lastModified());
-                    photoDates.put(image.getName(),date);
+                    photoDates.put(image.getName(), date);
                 }
 
 
-            }else{
+            } else {
                 Toast.makeText(getApplicationContext(), "Não contém fotos", Toast.LENGTH_LONG).show();
             }
 
@@ -780,23 +752,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-
-    private static String getLastName(@NonNull Map<String, Date> photoDates){
+    private static String getLastName(@NonNull Map<String, Date> photoDates) {
 
         String lastPhoto = "";
         Date lastDate = new Date("05/05/1970");
-        for (Map.Entry<String,Date> entry1 : photoDates.entrySet()) {
-            if (!(entry1.getKey().equals("cache")) && entry1.getValue().after(lastDate) ){
+        for (Map.Entry<String, Date> entry1 : photoDates.entrySet()) {
+            if (!(entry1.getKey().equals("cache")) && entry1.getValue().after(lastDate)) {
                 lastDate = entry1.getValue();
                 lastPhoto = entry1.getKey();
             }
         }
-        return  lastPhoto;
+        return lastPhoto;
     }
 
 
-
-    private List<TopCode> recognizeTopcodes(String nameLastPhoto){
+    private List<TopCode> recognizeTopcodes(String nameLastPhoto) {
         //Toast.makeText(getApplicationContext(),"path ="+ nameLastPhoto, Toast.LENGTH_LONG).show();
 
         List<TopCode> lista = null;
@@ -808,22 +778,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Toast.makeText(getApplicationContext(), "lista de scan vazia", Toast.LENGTH_LONG).show();
             String codes = "";
             for (TopCode t : lista) {
-                codes += t.getCode() + " "+"x = "+t.getCenterX()+ " "+"y = "+t.getCenterY()+"\n";
+                codes += t.getCode() + " " + "x = " + t.getCenterX() + " " + "y = " + t.getCenterY() + "\n";
             }
             //Toast.makeText(getApplicationContext(), codes, Toast.LENGTH_LONG).show();
-        }else{
+        } else {
 
             Toast.makeText(getApplicationContext(), "Não tem fotos tiradas ou luz pode não permitir o reconhecimento do topcode", Toast.LENGTH_LONG).show();
 
         }
-        return  lista;
+        return lista;
     }
 
-    private boolean hasFinalCode(List<TopCode> lt){
+    private boolean hasFinalCode(List<TopCode> lt) {
 
-        for (TopCode t : lt){
+        for (TopCode t : lt) {
 
-            if (t.getCode() == 107 ){
+            if (t.getCode() == 107) {
                 return true;
             }
         }
@@ -831,27 +801,28 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return false;
     }
 
-    private List<Integer> instructionsRecognition(List<TopCode> listaTopCodes){
+    private List<Integer> instructionsRecognition(List<TopCode> listaTopCodes) {
 
-        String finalInstructions= "";
+        String finalInstructions = "";
         List<Float> sortYCoordenate = new ArrayList<>();
         List<Integer> TopcodeInstructions = new ArrayList<>();
-        if (listaTopCodes!= null) {
+        if (listaTopCodes != null) {
             for (TopCode t : listaTopCodes) {
                 sortYCoordenate.add(t.getCenterY());
 
             }
             Collections.sort(sortYCoordenate);
-            for (float f : sortYCoordenate){
-                for (TopCode t:listaTopCodes){
-                    if (f == t.getCenterY()){
+            Collections.reverse(sortYCoordenate);
+            for (float f : sortYCoordenate) {
+                for (TopCode t : listaTopCodes) {
+                    if (f == t.getCenterY()) {
                         TopcodeInstructions.add(t.getCode());
                     }
                 }
             }
 
 
-        }else{
+        } else {
             //Toast.makeText(getApplicationContext(), "a lista está vazia", Toast.LENGTH_LONG).show();
 
         }
@@ -859,9 +830,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         return TopcodeInstructions;
     }
+
     private void printMatrixAdjusted(List<PyObject> matrixAdjusted) {
-        for (PyObject py : matrixAdjusted){
-            Log.d("Matrix", py.asList()+"");
+        for (PyObject py : matrixAdjusted) {
+            Log.d("Matrix", py.asList() + "");
         }
 
     }
@@ -883,11 +855,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private String boardRecognition() throws IOException {
 
-        if (!Python.isStarted()){
+        if (!Python.isStarted()) {
             Python.start(new AndroidPlatform(getApplicationContext()));
         }
 
-        if (Python.isStarted()){
+        if (Python.isStarted()) {
             //Toast.makeText(getApplicationContext(),"Python Started",Toast.LENGTH_LONG).show();
         }
 
@@ -896,10 +868,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         PyObject numpy = py.getModule("numpy");
 
 
-
         Mat matrix = Imgcodecs.imread(file.getPath());
-
-
 
 
         List<MatOfPoint> contours = new ArrayList<>();
@@ -907,7 +876,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         PyObject vhlines = py.getModule("verticalAndHorizontal");
         TextView tv = findViewById(R.id.textoo);
-        PyObject obj3= vhlines.callAttr("squares",file.getPath());
+        PyObject obj3 = vhlines.callAttr("squares", file.getPath());
         List<PyObject> squares = obj3.asList();
 
 
@@ -919,32 +888,30 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         matrix.convertTo(matrixRobot, -1, 1, 0);
 
 
-
-        Mat cropped= null;
-        Mat croppedNormal= null;
+        Mat cropped = null;
+        Mat croppedNormal = null;
         rec = "";
         int count = 0;
-        Map<String,Integer> blackareas = new HashMap();
+        Map<String, Integer> blackareas = new HashMap();
         tabuleiro = new HashMap();
 
 
         //Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
         int linha = 0;
 
-        Toast.makeText(getApplicationContext(),"squaressssss"+squares.size()+" ",Toast.LENGTH_LONG).show();
-        Log.d("SQUARE",squares.size()+"");
-        for (int i = 0;i < squares.size();i++){
+        Toast.makeText(getApplicationContext(), "squaressssss" + squares.size() + " ", Toast.LENGTH_LONG).show();
+        Log.d("SQUARE", squares.size() + "");
+        for (int i = 0; i < squares.size(); i++) {
             int a = squares.get(i).asList().get(0).toInt();
             int b = squares.get(i).asList().get(1).toInt();
             int c = squares.get(i).asList().get(2).toInt();
             int d = squares.get(i).asList().get(3).toInt();
-           // Log.d("SQUARES",a+" "+b+" "+c+" "+d);
+            // Log.d("SQUARES",a+" "+b+" "+c+" "+d);
 
 
-            Rect roi = new Rect(a, b,c - a , d - b);
+            Rect roi = new Rect(a, b, c - a, d - b);
             cropped = new Mat(matrixBright, roi);
             croppedNormal = new Mat(matrixRobot, roi);
-
 
 
             int w = c - a, h = d - b;
@@ -953,12 +920,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
             Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
             Canvas canvas = new Canvas(bmp);
-            Utils.matToBitmap(cropped,bmp);
+            Utils.matToBitmap(cropped, bmp);
 
             Bitmap.Config conf2 = Bitmap.Config.ARGB_8888; // see other conf types
             Bitmap bmp2 = Bitmap.createBitmap(w, h, conf2); // this creates a MUTABLE bitmap
             Canvas canvas2 = new Canvas(bmp2);
-            Utils.matToBitmap(croppedNormal,bmp2);
+            Utils.matToBitmap(croppedNormal, bmp2);
 
 
             int redColors = 0;
@@ -966,10 +933,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int blueColors = 0;
             int pixelCount = 0;
 
-            for (int y = 0; y < bmp.getHeight(); y++)
-            {
-                for (int x = 0; x < bmp.getWidth(); x++)
-                {
+            for (int y = 0; y < bmp.getHeight(); y++) {
+                for (int x = 0; x < bmp.getWidth(); x++) {
                     int color = bmp.getPixel(x, y);
                     pixelCount++;
                     redColors += Color.red(color);
@@ -981,25 +946,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
 
 
-            int red = (redColors/pixelCount);
-            int green = (greenColors/pixelCount);
-            int blue = (blueColors/pixelCount);
+            int red = (redColors / pixelCount);
+            int green = (greenColors / pixelCount);
+            int blue = (blueColors / pixelCount);
             //int yellow = ((redColors+greenColors)/pixelCount);
 
 
-                if(green >= red && green >=  blue){
-                    tabuleiro.put(""+linha+""+count,"O");
-                }
-
-                else if (red >= green && red >= blue){
-                    tabuleiro.put(""+linha+""+count,"F");
-                }
-
-                else if(blue >= red && blue >= green){
-                    tabuleiro.put(""+linha+""+count,"X");
-                }
-
-
+            if (green >= red && green >= blue) {
+                tabuleiro.put("" + linha + "" + count, "O");
+            } else if (red >= green && red >= blue) {
+                tabuleiro.put("" + linha + "" + count, "F");
+            } else if (blue >= red && blue >= green) {
+                tabuleiro.put("" + linha + "" + count, "X");
+            }
 
 
             MatOfByte matOfByte = new MatOfByte();
@@ -1023,45 +982,40 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
 
             PyObject orangeLines = py.getModule("OrangeLines");
-            PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition",file.getPath());
+            PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition", file.getPath());
             int orangeAux = orangeLinesMod.toInt();
-           // Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
+            // Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
 
 
-            if (orangeArea < orangeAux){
+            if (orangeArea < orangeAux) {
                 orangeArea = orangeAux;
                 robotLine = linha;
                 robotCollumn = count;
             }
 
 
-
             count++;
-            if (count == 12){
-                rec+="\n";
+            if (count == 12) {
+                rec += "\n";
                 count = 0;
                 linha++;
             }
 
         }
         //String robotCoordenates = getRobotCoordenates(blackareas);
-        tabuleiro.put((""+robotLine+""+robotCollumn),"R");
+        tabuleiro.put(("" + robotLine + "" + robotCollumn), "R");
 
-        rec= "";
-        for (int i = 0;i < 12;i++){
+        rec = "";
+        for (int i = 0; i < 12; i++) {
 
-            for (int j = 0;j < 12;j++){
-                rec+= tabuleiro.get(""+i+""+j)+" ";
+            for (int j = 0; j < 12; j++) {
+                rec += tabuleiro.get("" + i + "" + j) + " ";
 
 
             }
-            rec+="\n";
+            rec += "\n";
 
         }
-
-
-
-
 
 
         MatOfByte matOfByte = new MatOfByte();
@@ -1113,54 +1067,48 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         if (brightness >= 0 && brightness < 70) {
             matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 240);
-        }
-        else if (brightness >= 70 && brightness < 75) {
+        } else if (brightness >= 70 && brightness < 75) {
             matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 220);
-        }else  if (brightness >= 75 && brightness < 90) {
+        } else if (brightness >= 75 && brightness < 90) {
             matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 150);
-        }else if(brightness >= 95 && brightness < 100 ){
-            matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,150);
-        } else if(brightness >=100 && brightness <= 200 ){
-            matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,100);
-        }else if(brightness >200 ){
-            matrixBrightAttempt.convertTo(matrixBrightAttempt2,-1,1,1);
+        } else if (brightness >= 95 && brightness < 100) {
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 150);
+        } else if (brightness >= 100 && brightness <= 200) {
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 100);
+        } else if (brightness > 200) {
+            matrixBrightAttempt.convertTo(matrixBrightAttempt2, -1, 1, 1);
         }
 
 
-
-        savePhoto(matrixBrightAttempt2,file);
-
+        savePhoto(matrixBrightAttempt2, file);
 
 
         PyObject vhlines = py.getModule("verticalAndHorizontal");
         TextView tv = findViewById(R.id.textoo);
-        PyObject obj3= vhlines.callAttr("squares",file.getPath());
+        PyObject obj3 = vhlines.callAttr("squares", file.getPath());
         List<PyObject> squares = obj3.asList();
 
 
-
-
-        Mat cropped= null;
-        Mat croppedRobot= null;
+        Mat cropped = null;
+        Mat croppedRobot = null;
         rec = "";
         int count = 0;
-        Map<String,Integer> blackareas = new HashMap();
+        Map<String, Integer> blackareas = new HashMap();
         tabuleiro = new HashMap();
         Mat croppedRobotFinal = new Mat();
 
 
         if (brightness >= 0 && brightness < 70) {
             matrix.convertTo(croppedRobotFinal, -1, 1, 100);
-        }
-        else if (brightness >= 70 && brightness < 75) {
+        } else if (brightness >= 70 && brightness < 75) {
             matrix.convertTo(croppedRobotFinal, -1, 1, 50);
-        }else  if (brightness >= 75 && brightness < 90) {
+        } else if (brightness >= 75 && brightness < 90) {
             matrix.convertTo(croppedRobotFinal, -1, 1, 50);
-        }else if(brightness >= 95 && brightness < 100 ){
+        } else if (brightness >= 95 && brightness < 100) {
             matrix.convertTo(croppedRobotFinal, -1, 1, 1);
-        } else if(brightness >=100 && brightness <= 200 ){
+        } else if (brightness >= 100 && brightness <= 200) {
             matrix.convertTo(croppedRobotFinal, -1, 1, 1);
-        }else if(brightness >200 ){
+        } else if (brightness > 200) {
             matrix.convertTo(croppedRobotFinal, -1, 1, 1);
         }
 
@@ -1170,18 +1118,17 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //}
 
 
-
         //Toast.makeText(getApplicationContext(),squares.size()+"",Toast.LENGTH_LONG).show();
         int linha = 0;
 
-        for (int i = 0;i < squares.size();i++){
+        for (int i = 0; i < squares.size(); i++) {
             int a = squares.get(i).asList().get(0).toInt();
             int b = squares.get(i).asList().get(1).toInt();
             int c = squares.get(i).asList().get(2).toInt();
             int d = squares.get(i).asList().get(3).toInt();
 
 
-            Rect roi = new Rect(a, b,c - a , d - b);
+            Rect roi = new Rect(a, b, c - a, d - b);
             cropped = new Mat(matrixBrightAttempt2, roi);
             croppedRobot = new Mat(croppedRobotFinal, roi);
 
@@ -1192,9 +1139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
             Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
             Canvas canvas = new Canvas(bmp);
-            Utils.matToBitmap(cropped,bmp);
-
-
+            Utils.matToBitmap(cropped, bmp);
 
 
             int redColors = 0;
@@ -1202,10 +1147,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int blueColors = 0;
             int pixelCount = 0;
 
-            for (int y = 0; y < bmp.getHeight(); y++)
-            {
-                for (int x = 0; x < bmp.getWidth(); x++)
-                {
+            for (int y = 0; y < bmp.getHeight(); y++) {
+                for (int x = 0; x < bmp.getWidth(); x++) {
                     int color = bmp.getPixel(x, y);
                     pixelCount++;
                     redColors += Color.red(color);
@@ -1217,81 +1160,75 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
 
 
-            int red = (redColors/pixelCount);
-            int green = (greenColors/pixelCount);
-            int blue = (blueColors/pixelCount);
+            int red = (redColors / pixelCount);
+            int green = (greenColors / pixelCount);
+            int blue = (blueColors / pixelCount);
             //Log.d("PIXEL",linha+""+count+" "+"("+redColors+","+greenColors+","+blueColors+")");
             //Log.d("PIXEL",linha+""+count+" "+"("+red+","+green+","+blue+")");
 
-            if((green >= red && green >=  blue) ){
-                tabuleiro.put(""+linha+""+count,"O");
+            if ((green >= red && green >= blue)) {
+                tabuleiro.put("" + linha + "" + count, "O");
                 //Log.d("PIXEL","O");
 
-            }
-
-            else if (red >= green && red >= blue){
-                tabuleiro.put(""+linha+""+count,"F");
+            } else if (red >= green && red >= blue) {
+                tabuleiro.put("" + linha + "" + count, "F");
                 //Log.d("PIXEL","F");
 
-            }
-
-            else if(blue >= red && blue >= green){
-                tabuleiro.put(""+linha+""+count,"X");
+            } else if (blue >= red && blue >= green) {
+                tabuleiro.put("" + linha + "" + count, "X");
                 //Log.d("PIXEL","X");
 
             }
 
-            savePhoto(croppedRobot,file);
-
-
+            savePhoto(croppedRobot, file);
 
 
             PyObject orangeLines = py.getModule("OrangeLines");
-            PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition",file.getPath());
+            PyObject orangeLinesMod = orangeLines.callAttr("getStartPosition", file.getPath());
             int orangeAux = orangeLinesMod.toInt();
             // Log.d("AREAS",orangeArea+" , "+orangeAux+"  "+"("+linha+","+count+")");
 
 
-            if (orangeArea <= orangeAux ){
+            if (orangeArea <= orangeAux) {
                 orangeArea = orangeAux;
                 robotLine = linha;
                 robotCollumn = count;
-                Log.d("AREA",orangeArea+""+linha+","+count);
+                Log.d("AREA", orangeArea + "" + linha + "," + count);
                 coordenadas.add(linha);
                 coordenadas.add(count);
 
             }
 
-            savePhoto(cropped,file);
+            savePhoto(cropped, file);
 
 
             count++;
-            if (count == 12){
-                rec+="\n";
+            if (count == 12) {
+                rec += "\n";
                 count = 0;
                 linha++;
             }
 
         }
         //String robotCoordenates = getRobotCoordenates(blackareas);
-        tabuleiro.put((""+robotLine+""+robotCollumn),"R");
+        tabuleiro.put(("" + robotLine + "" + robotCollumn), "R");
 
         //boardCorrection(coordenadas);
 
 
-        rec= "";
-        for (int i = 0;i < 12;i++){
+        rec = "";
+        for (int i = 0; i < 12; i++) {
 
-            for (int j = 0;j < 12;j++){
-                rec+= tabuleiro.get(""+i+""+j)+" ";
+            for (int j = 0; j < 12; j++) {
+                rec += tabuleiro.get("" + i + "" + j) + " ";
 
 
             }
-            rec+="\n";
+            rec += "\n";
 
         }
 
-        savePhoto(matrix,file);
+        savePhoto(matrix, file);
 
         return rec;
     }
@@ -1300,12 +1237,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        if (resultCode == ERROR_NETWORK_TIMEOUT){
-            Toast.makeText(getApplicationContext(),"timeout", Toast.LENGTH_LONG).show();
+        if (resultCode == ERROR_NETWORK_TIMEOUT) {
+            Toast.makeText(getApplicationContext(), "timeout", Toast.LENGTH_LONG).show();
         }
 
         //
-        if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK ) {
+        if (requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK) {
 
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             if (matches == null) {
@@ -1313,34 +1250,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             speechResult = matches.get(0);
 
-            if(Levels.equals("level1")){
-                if (speechResult.contains("esquerda")){
+            if (Levels.equals("level1")) {
+                if (speechResult.contains("esquerda")) {
                     sequenceDB += "E_";
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if(speechResult.contains("direita")){
+                } else if (speechResult.contains("direita")) {
                     sequenceDB += "D_";
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if(speechResult.contains("frente") || speechResult.contains("cima")){
+                } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     sequenceDB += "C_";
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("não")){
+                } else if (speechResult.contains("não")) {
                     engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("sim")){
+                } else if (speechResult.contains("sim")) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if (speechResult.contains("terminar")){
+                } else if (speechResult.contains("terminar")) {
                     sequenceDB += "F";
                     if (!sequenceDB.equals("")) {
                         Handler mHandler = new Handler(getMainLooper());
@@ -1361,54 +1290,44 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             }
                         });
                     }
-                }else{
+                } else {
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
                 }
 
 
-            }else if(Levels.equals("level2")) {
+            } else if (Levels.equals("level2")) {
 
 
-                if (speechResult.contains("esquerda")){
+                if (speechResult.contains("esquerda")) {
                     instrucao = "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
-                }
-
-                else if(speechResult.contains("direita")){
+                } else if (speechResult.contains("direita")) {
                     instrucao = "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if(speechResult.contains("frente") || speechResult.contains("cima")){
+                } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     instrucao = "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if(times && (speechResult.contains("vezes") || speechResult.contains("vez"))){
+                } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     times = false;
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("não")){
+                } else if (speechResult.contains("não")) {
                     engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("sim")){
+                } else if (speechResult.contains("sim")) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if (speechResult.contains("terminar")){
+                } else if (speechResult.contains("terminar")) {
                     sequenceDB += "F";
                     if (!sequenceDB.equals("")) {
                         Handler mHandler = new Handler(getMainLooper());
@@ -1431,53 +1350,43 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             }
                         });
                     }
-                }else{
+                } else {
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
                 }
 
-            }else if(Levels.equals("level3")){
+            } else if (Levels.equals("level3")) {
 
 
-                if (speechResult.contains("esquerda")){
+                if (speechResult.contains("esquerda")) {
                     instrucao = "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
-                }
-
-                else if(speechResult.contains("direita")){
+                } else if (speechResult.contains("direita")) {
                     instrucao = "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if(speechResult.contains("frente") || speechResult.contains("cima")){
+                } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     instrucao = "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if(times && (speechResult.contains("vezes") || speechResult.contains("vez"))){
+                } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     times = false;
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("não")){
+                } else if (speechResult.contains("não")) {
                     engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("sim")){
+                } else if (speechResult.contains("sim")) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-
-                else if (speechResult.contains("terminar")){
+                } else if (speechResult.contains("terminar")) {
                     sequenceDB += "F";
                     if (!sequenceDB.equals("")) {
                         Handler mHandler = new Handler(getMainLooper());
@@ -1500,82 +1409,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             }
                         });
                     }
-                }else{
+                } else {
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
                 }
 
-            }else if(Levels.equals("level3")){
-
-
-                if (speechResult.contains("esquerda")){
-                    instrucao = "E_";
-                    times = true;
-                    engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-
-                }
-
-                else if(speechResult.contains("direita")){
-                    instrucao = "D_";
-                    times = true;
-                    engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }
-
-                else if(speechResult.contains("frente") || speechResult.contains("cima")){
-                    instrucao = "C_";
-                    times = true;
-                    engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }
-
-                else if(times && (speechResult.contains("vezes") || speechResult.contains("vez"))){
-                    times = false;
-                    sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
-                    engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("não")){
-                    engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("sim")){
-                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }
-
-                else if (speechResult.contains("terminar")){
-                    sequenceDB += "F";
-                    if (!sequenceDB.equals("")) {
-                        Handler mHandler = new Handler(getMainLooper());
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(MainActivity.this, BoardDraw.class);
-                                intent.putExtra("message", boardRec);
-                                intent.putExtra("map", tabuleiro);
-                                intent.putExtra("sequencia", sequenceDB);
-                                intent.putExtra("roboLinha", robotLine);
-                                intent.putExtra("roboColuna", robotCollumn);
-                                intent.putExtra("user", user);
-                                intent.putExtra("levels", Levels);
-                                intent.putExtra("activity", "MainActivity");
-                                //intent.putIntegerArrayListExtra("pointsList",pointsList);
-
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                }else{
-                    engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-
-                }
-
-
-            } else if(Levels.equals("level4")) {
+            } else if (Levels.equals("level3")) {
 
 
                 if (speechResult.contains("esquerda")) {
@@ -1634,27 +1474,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 }
 
 
-            }else if(Levels.equals("level5")) {
+            } else if (Levels.equals("level4")) {
 
-                if (speechResult.contains("esquerda") && ciclo) {
-                    sequenceDB += "E_";
-                    times = true;
-                    engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
 
-                } else if (speechResult.contains("direita") && ciclo) {
-                    sequenceDB+= "D_";
-                    times = true;
-                    engine.speak("RECEBIDO A INSTRUÇÃO DIREITA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-
-                } else if ( ciclo &&(speechResult.contains("frente") || speechResult.contains("cima"))) {
-                    sequenceDB += "C_";
-                    times = true;
-                    engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! já terminaste o ciclo?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-
-                } else if (speechResult.contains("esquerda")) {
+                if (speechResult.contains("esquerda")) {
                     instrucao = "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
@@ -1665,55 +1488,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-
                 } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     instrucao = "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-
-                }else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
+                } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
+                    times = false;
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-
-                } else if ((speechResult.contains("ciclo") || speechResult.contains("loop")) && ciclo == false) {
-                    sequenceDB += "LB_";
-                    ciclo = true;
-                    engine.speak("ACHAS QUE DEVIA EXECUTAR O CICLO QUANTAS VEZES?", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if (speechResult.contains("não")) {
+                    engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-
-                }else if (ciclo && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
-                    sequenceDB += getNumberOfTimes(speechResult)+"_";
-                    engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
+                } else if (speechResult.contains("sim")) {
+                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-
-                }else if ((speechResult.contains("sim") || speechResult.contains("terminar ciclo"))  && ciclo ) {
-                    sequenceDB += "LE_";
-                    ciclo = false;
-                    engine.speak("CICLO TERMINADO!QUERES CONTINUAR OU TERMINAR O PROGRAMA ?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }else if (speechResult.contains("não") && ciclo ) {
-                    engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }else if (speechResult.contains("continuar")) {
-                    times = false;
-                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }else if (speechResult.contains("não") && times ) {
-                    times = false;
-                    engine.speak("Então diz terminar", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }else if (speechResult.contains("sim") && times ) {
-                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("terminar")) {
-                    times = false;
+                } else if (speechResult.contains("terminar")) {
                     sequenceDB += "F";
-
                     if (!sequenceDB.equals("")) {
-                        /*Handler mHandler = new Handler(getMainLooper());
+                        Handler mHandler = new Handler(getMainLooper());
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1730,20 +1524,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                                 startActivity(intent);
                             }
-                        });*/
-                        Toast.makeText(getApplicationContext(),sequenceDB,Toast.LENGTH_LONG).show();
+                        });
                     }
-
-
-
-                }
-
-
+                } else {
+                    engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
 
                 }
 
 
-            }else if(Levels.equals("freestyle")){
+            } else if (Levels.equals("level5")) {
 
                 if (speechResult.contains("esquerda") && ciclo) {
                     sequenceDB += "E_";
@@ -1752,12 +1542,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     lauchSpeechRecognition();
 
                 } else if (speechResult.contains("direita") && ciclo) {
-                    sequenceDB+= "D_";
+                    sequenceDB += "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
-                } else if ( ciclo &&(speechResult.contains("frente") || speechResult.contains("cima"))) {
+                } else if (ciclo && (speechResult.contains("frente") || speechResult.contains("cima"))) {
                     sequenceDB += "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! já terminaste o ciclo?", TextToSpeech.QUEUE_FLUSH, null, null);
@@ -1781,8 +1571,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
-                }else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
-                    times = false;
+                } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
@@ -1793,30 +1582,136 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     engine.speak("ACHAS QUE DEVIA EXECUTAR O CICLO QUANTAS VEZES?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
-                }else if (ciclo && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
-                    sequenceDB += getNumberOfTimes(speechResult)+"_";
+                } else if (ciclo && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
+                    sequenceDB += getNumberOfTimes(speechResult) + "_";
                     engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
 
-                }else if ((speechResult.contains("sim") || speechResult.contains("terminar ciclo"))  && ciclo ) {
+                } else if ((speechResult.contains("sim") || speechResult.contains("terminar ciclo")) && ciclo) {
                     sequenceDB += "LE_";
                     ciclo = false;
                     engine.speak("CICLO TERMINADO!QUERES CONTINUAR OU TERMINAR O PROGRAMA ?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }else if (speechResult.contains("não") && ciclo ) {
+                } else if (speechResult.contains("não") && ciclo) {
                     engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }else if (speechResult.contains("continuar")) {
+                } else if (speechResult.contains("continuar")) {
                     times = false;
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     lauchSpeechRecognition();
-                }
-                else if (speechResult.contains("terminar")) {
+                } else if (speechResult.contains("não") && times) {
+                    times = false;
+                    engine.speak("Então diz terminar", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if (speechResult.contains("sim") && times) {
+                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognition();
+                } else if (speechResult.contains("terminar")) {
                     times = false;
                     sequenceDB += "F";
 
                     if (!sequenceDB.equals("")) {
-                            /*Handler mHandler = new Handler(getMainLooper());
+                        Handler mHandler = new Handler(getMainLooper());
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                intent.putExtra("message", boardRec);
+                                intent.putExtra("map", tabuleiro);
+                                intent.putExtra("sequencia", sequenceDB);
+                                intent.putExtra("roboLinha", robotLine);
+                                intent.putExtra("roboColuna", robotCollumn);
+                                intent.putExtra("user", user);
+                                intent.putExtra("levels", Levels);
+                                intent.putExtra("activity", "MainActivity");
+                                //intent.putIntegerArrayListExtra("pointsList",pointsList);
+
+                                startActivity(intent);
+                            }
+                        });
+                        Toast.makeText(getApplicationContext(), sequenceDB, Toast.LENGTH_LONG).show();
+                    }
+
+
+                }
+
+
+            }
+
+
+        } else if (Levels.equals("freestyle")) {
+
+            if (speechResult.contains("esquerda") && ciclo) {
+                sequenceDB += "E_";
+                times = true;
+                engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if (speechResult.contains("direita") && ciclo) {
+                sequenceDB += "D_";
+                times = true;
+                engine.speak("RECEBIDO A INSTRUÇÃO DIREITA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if (ciclo && (speechResult.contains("frente") || speechResult.contains("cima"))) {
+                sequenceDB += "C_";
+                times = true;
+                engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! já terminaste o ciclo?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if (speechResult.contains("esquerda")) {
+                instrucao = "E_";
+                times = true;
+                engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if (speechResult.contains("direita")) {
+                instrucao = "D_";
+                times = true;
+                engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
+                instrucao = "C_";
+                times = true;
+                engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
+                times = false;
+                sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
+                engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if ((speechResult.contains("ciclo") || speechResult.contains("loop")) && ciclo == false) {
+                sequenceDB += "LB_";
+                ciclo = true;
+                engine.speak("ACHAS QUE DEVIA EXECUTAR O CICLO QUANTAS VEZES?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if (ciclo && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
+                sequenceDB += getNumberOfTimes(speechResult) + "_";
+                engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+
+            } else if ((speechResult.contains("sim") || speechResult.contains("terminar ciclo")) && ciclo) {
+                sequenceDB += "LE_";
+                ciclo = false;
+                engine.speak("CICLO TERMINADO!QUERES CONTINUAR OU TERMINAR O PROGRAMA ?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            } else if (speechResult.contains("não") && ciclo) {
+                engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            } else if (speechResult.contains("continuar")) {
+                times = false;
+                engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
+                lauchSpeechRecognition();
+            } else if (speechResult.contains("terminar")) {
+                times = false;
+                sequenceDB += "F";
+
+                if (!sequenceDB.equals("")) {
+                            Handler mHandler = new Handler(getMainLooper());
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -1833,10 +1728,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                                     startActivity(intent);
                                 }
-                            });*/
-                        Toast.makeText(getApplicationContext(),sequenceDB,Toast.LENGTH_LONG).show();
-                    }
-
+                            });
+                    Toast.makeText(getApplicationContext(), sequenceDB, Toast.LENGTH_LONG).show();
+                }
 
 
             }
@@ -1938,7 +1832,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-    private void lauchSpeechRecognition(){
+    private void lauchSpeechRecognition() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -1955,41 +1849,36 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-
-    private String getRepeatedStringByTimesNumber(String ins,int numberTimes){
+    private String getRepeatedStringByTimesNumber(String ins, int numberTimes) {
         String concat = "";
-        for (int i = 0;i < numberTimes; i++){
-            concat+=ins;
+        for (int i = 0; i < numberTimes; i++) {
+            concat += ins;
         }
         return concat;
     }
 
 
-
-    private int getNumberOfTimes(String frase){
+    private int getNumberOfTimes(String frase) {
 
         String[] splited = frase.split(" ");
         ArrayList<String> fraseArrayList = convertArrayToArrayList(splited);
-        String[] Numbers = {  "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove","dez","onze","doze"
-                ,"treze","quatorze","quinze","dezasseis","dessassete","dezoito","dezanove","vinte" };
-        String[] NumberFormat = {  "1", "2", "3", "4", "5", "6", "7", "8", "9","10","11","12"
-                ,"13","14","15","16","17","18","19","20" };
+        String[] Numbers = {"um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", "dez", "onze", "doze"
+                , "treze", "quatorze", "quinze", "dezasseis", "dessassete", "dezoito", "dezanove", "vinte"};
+        String[] NumberFormat = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
+                , "13", "14", "15", "16", "17", "18", "19", "20"};
 
-        if(fraseArrayList.contains("uma")){
+        if (fraseArrayList.contains("uma")) {
             return 1;
-        }
-
-        else if(fraseArrayList.contains("duas")){
+        } else if (fraseArrayList.contains("duas")) {
             return 2;
-        }
-        else{
+        } else {
 
-            for (int i = 0; i < Numbers.length ;i++){
-                if (fraseArrayList.contains(Numbers[i])){
+            for (int i = 0; i < Numbers.length; i++) {
+                if (fraseArrayList.contains(Numbers[i])) {
                     return converter(Numbers[i]);
                 }
 
-                if (fraseArrayList.contains(NumberFormat[i])){
+                if (fraseArrayList.contains(NumberFormat[i])) {
                     return Integer.parseInt(NumberFormat[i]);
                 }
 
@@ -2003,12 +1892,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     }
 
-    private int converter(String number){
+    private int converter(String number) {
 
-        switch (number){
+        switch (number) {
             case "um":
                 return 1;
-            case  "dois":
+            case "dois":
                 return 2;
 
             case "três":
@@ -2053,15 +1942,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
         }
-    return 0;
+        return 0;
     }
 
 
-
-    private ArrayList<String> convertArrayToArrayList(String[] array){
+    private ArrayList<String> convertArrayToArrayList(String[] array) {
         ArrayList<String> current = new ArrayList<>();
 
-        for (String s : array){
+        for (String s : array) {
             current.add(s);
         }
         return current;
@@ -2161,7 +2049,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
         //Toast.makeText(getApplicationContext(),"SINGLE TAP",Toast.LENGTH_LONG).show();
         int levelInt = indexLevelPoints();
-        if (levelInt <= 6){
+        if (levelInt <= 6 || Levels.equals("freestyle")) {
             takePicture();
             board = 1;
         }
@@ -2173,7 +2061,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public boolean onDoubleTap(MotionEvent motionEvent) {
         //Toast.makeText(getApplicationContext(),"Double Tap",Toast.LENGTH_LONG).show();
         int levelInt = indexLevelPoints();
-        if (levelInt > 6) {
+        if (levelInt > 6 || Levels.equals("freestyle")) {
             repeatedTask = new TimerTask() {
                 @Override
                 public void run() {
@@ -2197,21 +2085,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return true;
     }
 
-    private  String cameras(String[] id){
+    private String cameras(String[] id) {
         String c = "";
-        for (String s :id){
-           c+=s+" ";
+        for (String s : id) {
+            c += s + " ";
         }
         return c;
     }
 
 
-    public void ShowPopUpBoard(){
+    public void ShowPopUpBoard() {
         String[] messageArray = boardAux.split(" ");
         try {
             //We need to get the instance of the LayoutInflater, use the context of this activity
 
-            LayoutInflater inflater = (LayoutInflater)MainActivity.this
+            LayoutInflater inflater = (LayoutInflater) MainActivity.this
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.cutompopup,
                     (ViewGroup) findViewById(R.id.popup_element));
@@ -2225,37 +2113,37 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             int index = 0;
             int col;
             for (int row = 0; row < 12; row++) { // draw 2 rows
-                for(col = 0; col < 12; col++) { // draw 4 columns
+                for (col = 0; col < 12; col++) { // draw 4 columns
                     Paint paint = new Paint();
-                    if (messageArray[index].contains("O")){
+                    if (messageArray[index].contains("O")) {
                         //Log.d("AA","O ,("+row+","+col+")");
                         //Log.d("AA","O"+index);
                         paint.setColor(Color.parseColor("#008000"));
 
-                    }else if(messageArray[index].contains("X")){
+                    } else if (messageArray[index].contains("X")) {
                         //Log.d("AA","X"+index);
                         //Log.d("AA","X ,("+row+","+col+")");
 
                         paint.setColor(Color.parseColor("#CD5C5C"));
 
-                    }else if(messageArray[index].contains("F")) {
+                    } else if (messageArray[index].contains("F")) {
                         //Log.d("AA","F"+index);
                         //Log.d("AA","F ,("+row+","+col+")");
 
 
                         paint.setColor(Color.parseColor("#3792cb"));
 
-                    }else if(messageArray[index].contains("R")) {
+                    } else if (messageArray[index].contains("R")) {
                         //Log.d("AA", "R"+index);
                         //Toast.makeText(getApplicationContext(),"RRRRRRR",Toast.LENGTH_LONG).show();
-                        Log.d("AA","R ,("+row+","+col+")");
+                        Log.d("AA", "R ,(" + row + "," + col + ")");
                         paint.setColor(Color.parseColor("#000000"));
                     }
 
 
                     Canvas canvas = new Canvas(bg);
-                    canvas.drawRect(left, top, left+width, top+height, paint);
-                    left = (left + width  +10); // set new left co-ordinate + 10 pixel gap
+                    canvas.drawRect(left, top, left + width, top + height, paint);
+                    left = (left + width + 10); // set new left co-ordinate + 10 pixel gap
                     // Do other things here
                     // i.e. change colour
                     index++;
@@ -2271,12 +2159,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             ll.addView(iV);
 
             // create a 300px width and 470px height PopupWindow
-             pw = new PopupWindow(layout, 1110, 1110, true);
+            pw = new PopupWindow(layout, 1110, 1110, true);
             // display the popup in the center
             pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-
-
 
 
             ImageView tv = layout.findViewById(R.id.cross);
@@ -2331,61 +2216,60 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         t.cancel();
                     }
                     speechCount++;
-                }
-                else if(Levels.equals("level2")){
+                } else if (Levels.equals("level2")) {
 
                     if (speechCount == 0) {
                         engine.speak("O robot chegou ao planeta Dorlo!Oh nao!Está ser perseguido por darlianos maus! Ajuda-me a dizer-lhe o caminho correto para escapar!", TextToSpeech.QUEUE_FLUSH, null, null);
                     } else if (speechCount == 1) {
                         engine.speak("Achas que deva ir para a frente ou virar para a direita ou virar para a esquerda?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    }else if (speechCount > 1) {
+                    } else if (speechCount > 1) {
                         taskTalk.cancel();
                         t.cancel();
                     }
                     speechCount++;
 
-                }else if(Levels.equals("level3")){
+                } else if (Levels.equals("level3")) {
 
                     if (speechCount == 0) {
                         engine.speak("Estou no planeta yavin! Fui feito prisioneiro!Tenho que escapar desta prisão! Ajuda-me a sair daqui", TextToSpeech.QUEUE_FLUSH, null, null);
                     } else if (speechCount == 1) {
                         engine.speak("Achas que deva ir para a frente ou virar para a direita ou virar para a esquerda?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    }else if (speechCount > 1) {
+                    } else if (speechCount > 1) {
                         taskTalk.cancel();
                         t.cancel();
                     }
                     speechCount++;
 
-                }else if(Levels.equals("level4")){
+                } else if (Levels.equals("level4")) {
 
                     if (speechCount == 0) {
                         engine.speak("Estou no planeta xakiva! Preciso de encontrar amigos que se escondem por estas bandas!Ajuda-me a encontra-los", TextToSpeech.QUEUE_FLUSH, null, null);
                     } else if (speechCount == 1) {
                         engine.speak("Achas que deva ir para a frente ou virar para a direita ou virar para a esquerda?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    }else if (speechCount > 1) {
+                    } else if (speechCount > 1) {
                         taskTalk.cancel();
                         t.cancel();
                     }
                     speechCount++;
 
-                }else if(Levels.equals("level5")){
+                } else if (Levels.equals("level5")) {
 
                     if (speechCount == 0) { //ESTOU A  ULTRAPASSAR UMA CINTURA DE ASTEROIDES! AJUDA-ME! !
                         engine.speak("Estou a ultrapassar uma cintura de asteroides! ajuda-me!", TextToSpeech.QUEUE_FLUSH, null, null);
                     } else if (speechCount == 1) {
                         engine.speak("Neste Nível é possível que tenhas de construir um ciclo", TextToSpeech.QUEUE_FLUSH, null, null);
-                    }else if (speechCount == 2) {
+                    } else if (speechCount == 2) {
                         engine.speak("O ciclo é uma repetição de uma ou mais instruções", TextToSpeech.QUEUE_FLUSH, null, null);
-                    }else if (speechCount == 3) {
+                    } else if (speechCount == 3) {
                         engine.speak("Então vamos iniciar", TextToSpeech.QUEUE_FLUSH, null, null);
-                    }else if (speechCount == 4) {
+                    } else if (speechCount == 4) {
                         engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
                     } else if (speechCount > 4) {
                         taskTalk.cancel();
                         t.cancel();
                     }
                     speechCount++;
-                }else if(Levels.equals("freestyle")){
+                } else if (Levels.equals("freestyle")) {
 
                     if (speechCount == 0) { //ESTOU A  ULTRAPASSAR UMA CINTURA DE ASTEROIDES! AJUDA-ME! !
                         engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
@@ -2395,9 +2279,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     }
                     speechCount++;
                 }
-
-
-
 
 
             }
@@ -2412,27 +2293,24 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     }
 
-    private int getNumberOfWaitingLines(){
+    private int getNumberOfWaitingLines() {
         int number = 0;
 
-        if (Levels.equals("level1")){
+        if (Levels.equals("level1")) {
             number = 6;
-        }else if(Levels.equals("level2")){
+        } else if (Levels.equals("level2")) {
             number = 2;
-        }else if(Levels.equals("level3")){
+        } else if (Levels.equals("level3")) {
             number = 2;
-        }else if(Levels.equals("level4")){
+        } else if (Levels.equals("level4")) {
             number = 2;
-        }else if(Levels.equals("level5")){
+        } else if (Levels.equals("level5")) {
             number = 5;
-        }else if(Levels.equals("freestyle")){
+        } else if (Levels.equals("freestyle")) {
             number = 1;
         }
-        return  number;
+        return number;
     }
-
-
-
 
 
     @Override
@@ -2440,7 +2318,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
 
     @Override
@@ -2474,12 +2351,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-    public void gameExplanation(){
+    public void gameExplanation() {
         final int levelInt = indexLevelPoints();
         timerExplanation = new Timer("Timer");
         task = new TimerTask() {
             public void run() {
-                if(explanationCount == 0){
+                if (explanationCount == 0) {
                     speech.speak("Bem vind ao Nível " + indexLevelPoints(), TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount == 1) {
                     speech.speak("Eu sou o botnik, e o robô é o ozobot!", TextToSpeech.QUEUE_FLUSH, null, null);
@@ -2489,7 +2366,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     speech.speak("Para iniciar o nível  carrega uma vez no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount == 3 && levelInt > 6) {
                     speech.speak("Para iniciar o nível  carrega duas vezes no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
-                }else if (explanationCount == 4) {
+                } else if (explanationCount == 4) {
                     speech.speak("Boa sorte nesta aventura!", TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount > 4) {
 
@@ -2501,36 +2378,34 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         };
 
 
-        long delay = 3000 ;
+        long delay = 3000;
         long period = 5000;
 
         timerExplanation.scheduleAtFixedRate(task, delay, period);
 
 
-
-
     }
 
 
-    public void gameExplanationFreestyle(){
+    public void gameExplanationFreestyle() {
         final int levelInt = indexLevelPoints();
         timerExplanation = new Timer("Timer");
         task = new TimerTask() {
             public void run() {
 
-                if(explanationCount == 0) {
+                if (explanationCount == 0) {
                     speech.speak("Bem vind ao Nível de estilo livre", TextToSpeech.QUEUE_FLUSH, null, null);
-                }else if (explanationCount == 1) {
+                } else if (explanationCount == 1) {
                     speech.speak("Eu sou o botnik, e o robô é o ozobot!", TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount == 2) {
                     speech.speak("Ele precisa da tua ajuda para voltar para casa!", TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount == 3) {
                     speech.speak("Para iniciar modo por voz  carrega uma vez no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
-                } else if (explanationCount == 4 ) {
+                } else if (explanationCount == 4) {
                     speech.speak("Para iniciar modo por blocos  carrega duas vezes no ecrã!", TextToSpeech.QUEUE_FLUSH, null, null);
-                }else if (explanationCount == 5) {
+                } else if (explanationCount == 5) {
                     speech.speak("Para ouvir a que instrução corresponde o bloco pressiona o ecrã durante alguns segundos", TextToSpeech.QUEUE_FLUSH, null, null);
-                }else if (explanationCount == 6) {
+                } else if (explanationCount == 6) {
                     speech.speak("Boa sorte nesta aventura!", TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount > 6) {
 
@@ -2542,99 +2417,79 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         };
 
 
-        long delay = 3000 ;
+        long delay = 3000;
         long period = 5000;
 
         timerExplanation.scheduleAtFixedRate(task, delay, period);
 
 
-
-
     }
 
 
-
-
-
-
-    private int indexLevelPoints(){
+    private int indexLevelPoints() {
         int level = 0;
-        if (Levels.equals("level1")){
+        if (Levels.equals("level1")) {
             level = 1;
-        }
-        else if (Levels.equals("level2")){
+        } else if (Levels.equals("level2")) {
             level = 2;
-        }
-        else if (Levels.equals("level3")){
+        } else if (Levels.equals("level3")) {
             level = 3;
-        }
-        else if (Levels.equals("level4")){
+        } else if (Levels.equals("level4")) {
             level = 4;
-        }
-        else if (Levels.equals("level5")){
+        } else if (Levels.equals("level5")) {
             level = 5;
-        }
-        else if (Levels.equals("level6")){
+        } else if (Levels.equals("level6")) {
             level = 6;
-        }
-        else if (Levels.equals("level7")){
+        } else if (Levels.equals("level7")) {
             level = 7;
-        }
-        else if (Levels.equals("level8")){
+        } else if (Levels.equals("level8")) {
             level = 8;
-        }
-        else if (Levels.equals("level9")){
+        } else if (Levels.equals("level9")) {
             level = 9;
-        }
-        else if (Levels.equals("level10")){
+        } else if (Levels.equals("level10")) {
             level = 10;
-        }
-        else if (Levels.equals("level11")){
+        } else if (Levels.equals("level11")) {
             level = 11;
-        }
-        else if (Levels.equals("level12")){
+        } else if (Levels.equals("level12")) {
             level = 12;
         }
         return level;
 
     }
 
-    private int getValueOfLuminosity(File photo){
+    private int getValueOfLuminosity(File photo) {
 
         Mat matOriginal = Imgcodecs.imread(photo.getPath());
         org.opencv.core.Size s = matOriginal.size();
         Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-        Bitmap bmp = Bitmap.createBitmap((int)s.width, (int)s.height, conf); // this creates a MUTABLE bitmap
+        Bitmap bmp = Bitmap.createBitmap((int) s.width, (int) s.height, conf); // this creates a MUTABLE bitmap
         Canvas canvas = new Canvas(bmp);
-        Utils.matToBitmap(matOriginal,bmp);
+        Utils.matToBitmap(matOriginal, bmp);
         int sumPixels = 0;
-        for (int y = 0; y < bmp.getHeight(); y++)
-        {
-            for (int x = 0; x < bmp.getWidth(); x++)
-            {
+        for (int y = 0; y < bmp.getHeight(); y++) {
+            for (int x = 0; x < bmp.getWidth(); x++) {
                 int color = bmp.getPixel(x, y);
-                sumPixels+=(Color.red(color) + Color.green(color) + Color.blue(color))/3;
+                sumPixels += (Color.red(color) + Color.green(color) + Color.blue(color)) / 3;
 
             }
         }
 
-        int level = sumPixels/(int)(s.width*s.height);
+        int level = sumPixels / (int) (s.width * s.height);
         return level;
     }
-
 
 
     private String getImageString(Bitmap bitmap) {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] imagesBytes = baos.toByteArray();
-        String encodedImage = android.util.Base64.encodeToString(imagesBytes,Base64.DEFAULT);
+        String encodedImage = android.util.Base64.encodeToString(imagesBytes, Base64.DEFAULT);
         return encodedImage;
 
     }
 
-    private void savePhoto(Mat mat,File f) throws IOException {
+    private void savePhoto(Mat mat, File f) throws IOException {
 
 
         MatOfByte matOfByte = new MatOfByte();
@@ -2656,60 +2511,50 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
     }
 
-    private void boardCorrection(List<Integer> coordenadas){
+    private void boardCorrection(List<Integer> coordenadas) {
 
 
         boolean condition = false;
-        for (int i = coordenadas.size()-1 ;i >= 1;i-=2){
+        for (int i = coordenadas.size() - 1; i >= 1; i -= 2) {
 
-            int linha = coordenadas.get(i-1);
+            int linha = coordenadas.get(i - 1);
             int coluna = coordenadas.get(i);
-            Log.d("ROBOTLINES",linha+","+coluna);
+            Log.d("ROBOTLINES", linha + "," + coluna);
 
 
+            if ((coluna == 0 && linha == 0) || (coluna == 11 && linha == 0) || (coluna == 11 && linha == 11) || (coluna == 0 && linha == 11)) {
+                condition = false;
 
-                if((coluna ==  0 && linha == 0) || (coluna ==  11 && linha == 0)|| (coluna ==  11 && linha == 11) || (coluna ==  0 && linha == 11)){
-                     condition = false;
+            } else if (coluna == 0 && (linha != 11 || linha != 0)) {
+                condition = (tabuleiro.get((linha) + "" + (coluna + 1)).equals("O") && tabuleiro.get((linha + 1) + "" + (coluna + 1)).equals("X") && tabuleiro.get((linha - 1) + "" + (coluna + 1)).equals("X"));
+            } else if (coluna == 11 && (linha != 11 || linha != 0)) {
+                condition = (tabuleiro.get((linha) + "" + (coluna - 1)).equals("O") && tabuleiro.get((linha + 1) + "" + (coluna - 1)).equals("X") && tabuleiro.get((linha - 1) + "" + (coluna - 1)).equals("X"));
+            } else if (linha == 0 && (coluna != 11 || coluna != 0)) {
+                condition = (tabuleiro.get((linha + 1) + "" + (coluna)).equals("O") && tabuleiro.get((linha + 1) + "" + (coluna - 1)).equals("X") && tabuleiro.get((linha + 1) + "" + (coluna + 1)).equals("X"));
 
-                }else if(coluna == 0 && (linha!= 11|| linha!= 0) ){
-                    condition = (tabuleiro.get((linha)+""+(coluna+1)).equals("O") && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X") );
-                }else if(coluna == 11 && (linha!= 11|| linha!= 0)){
-                    condition = (tabuleiro.get((linha)+""+(coluna-1)).equals("O") && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X") );
-                }else if(linha == 0 &&(coluna!= 11|| coluna!= 0)){
-                    condition = (tabuleiro.get((linha+1)+""+(coluna)).equals("O") && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X") );
+            } else if (linha == 11 && (coluna != 11 || coluna != 0)) {
+                condition = (tabuleiro.get((linha - 1) + "" + (coluna)).equals("O") && tabuleiro.get((linha - 1) + "" + (coluna - 1)).equals("X") && tabuleiro.get((linha - 1) + "" + (coluna + 1)).equals("X"));
 
-                }else if(linha == 11 && (coluna!= 11|| coluna!= 0)){
-                    condition = (tabuleiro.get((linha-1)+""+(coluna)).equals("O") && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X") );
+            } else {
+                condition = (tabuleiro.get((linha) + "" + (coluna + 1)).equals("O") && tabuleiro.get((linha + 1) + "" + (coluna + 1)).equals("X") && tabuleiro.get((linha - 1) + "" + (coluna + 1)).equals("X"))
+                        || (tabuleiro.get((linha - 1) + "" + (coluna)).equals("O") && tabuleiro.get((linha - 1) + "" + (coluna + 1)).equals("X") && tabuleiro.get((linha - 1) + "" + (coluna - 1)).equals("X"))
+                        || (tabuleiro.get((linha) + "" + (coluna - 1)).equals("O") && tabuleiro.get((linha - 1) + "" + (coluna - 1)).equals("X") && tabuleiro.get((linha + 1) + "" + (coluna - 1)).equals("X"))
+                        || (tabuleiro.get((linha + 1) + "" + (coluna)).equals("O") && tabuleiro.get((linha + 1) + "" + (coluna - 1)).equals("X") && tabuleiro.get((linha + 1) + "" + (coluna + 1)).equals("X"));
+            }
 
-                }else{
-                    condition = (tabuleiro.get((linha)+""+(coluna+1)).equals("O") && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X") )
-                            || (tabuleiro.get((linha-1)+""+(coluna)).equals("O") && tabuleiro.get((linha-1)+""+(coluna+1)).equals("X")  && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X") )
-                            || (tabuleiro.get((linha)+""+(coluna-1)).equals("O") && tabuleiro.get((linha-1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X") )
-                            || (tabuleiro.get((linha+1)+""+(coluna)).equals("O") && tabuleiro.get((linha+1)+""+(coluna-1)).equals("X")  && tabuleiro.get((linha+1)+""+(coluna+1)).equals("X") );
-                }
-
-                if(condition ){
-                    tabuleiro.put(linha+""+coluna,"R");
-                    robotLine = linha;
-                    robotCollumn = coluna;
-                    Log.d("ROBOTLINES","ESTE = "+robotLine+","+robotCollumn);
-                    break;
-                }
-
-
+            if (condition) {
+                tabuleiro.put(linha + "" + coluna, "R");
+                robotLine = linha;
+                robotCollumn = coluna;
+                Log.d("ROBOTLINES", "ESTE = " + robotLine + "," + robotCollumn);
+                break;
+            }
 
 
         }
 
 
-
-
-
-
-
-            }
-
-
+    }
 
 
     private String boardRecognitionTopCode() throws IOException {
@@ -2730,34 +2575,31 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Mat matrix = Imgcodecs.imread(file.getPath());
 
 
-
         PyObject vhlines = py.getModule("verticalAndHorizontal");
         TextView tv = findViewById(R.id.textoo);
-        PyObject obj3= vhlines.callAttr("squares",file.getPath());
+        PyObject obj3 = vhlines.callAttr("squares", file.getPath());
         List<PyObject> squares = obj3.asList();
 
 
-
-
-        Mat cropped= null;
-        Mat croppedRobot= null;
+        Mat cropped = null;
+        Mat croppedRobot = null;
         rec = "";
         int count = 0;
-        Map<String,Integer> blackareas = new HashMap();
+        Map<String, Integer> blackareas = new HashMap();
         tabuleiro = new HashMap();
         Mat croppedRobotFinal = new Mat();
 
 
         int linha = 0;
 
-        for (int i = 0;i < squares.size();i++){
+        for (int i = 0; i < squares.size(); i++) {
             int a = squares.get(i).asList().get(0).toInt();
             int b = squares.get(i).asList().get(1).toInt();
             int c = squares.get(i).asList().get(2).toInt();
             int d = squares.get(i).asList().get(3).toInt();
 
 
-            Rect roi = new Rect(a, b,c - a , d - b);
+            Rect roi = new Rect(a, b, c - a, d - b);
             cropped = new Mat(matrix, roi);
 
 
@@ -2767,54 +2609,54 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
             Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
             Canvas canvas = new Canvas(bmp);
-            Utils.matToBitmap(cropped,bmp);
+            Utils.matToBitmap(cropped, bmp);
 
             Scanner scanTopcode = new Scanner();
 
             List<TopCode> topcodeCrop = scanTopcode.scan(bmp);
 
 
-            if(topcodeCrop.isEmpty()){
-                tabuleiro.put(""+linha+""+count,"O");
-            }else{
-                if(containTopCode(topcodeCrop,793)){
-                    tabuleiro.put(""+linha+""+count,"R");
+            if (topcodeCrop.isEmpty()) {
+                tabuleiro.put("" + linha + "" + count, "O");
+            } else {
+                if (containTopCode(topcodeCrop, 793)) {
+                    tabuleiro.put("" + linha + "" + count, "R");
 
-                }else if(containTopCode(topcodeCrop,713)){
-                    tabuleiro.put(""+linha+""+count,"X");
+                } else if (containTopCode(topcodeCrop, 713)) {
+                    tabuleiro.put("" + linha + "" + count, "X");
 
-                }else if(containTopCode(topcodeCrop,681)){
-                    tabuleiro.put(""+linha+""+count,"F");
+                } else if (containTopCode(topcodeCrop, 681)) {
+                    tabuleiro.put("" + linha + "" + count, "F");
                 }
 
             }
 
 
-            savePhoto(cropped,file);
+            savePhoto(cropped, file);
 
 
             count++;
-            if (count == 12){
-                rec+="\n";
+            if (count == 12) {
+                rec += "\n";
                 count = 0;
                 linha++;
             }
 
         }
 
-        rec= "";
-        for (int i = 0;i < 12;i++){
+        rec = "";
+        for (int i = 0; i < 12; i++) {
 
-            for (int j = 0;j < 12;j++){
-                rec+= tabuleiro.get(""+i+""+j)+" ";
+            for (int j = 0; j < 12; j++) {
+                rec += tabuleiro.get("" + i + "" + j) + " ";
 
 
             }
-            rec+="\n";
+            rec += "\n";
 
         }
 
-        savePhoto(matrix,file);
+        savePhoto(matrix, file);
 
         return rec;
     }
@@ -2831,12 +2673,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
 
-
-
         Mat matrixTop = Imgcodecs.imread(file.getPath());
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),bmOptions);
-        bitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+        bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
 
         Scanner scanTopcode = new Scanner();
         List<TopCode> topcodePhoto = scanTopcode.scan(bitmap);
@@ -2859,86 +2699,85 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         boolean bottomRight = false;
         boolean bottomLeft = false;
 
-        for (TopCode t: topcodePhoto){
-            if(t.getCode() == 425){
-                Log.d("Topcodes","TOP_LEFT ("+t.getCenterX()+" ,"+t.getCenterY()+")");
-                topLeftX = (int)t.getCenterX();
-                topLeftY = (int)t.getCenterY();
+        for (TopCode t : topcodePhoto) {
+            if (t.getCode() == 425) {
+                Log.d("Topcodes", "TOP_LEFT (" + t.getCenterX() + " ," + t.getCenterY() + ")");
+                topLeftX = (int) t.getCenterX();
+                topLeftY = (int) t.getCenterY();
                 topleft = true;
 
-            }else if(t.getCode() == 805){
-                Log.d("Topcodes","TOP_RIGHT ("+t.getCenterX()+" ,"+t.getCenterY()+")");
+            } else if (t.getCode() == 805) {
+                Log.d("Topcodes", "TOP_RIGHT (" + t.getCenterX() + " ," + t.getCenterY() + ")");
                 topRight = true;
-                topRightX = (int)t.getCenterX();
-                topRightY = (int)t.getCenterY();
+                topRightX = (int) t.getCenterX();
+                topRightY = (int) t.getCenterY();
 
-            }if(t.getCode() ==713){
-                Log.d("Topcodes","BOTTOM_LEFT ("+t.getCenterX()+" ,"+t.getCenterY()+")");
+            }
+            if (t.getCode() == 713) {
+                Log.d("Topcodes", "BOTTOM_LEFT (" + t.getCenterX() + " ," + t.getCenterY() + ")");
                 bottomLeft = true;
-                bottomLeftX = (int)t.getCenterX();
-                bottomLeftY = (int)t.getCenterY();
+                bottomLeftX = (int) t.getCenterX();
+                bottomLeftY = (int) t.getCenterY();
 
-            }if(t.getCode() == 793){
-                Log.d("Topcodes","BOTTOM_RIGHT ("+t.getCenterX()+" ,"+t.getCenterY()+")");
-                bottomRightX = (int)t.getCenterX();
-                bottomRightY = (int)t.getCenterY();
+            }
+            if (t.getCode() == 793) {
+                Log.d("Topcodes", "BOTTOM_RIGHT (" + t.getCenterX() + " ," + t.getCenterY() + ")");
+                bottomRightX = (int) t.getCenterX();
+                bottomRightY = (int) t.getCenterY();
                 bottomRight = true;
             }
 
 
         }
 
-        int h = 0,w = 0;
+        int h = 0, w = 0;
         Mat cropped = null;
 
         boolean topcodeDected = (topleft == false && bottomLeft == false && bottomRight == true && topRight == true) ||
-                                (topleft == true && bottomLeft == true && bottomRight == false && topRight == false) ||
-                                (topleft == true && bottomLeft == false && bottomRight == false && topRight == true) ||
-                                (topleft == false && bottomLeft == true && bottomRight == true && topRight == false) ||
-                                topcodePhoto.size() < 1;
+                (topleft == true && bottomLeft == true && bottomRight == false && topRight == false) ||
+                (topleft == true && bottomLeft == false && bottomRight == false && topRight == true) ||
+                (topleft == false && bottomLeft == true && bottomRight == true && topRight == false) ||
+                topcodePhoto.size() < 1;
 
 
+        if (topcodeDected) {
+            Toast.makeText(getApplicationContext(), "NÂO É POSSIVEL DETECTAR CODIGOS", Toast.LENGTH_LONG).show();
 
 
+        } else {
+            int beginX = 0, beginY = 0;
+            int endX = 0, endY = 0;
 
-      if (topcodeDected){
-          Toast.makeText(getApplicationContext(),"NÂO É POSSIVEL DETECTAR CODIGOS", Toast.LENGTH_LONG).show();
-
-
-      }else {
-          int beginX = 0, beginY = 0;
-          int endX = 0, endY = 0;
-
-          if ((topleft == false || bottomRight == false) && topRight == true && bottomLeft == true) {
+            if ((topleft == false || bottomRight == false) && topRight == true && bottomLeft == true) {
 
 
-              h = Math.abs(topRightY - bottomLeftY);
-              w = Math.abs(bottomLeftX - topRightX);
-              //Rect roi = new Rect(bottomLeftX, topRightY, w, h);
-              //cropped = new Mat(matrixTop, roi);
-              Log.d("Topcodes","h = "+h+" w = "+w );
+                h = Math.abs(topRightY - bottomLeftY);
+                w = Math.abs(bottomLeftX - topRightX);
+                //Rect roi = new Rect(bottomLeftX, topRightY, w, h);
+                //cropped = new Mat(matrixTop, roi);
+                Log.d("Topcodes", "h = " + h + " w = " + w);
 
-              beginX = bottomLeftX;
-              beginY = topRightY;
+                beginX = bottomLeftX;
+                beginY = topRightY;
 
-              endX = topRightX;
-              endY = bottomLeftY;
+                endX = topRightX;
+                endY = bottomLeftY;
 
-          } else {
-              h = Math.abs(topLeftY - bottomRightY);
-              w = Math.abs(topLeftX - bottomRightX);
-              //Rect roi = new Rect(topLeftX, topLeftY, w, h);
-              //cropped = new Mat(matrixTop, roi);
-              Log.d("Topcodes","h = "+h+" w = "+w );
+            } else {
+                h = Math.abs(topLeftY - bottomRightY);
+                w = Math.abs(topLeftX - bottomRightX);
+                //Rect roi = new Rect(topLeftX, topLeftY, w, h);
+                //cropped = new Mat(matrixTop, roi);
+                Log.d("Topcodes", "h = " + h + " w = " + w);
 
-              beginX = topLeftX;
-              beginY = topLeftY;
+                beginX = topLeftX;
+                beginY = topLeftY;
 
-              endX = bottomRightX;
-              endY = bottomRightY;
+                endX = bottomRightX;
+                endY = bottomRightY;
 
 
-          }
+            }
 
 
           /*Bitmap.Config conf = Bitmap.Config.ARGB_8888;
@@ -2946,164 +2785,161 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
           Canvas canvas = new Canvas(bmp);
           Utils.matToBitmap(cropped, bmp);
           savePhoto(cropped, file);*/
-          savePhoto(matrixTop, file);
+            savePhoto(matrixTop, file);
 
-          Python py = Python.getInstance();
-          PyObject vhlines = py.getModule("test");
-          PyObject obj3 = vhlines.callAttr("squares", file.getPath(),beginX,beginY,endX,endY);
-          List<PyObject> squares = obj3.asList();       PyObject image = py.getModule("improvedImage");
+            Python py = Python.getInstance();
+            PyObject vhlines = py.getModule("test");
+            PyObject obj3 = vhlines.callAttr("squares", file.getPath(), beginX, beginY, endX, endY);
+            List<PyObject> squares = obj3.asList();
+            PyObject image = py.getModule("improvedImage");
 
-          Mat matrixTopHistogram = new Mat();
-          PyObject imageAlphaBeta = image.callAttr("automatic_brightness_and_contrast", file.getPath());
-          List<PyObject> alphaBeta = imageAlphaBeta.asList();
-          matrixTop.convertTo(matrixTopHistogram, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
-          savePhoto(matrixTopHistogram,file);
-
-
-
-          Mat crop = null;
-          rec = "";
-          int count = 0;
-          tabuleiro = new HashMap();
-          Log.d("cropppp",squares.size()+"");
+            Mat matrixTopHistogram = new Mat();
+            PyObject imageAlphaBeta = image.callAttr("automatic_brightness_and_contrast", file.getPath());
+            List<PyObject> alphaBeta = imageAlphaBeta.asList();
+            matrixTop.convertTo(matrixTopHistogram, -1, alphaBeta.get(0).toFloat(), alphaBeta.get(1).toFloat());
+            savePhoto(matrixTopHistogram, file);
 
 
-          int linha = 0;
-
-          for (int i = 0; i < squares.size(); i++) {
-              int a = squares.get(i).asList().get(0).toInt();
-              int b = squares.get(i).asList().get(1).toInt();
-              int c = squares.get(i).asList().get(2).toInt();
-              int d = squares.get(i).asList().get(3).toInt();
-              Log.d("cropppp", a + ", " + b + ", " + c + ", " + d);
+            Mat crop = null;
+            rec = "";
+            int count = 0;
+            tabuleiro = new HashMap();
+            Log.d("cropppp", squares.size() + "");
 
 
-              Rect roi1 = new Rect(a, b, c - a, d - b);
-              crop = new Mat(matrixTopHistogram, roi1);
-             // Mat cropBright =  new Mat();
-              //crop.convertTo(cropBright, -1, 1, 50);
+            int linha = 0;
+
+            for (int i = 0; i < squares.size(); i++) {
+                int a = squares.get(i).asList().get(0).toInt();
+                int b = squares.get(i).asList().get(1).toInt();
+                int c = squares.get(i).asList().get(2).toInt();
+                int d = squares.get(i).asList().get(3).toInt();
+                Log.d("cropppp", a + ", " + b + ", " + c + ", " + d);
 
 
+                Rect roi1 = new Rect(a, b, c - a, d - b);
+                crop = new Mat(matrixTopHistogram, roi1);
+                // Mat cropBright =  new Mat();
+                //crop.convertTo(cropBright, -1, 1, 50);
 
 
-              int w1 = c - a, h1 = d - b;
+                int w1 = c - a, h1 = d - b;
 
-              //Mat cropBright = new Mat();
+                //Mat cropBright = new Mat();
 
-              //crop.convertTo(cropBright,-1,1,50);
+                //crop.convertTo(cropBright,-1,1,50);
 
-              Bitmap.Config conf2 = Bitmap.Config.ARGB_8888; // see other conf types
-              Bitmap bmp2 = Bitmap.createBitmap(w1, h1, conf2); // this creates a MUTABLE bitmap
-              Canvas canvas2 = new Canvas(bmp2);
-              Utils.matToBitmap(crop, bmp2);
-
-
-              int redColors = 0;
-              int greenColors = 0;
-              int blueColors = 0;
-              int white = 0;
-
-              int red = 0;
-              int green = 0;
-              int blue = 0;
+                Bitmap.Config conf2 = Bitmap.Config.ARGB_8888; // see other conf types
+                Bitmap bmp2 = Bitmap.createBitmap(w1, h1, conf2); // this creates a MUTABLE bitmap
+                Canvas canvas2 = new Canvas(bmp2);
+                Utils.matToBitmap(crop, bmp2);
 
 
-              Scanner scanBegin = new Scanner();
-              List<TopCode> topcodeBegin = scanBegin.scan(bmp2);
+                int redColors = 0;
+                int greenColors = 0;
+                int blueColors = 0;
+                int white = 0;
+
+                int red = 0;
+                int green = 0;
+                int blue = 0;
 
 
-              for (int y = 0; y < bmp2.getHeight(); y++) {
-                  for (int x = 0; x < bmp2.getWidth(); x++) {
-                      int color = bmp2.getPixel(x, y);
-                      redColors = Color.red(color);
-                      greenColors = Color.green(color);
-                      blueColors = Color.blue(color);
-
-                      /*if (greenColors >= 150 && redColors >= 150 && blueColors >= 150 ){
-                          white++;
-                      }else*/
-                      if ((greenColors >= redColors && greenColors >= blueColors)) {
-                          green++;
-                      } else if (redColors >= greenColors && redColors >= blueColors) {
-                          red++;
-                      } else if (blueColors >= redColors && blueColors >= greenColors) {
-                          blue++;
-                      }
+                Scanner scanBegin = new Scanner();
+                List<TopCode> topcodeBegin = scanBegin.scan(bmp2);
 
 
-                  }
-              }
-              Log.d("Topcodes","("+linha+" , "+count+") ="+red+" , "+green+" , "+blue+" , "+white);
+                for (int y = 0; y < bmp2.getHeight(); y++) {
+                    for (int x = 0; x < bmp2.getWidth(); x++) {
+                        int color = bmp2.getPixel(x, y);
+                        redColors = Color.red(color);
+                        greenColors = Color.green(color);
+                        blueColors = Color.blue(color);
+
+                        if (greenColors >= 150 && redColors >= 150 && blueColors >= 150) {
+                            white++;
+                        } else if ((greenColors >= redColors && greenColors >= blueColors)) {
+                            green++;
+                        } else if (redColors >= greenColors && redColors >= blueColors) {
+                            red++;
+                        } else if (blueColors >= redColors && blueColors >= greenColors) {
+                            blue++;
+                        }
 
 
-              /*if (white >= green && white >= blue && white >= red){
-                  Log.d("Topcodes","("+linha+" , "+count+") = WHITTTTTTTTTE");
+                    }
+                }
+                Log.d("Topcodes", "(" + linha + " , " + count + ") =" + red + " , " + green + " , " + blue + " , " + white);
 
-                  tabuleiro.put("" + linha + "" + count, "R");*/
+
+                if (white >= green && white >= blue && white >= red) {
+                    Log.d("Topcodes", "(" + linha + " , " + count + ") = WHITTTTTTTTTE");
+                    robotLine = linha;
+                    robotCollumn = count;
+
+                    tabuleiro.put("" + linha + "" + count, "R");
 
 
-              if(!topcodeBegin.isEmpty()){
+              /*if(!topcodeBegin.isEmpty()){
                 if (topcodeBegin.get(0).code == 369 )
                     tabuleiro.put("" + linha + "" + count, "R");
 
-              }else
-              if ((green >= red && green >= blue)) {
-                  tabuleiro.put("" + linha + "" + count, "O");
-                  //Log.d("PIXEL","O");
+              }else*/
+                } else if ((green >= red && green >= blue)) {
+                    tabuleiro.put("" + linha + "" + count, "O");
+                    //Log.d("PIXEL","O");
 
-              } else if (red >= green && red >= blue) {
-                  tabuleiro.put("" + linha + "" + count, "F");
-                  //Log.d("PIXEL","F");
+                } else if (red >= green && red >= blue) {
+                    tabuleiro.put("" + linha + "" + count, "F");
+                    //Log.d("PIXEL","F");
 
-              } else if (blue >= red && blue >= green) {
-                  tabuleiro.put("" + linha + "" + count, "X");
-                  //Log.d("PIXEL","X");
+                } else if (blue >= red && blue >= green) {
+                    tabuleiro.put("" + linha + "" + count, "X");
+                    //Log.d("PIXEL","X");
 
-              }
-
-
-              savePhoto(crop, file);
-
-              Point inicio = new Point(a,b);
-              Point fim = new Point(c,b);
-              Imgproc.line(matrixTop,inicio,fim,new Scalar(255, 0, 0, 255));
-
-              Point inicio1 = new Point(a,d);
-              Point fim1 = new Point(c,d);
-              Imgproc.line(matrixTop,inicio1,fim1,new Scalar(255, 0, 0, 255));
-
-              Point inicio2 = new Point(a,b);
-              Point fim2 = new Point(a,d);
-              Imgproc.line(matrixTop,inicio2,fim2,new Scalar(255, 0, 0, 255));
-
-              Point inicio3 = new Point(c,b);
-              Point fim3 = new Point(c,d);
-              Imgproc.line(matrixTop,inicio3,fim3,new Scalar(255, 0, 0, 255));
+                }
 
 
+                savePhoto(crop, file);
+
+                Point inicio = new Point(a, b);
+                Point fim = new Point(c, b);
+                Imgproc.line(matrixTop, inicio, fim, new Scalar(255, 0, 0, 255));
+
+                Point inicio1 = new Point(a, d);
+                Point fim1 = new Point(c, d);
+                Imgproc.line(matrixTop, inicio1, fim1, new Scalar(255, 0, 0, 255));
+
+                Point inicio2 = new Point(a, b);
+                Point fim2 = new Point(a, d);
+                Imgproc.line(matrixTop, inicio2, fim2, new Scalar(255, 0, 0, 255));
+
+                Point inicio3 = new Point(c, b);
+                Point fim3 = new Point(c, d);
+                Imgproc.line(matrixTop, inicio3, fim3, new Scalar(255, 0, 0, 255));
 
 
-              count++;
-              if (count == 12) {
-                  rec += "\n";
-                  count = 0;
-                  linha++;
-              }
-          }
+                count++;
+                if (count == 12) {
+                    rec += "\n";
+                    count = 0;
+                    linha++;
+                }
+            }
 
 
-          for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < 12; i++) {
 
-              for (int j = 0; j < 12; j++) {
-                  rec += tabuleiro.get("" + i + "" + j) + " ";
+                for (int j = 0; j < 12; j++) {
+                    rec += tabuleiro.get("" + i + "" + j) + " ";
 
 
-              }
-              rec += "\n";
+                }
+                rec += "\n";
 
-          }
-      }
-      savePhoto(matrixTop,file);
+            }
+        }
+        savePhoto(matrixTop, file);
 
         return rec;
 
@@ -3111,20 +2947,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-
     private boolean containTopCode(List<TopCode> topcodes, int codigo) {
-        for (TopCode t: topcodes){
-            if(t.getCode() == codigo){
+        for (TopCode t : topcodes) {
+            if (t.getCode() == codigo) {
                 return true;
             }
         }
         return false;
     }
-
-
-
-
-
-
-
 }
+
