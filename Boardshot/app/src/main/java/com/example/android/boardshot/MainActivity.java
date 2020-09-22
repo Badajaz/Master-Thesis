@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     Timer timerExplanation = new Timer("Timer");
     private Bitmap myBitmap;
     private List<Integer> coordenadas = new ArrayList<>();
+    boolean terminar = false;
 
 
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
@@ -1237,11 +1238,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        if (resultCode == ERROR_NETWORK_TIMEOUT) {
-            Toast.makeText(getApplicationContext(), "timeout", Toast.LENGTH_LONG).show();
-        }
 
-        //
         if (requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK) {
 
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -1254,22 +1251,24 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 if (speechResult.contains("esquerda")) {
                     sequenceDB += "E_";
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("direita")) {
                     sequenceDB += "D_";
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     sequenceDB += "C_";
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("não")) {
                     engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("sim")) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("terminar")) {
+
+                    terminar = true;
                     sequenceDB += "F";
                     if (!sequenceDB.equals("")) {
                         Handler mHandler = new Handler(getMainLooper());
@@ -1292,7 +1291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     }
                 } else {
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 }
 
@@ -1304,30 +1303,31 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     instrucao = "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("direita")) {
                     instrucao = "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     instrucao = "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     times = false;
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("não")) {
                     engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("sim")) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("terminar")) {
+                    terminar = true;
                     sequenceDB += "F";
                     if (!sequenceDB.equals("")) {
                         Handler mHandler = new Handler(getMainLooper());
@@ -1352,7 +1352,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     }
                 } else {
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 }
 
@@ -1363,30 +1363,31 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     instrucao = "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("direita")) {
                     instrucao = "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     instrucao = "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     times = false;
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("não")) {
                     engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("sim")) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("terminar")) {
+                    terminar = true;
                     sequenceDB += "F";
                     if (!sequenceDB.equals("")) {
                         Handler mHandler = new Handler(getMainLooper());
@@ -1411,7 +1412,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     }
                 } else {
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 }
 
@@ -1422,30 +1423,31 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     instrucao = "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("direita")) {
                     instrucao = "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     instrucao = "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     times = false;
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("não")) {
                     engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("sim")) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("terminar")) {
+                    terminar = true;
                     sequenceDB += "F";
                     if (!sequenceDB.equals("")) {
                         Handler mHandler = new Handler(getMainLooper());
@@ -1469,7 +1471,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     }
                 } else {
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 }
 
@@ -1481,30 +1483,31 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     instrucao = "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("direita")) {
                     instrucao = "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     instrucao = "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     times = false;
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("não")) {
                     engine.speak("ENTÂO, DIZ TERMINAR!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("sim")) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("terminar")) {
+                    terminar = true;
                     sequenceDB += "F";
                     if (!sequenceDB.equals("")) {
                         Handler mHandler = new Handler(getMainLooper());
@@ -1528,7 +1531,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     }
                 } else {
                     engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 }
 
@@ -1539,74 +1542,75 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     sequenceDB += "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("direita") && ciclo) {
                     sequenceDB += "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (ciclo && (speechResult.contains("frente") || speechResult.contains("cima"))) {
                     sequenceDB += "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! já terminaste o ciclo?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("esquerda")) {
                     instrucao = "E_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("direita")) {
                     instrucao = "D_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                     instrucao = "C_";
                     times = true;
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                     engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if ((speechResult.contains("ciclo") || speechResult.contains("loop")) && ciclo == false) {
                     sequenceDB += "LB_";
                     ciclo = true;
                     engine.speak("ACHAS QUE DEVIA EXECUTAR O CICLO QUANTAS VEZES?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if (ciclo && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     sequenceDB += getNumberOfTimes(speechResult) + "_";
                     engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
 
                 } else if ((speechResult.contains("sim") || speechResult.contains("terminar ciclo")) && ciclo) {
                     sequenceDB += "LE_";
                     ciclo = false;
                     engine.speak("CICLO TERMINADO!QUERES CONTINUAR OU TERMINAR O PROGRAMA ?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("não") && ciclo) {
                     engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("continuar")) {
                     times = false;
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("não") && times) {
                     times = false;
                     engine.speak("Então diz terminar", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("sim") && times) {
                     engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    lauchSpeechRecognition();
+                    //lauchSpeechRecognition();
                 } else if (speechResult.contains("terminar")) {
+                    terminar = true;
                     times = false;
                     sequenceDB += "F";
 
@@ -1645,68 +1649,69 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 sequenceDB += "E_";
                 times = true;
                 engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if (speechResult.contains("direita") && ciclo) {
                 sequenceDB += "D_";
                 times = true;
                 engine.speak("RECEBIDO A INSTRUÇÃO DIREITA!SE ACHAS QUE JÀ CHEGASTE AO FIM DO CICLO  DIZ TERMINAR CICLO!", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if (ciclo && (speechResult.contains("frente") || speechResult.contains("cima"))) {
                 sequenceDB += "C_";
                 times = true;
                 engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! já terminaste o ciclo?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if (speechResult.contains("esquerda")) {
                 instrucao = "E_";
                 times = true;
                 engine.speak("RECEBIDO A INSTRUÇÃO ESQUERDA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if (speechResult.contains("direita")) {
                 instrucao = "D_";
                 times = true;
                 engine.speak("RECEBIDO A INSTRUÇÃO DIREITA! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if (speechResult.contains("frente") || speechResult.contains("cima")) {
                 instrucao = "C_";
                 times = true;
                 engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                 times = false;
                 sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
                 engine.speak("MAIS ALGUMA INSTRUÇÃO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if ((speechResult.contains("ciclo") || speechResult.contains("loop")) && ciclo == false) {
                 sequenceDB += "LB_";
                 ciclo = true;
                 engine.speak("ACHAS QUE DEVIA EXECUTAR O CICLO QUANTAS VEZES?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if (ciclo && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                 sequenceDB += getNumberOfTimes(speechResult) + "_";
                 engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
 
             } else if ((speechResult.contains("sim") || speechResult.contains("terminar ciclo")) && ciclo) {
                 sequenceDB += "LE_";
                 ciclo = false;
                 engine.speak("CICLO TERMINADO!QUERES CONTINUAR OU TERMINAR O PROGRAMA ?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
             } else if (speechResult.contains("não") && ciclo) {
                 engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
             } else if (speechResult.contains("continuar")) {
                 times = false;
                 engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
-                lauchSpeechRecognition();
+                //lauchSpeechRecognition();
             } else if (speechResult.contains("terminar")) {
+                terminar = true;
                 times = false;
                 sequenceDB += "F";
 
@@ -1827,6 +1832,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
 
+        if ((resultCode == ERROR_NETWORK_TIMEOUT || requestCode == ERROR_NETWORK_TIMEOUT) && !terminar) {
+            //Toast.makeText(getApplicationContext(), "timeout", Toast.LENGTH_LONG).show();
+            Log.d("TIMEOUTSPEECH","TIMEOUT "+terminar);
+            lauchSpeechRecognition();
+        }
+        //
+
+
         super.onActivityResult(requestCode, resultCode, data);
 
     }
@@ -1840,12 +1853,28 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-PT");
                 speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speach to text");
+                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, new Long(50000));
+                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, new Long(50000));
+                startActivityForResult(speechIntent, RECOGNIZER_RESULT);
+
+            }
+        }, 8000);
+    }
+
+    private void lauchSpeechRecognition2() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+
+                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-PT");
+                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speach to text");
                 speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 20000);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 10000);
                 startActivityForResult(speechIntent, RECOGNIZER_RESULT);
 
             }
-        }, 8000);
+        }, 3000);
     }
 
 
