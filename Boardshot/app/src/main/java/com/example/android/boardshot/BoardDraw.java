@@ -939,7 +939,7 @@ private void speakAudioFeedbackInstructions(){
 
     };
 
-    long delay = 25000;
+    long delay = 30000;
     long period = 2000;
 
     t.scheduleAtFixedRate(task, delay, period);
