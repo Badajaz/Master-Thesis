@@ -397,12 +397,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     if (recPieces == 1) {
                         //Toast.makeText(MainActivity.this, "recPieces", Toast.LENGTH_SHORT).show();
+                        sequenceDB = "";
                         List<TopCode> listaTopCodes = recognizeTopcodes(file.getPath());
                         if (!listaTopCodes.isEmpty() && hasFinalCode(listaTopCodes)) {
                             hasFinal = true;
                             //Toast.makeText(MainActivity.this, "!Empty && final code", Toast.LENGTH_SHORT).show();
                             for (Integer t : instructionsRecognition(listaTopCodes)) {
-
+                                                 Log.d("Topcodes", t+"");
                                 if (t == 31) {
                                     sequenceDB += "E_";
                                 } else if (t == 47) {
@@ -417,6 +418,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                     sequenceDB += "LB_2_";
 
                                 }
+
                             }
                         }
 
@@ -525,23 +527,60 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
                                 if (!sequenceDB.equals("")) {
-                                    Handler mHandler = new Handler(getMainLooper());
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Intent intent = new Intent(MainActivity.this, BoardDraw.class);
-                                            intent.putExtra("message", boardRec);
-                                            intent.putExtra("map", tabuleiro);
-                                            intent.putExtra("sequencia", sequenceDB);
-                                            intent.putExtra("roboLinha", robotLine);
-                                            intent.putExtra("roboColuna", robotCollumn);
-                                            intent.putExtra("levels", Levels);
-                                            intent.putExtra("user", user);
-                                            intent.putExtra("activity", "MainActivity");
-                                            //intent.putIntegerArrayListExtra("pointsList",pointsList);
-                                            startActivity(intent);
-                                        }
-                                    });
+                                    Log.d("Topcodes",sequenceDB);
+
+                                  if( containsSameNumberofLoopEndsAsBegins(sequenceDB)){
+
+                                      Handler mHandler = new Handler(getMainLooper());
+                                      mHandler.post(new Runnable() {
+                                          @Override
+                                          public void run() {
+                                              Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                              intent.putExtra("message", boardRec);
+                                              intent.putExtra("map", tabuleiro);
+                                              intent.putExtra("sequencia", sequenceDB);
+                                              intent.putExtra("roboLinha", robotLine);
+                                              intent.putExtra("roboColuna", robotCollumn);
+                                              intent.putExtra("levels", Levels);
+                                              intent.putExtra("user", user);
+                                              intent.putExtra("activity", "MainActivity");
+                                              //intent.putIntegerArrayListExtra("pointsList",pointsList);
+                                              startActivity(intent);
+                                          }
+                                      });
+
+
+                                  }else{
+
+
+                                       engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                                           @Override
+                                           public void onInit(int status) {
+                                               engine.setLanguage(new Locale("pt", "PT"));
+                                               engine.speak("Não colocou um final de algum ciclo",
+                                                       TextToSpeech.QUEUE_FLUSH, null, null);
+                                           }
+                                       });
+
+                                  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 }
                             }
                         }
@@ -612,6 +651,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             e.printStackTrace();
         }
     }
+
+
+
+
 
 
     private void createCameraPreview() {
@@ -850,7 +893,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             }
             Collections.sort(sortYCoordenate);
-            Collections.reverse(sortYCoordenate);
+            //Collections.reverse(sortYCoordenate);
             for (float f : sortYCoordenate) {
                 for (TopCode t : listaTopCodes) {
                     if (f == t.getCenterY()) {
@@ -2816,7 +2859,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int h = 0, w = 0;
         Mat cropped = null;
 
-        if (topcodePhoto.size() <= 1 || (topcodePhoto.size() >= 1 && containMoreTopcodes(topcodePhoto))) {
+        if (topcodePhoto.size() <= 1 || (countCorners <= 1 && containMoreTopcodes(topcodePhoto))) {
             speech.speak( "códigos não reconhecidos",TextToSpeech.QUEUE_FLUSH, null, null);
 
         } else {
@@ -3111,6 +3154,24 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
          return false;
     }
+
+
+
+     private boolean containsSameNumberofLoopEndsAsBegins(String sequenceDB) {
+        String[] ArraySequencia  = sequenceDB.split("_");
+        int countLB = 0 ,countLE = 0;
+        for (String s :ArraySequencia){
+            if(s.equals("LB")){
+                 countLB++;
+            }
+
+             if(s.equals("LE")){
+                 countLE++;
+             }
+
+        }
+         return countLB == countLE;
+     }
 
 }
 
