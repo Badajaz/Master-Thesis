@@ -386,7 +386,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         boardAux = "";
                         recBoardPopup = 0;
                         boardAux = getTopCodeCorners(file);
-                        ShowPopUpBoard();
+                        if(boardAux == null || boardAux.equals("") ){
+                            speech.speak( "códigos não reconhecidos",TextToSpeech.QUEUE_FLUSH, null, null);
+                        }else{
+                            ShowPopUpBoard();
+                        }
 
                     }
 
@@ -2208,6 +2212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 @Override
                 public void onClick(View view) {
                     pw.dismiss();
+                    boardAux = "";
                 }
             });
 
@@ -2772,51 +2777,115 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int h = 0, w = 0;
         Mat cropped = null;
 
-        boolean topcodeDected = (topleft == false && bottomLeft == false && bottomRight == true && topRight == true) ||
-                (topleft == true && bottomLeft == true && bottomRight == false && topRight == false) ||
-                (topleft == true && bottomLeft == false && bottomRight == false && topRight == true) ||
-                (topleft == false && bottomLeft == true && bottomRight == true && topRight == false) ||
-                topcodePhoto.size() < 1;
-
-
-        if (topcodeDected) {
-            Toast.makeText(getApplicationContext(), "NÂO É POSSIVEL DETECTAR CODIGOS", Toast.LENGTH_LONG).show();
-
+        if (topcodePhoto.size() <= 1) {
+            speech.speak( "códigos não reconhecidos",TextToSpeech.QUEUE_FLUSH, null, null);
 
         } else {
-            int beginX = 0, beginY = 0;
-            int endX = 0, endY = 0;
-
-            if ((topleft == false || bottomRight == false) && topRight == true && bottomLeft == true) {
 
 
-                h = Math.abs(topRightY - bottomLeftY);
-                w = Math.abs(bottomLeftX - topRightX);
-                //Rect roi = new Rect(bottomLeftX, topRightY, w, h);
-                //cropped = new Mat(matrixTop, roi);
-                Log.d("Topcodes", "h = " + h + " w = " + w);
+        int beginX = 0, beginY = 0;
+        int endX = 0, endY = 0;
+        if(topleft == true && bottomRight == true && topRight == true && bottomLeft == true){
+            h = Math.abs(topLeftY - bottomRightY);
+            w = Math.abs(topLeftX - bottomRightX);
+            //Rect roi = new Rect(topLeftX, topLeftY, w, h);
+            //cropped = new Mat(matrixTop, roi);
+            Log.d("Topcodes", "h = " + h + " w = " + w);
 
-                beginX = bottomLeftX;
-                beginY = topRightY;
+            beginX = topLeftX;
+            beginY = topLeftY;
 
-                endX = topRightX;
-                endY = bottomLeftY;
+            endX = bottomRightX;
+            endY = bottomRightY;
 
-            } else {
-                h = Math.abs(topLeftY - bottomRightY);
-                w = Math.abs(topLeftX - bottomRightX);
-                //Rect roi = new Rect(topLeftX, topLeftY, w, h);
-                //cropped = new Mat(matrixTop, roi);
-                Log.d("Topcodes", "h = " + h + " w = " + w);
+        }
+        else if (topleft == true && bottomRight == true && (topRight == false || bottomLeft == false)) {
+            h = Math.abs(topLeftY - bottomRightY);
+            w = Math.abs(topLeftX - bottomRightX);
+            //Rect roi = new Rect(topLeftX, topLeftY, w, h);
+            //cropped = new Mat(matrixTop, roi);
+            Log.d("Topcodes", "h = " + h + " w = " + w);
 
-                beginX = topLeftX;
-                beginY = topLeftY;
+            beginX = topLeftX;
+            beginY = topLeftY;
 
-                endX = bottomRightX;
-                endY = bottomRightY;
+            endX = bottomRightX;
+            endY = bottomRightY;
+        } else if ((topleft == false || bottomRight == false) && topRight == true && bottomLeft == true) {
+            h = Math.abs(topRightY - bottomLeftY);
+            w = Math.abs(bottomLeftX - topRightX);
+            //Rect roi = new Rect(bottomLeftX, topRightY, w, h);
+            //cropped = new Mat(matrixTop, roi);
+            Log.d("Topcodes", "h = " + h + " w = " + w);
+
+            beginX = bottomLeftX;
+            beginY = topRightY;
+
+            endX = topRightX;
+            endY = bottomLeftY;
+        } else if (topleft == true && topRight == true && bottomLeft == false && bottomRight == false) {
+            h = Math.abs(topLeftX - topRightX);
+            w = Math.abs(topLeftX - topRightX);
+
+            Log.d("Topcodes", "h = " + h + " w = " + w);
 
 
-            }
+            beginX = topLeftX;
+            beginY = topLeftY;
+
+            endX = bottomRightX;
+            endY = bottomRightY + h;
+
+
+        } else if (topleft == true && topRight == false && bottomLeft == true && bottomRight == false) {
+
+            h = Math.abs(topLeftY - bottomLeftY);
+            w = Math.abs(topLeftY - bottomLeftY);
+
+            Log.d("Topcodes", "h = " + h + " w = " + w);
+
+
+            beginX = topLeftX;
+            beginY = topLeftY;
+
+            endX = bottomLeftX + h;
+            endY = bottomLeftY;
+
+
+        } else if (topleft == false && topRight == true && bottomLeft == false && bottomRight == true) {
+
+            h = Math.abs(topRightY - bottomRightY);
+            w = Math.abs(topRightY - bottomRightY);
+
+            Log.d("Topcodes", "h = " + h + " w = " + w);
+
+
+            beginX = topRightX - h;
+            beginY = topRightY;
+
+            endX = bottomRightX;
+            endY = bottomRightY;
+
+
+        } else if (topleft == false && topRight == false && bottomLeft == true && bottomRight == true) {
+
+            h = Math.abs(bottomLeftX - bottomRightX);
+            w = Math.abs(bottomLeftX - bottomRightX);
+
+            Log.d("Topcodes", "h = " + h + " w = " + w);
+
+
+            beginX = bottomLeftX;
+            beginY = bottomLeftY - h;
+
+            endX = bottomRightX;
+            endY = bottomRightY;
+
+
+        }
+
+
+
 
 
           /*Bitmap.Config conf = Bitmap.Config.ARGB_8888;
