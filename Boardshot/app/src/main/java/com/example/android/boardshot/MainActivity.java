@@ -438,12 +438,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                     instruction = "Cima";
 
                                 } else if (t.code == 59) {
-                                    instruction = "Baixo";
+                                    instruction = "fim de ciclo";
 
                                 } else if (t.code == 107) {
                                     instruction = "Fim";
 
+                                }else if (t.code == 61){
+                                    instruction = "ciclo duas vezes";
                                 }
+
                             }
 
                             engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -468,10 +471,24 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             //boardRec = boardRecognition2();
                             boardRec = getTopCodeCorners(file);
 
+                            if(boardRec == null){
 
-                            introSpeach();
-                            while (speechCount < getNumberOfWaitingLines());
-                            lauchSpeechRecognition();
+                                engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                                    @Override
+                                    public void onInit(int status) {
+                                        engine.setLanguage(new Locale("pt", "PT"));
+                                        engine.speak("o mapa não foi bem reconhecido, volta a tocar uma vez no ecrã",
+                                                TextToSpeech.QUEUE_FLUSH, null, null);
+                                    }
+                                });
+
+
+                            }else{
+                                introSpeach();
+                                while (speechCount < getNumberOfWaitingLines());
+                                lauchSpeechRecognition();
+                            }
+
 
 
                         }
@@ -492,24 +509,40 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                             recPieces = 0;
                             boardRec = getTopCodeCorners(file);
-                            if (!sequenceDB.equals("")) {
-                                Handler mHandler = new Handler(getMainLooper());
-                                mHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Intent intent = new Intent(MainActivity.this, BoardDraw.class);
-                                        intent.putExtra("message", boardRec);
-                                        intent.putExtra("map", tabuleiro);
-                                        intent.putExtra("sequencia", sequenceDB);
-                                        intent.putExtra("roboLinha", robotLine);
-                                        intent.putExtra("roboColuna", robotCollumn);
-                                        intent.putExtra("levels", Levels);
-                                        intent.putExtra("user", user);
-                                        intent.putExtra("activity", "MainActivity");
-                                        //intent.putIntegerArrayListExtra("pointsList",pointsList);
-                                        startActivity(intent);
-                                    }
-                                });
+                            if (boardRec == null){
+
+                                 engine = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                                     @Override
+                                     public void onInit(int status) {
+                                         engine.setLanguage(new Locale("pt", "PT"));
+                                         engine.speak("o mapa não foi bem reconhecido, volta a tocar duas vezes no ecrã",
+                                                 TextToSpeech.QUEUE_FLUSH, null, null);
+                                     }
+                                 });
+                                
+
+                            }else {
+
+
+                                if (!sequenceDB.equals("")) {
+                                    Handler mHandler = new Handler(getMainLooper());
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                            intent.putExtra("message", boardRec);
+                                            intent.putExtra("map", tabuleiro);
+                                            intent.putExtra("sequencia", sequenceDB);
+                                            intent.putExtra("roboLinha", robotLine);
+                                            intent.putExtra("roboColuna", robotCollumn);
+                                            intent.putExtra("levels", Levels);
+                                            intent.putExtra("user", user);
+                                            intent.putExtra("activity", "MainActivity");
+                                            //intent.putIntegerArrayListExtra("pointsList",pointsList);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                }
                             }
                         }
 
@@ -2743,18 +2776,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         boolean bottomRight = false;
         boolean bottomLeft = false;
 
+        int countCorners  = 0;
+
         for (TopCode t : topcodePhoto) {
             if (t.getCode() == 425) {
                 Log.d("Topcodes", "TOP_LEFT (" + t.getCenterX() + " ," + t.getCenterY() + ")");
                 topLeftX = (int) t.getCenterX();
                 topLeftY = (int) t.getCenterY();
                 topleft = true;
+                countCorners++;
 
             } else if (t.getCode() == 805) {
                 Log.d("Topcodes", "TOP_RIGHT (" + t.getCenterX() + " ," + t.getCenterY() + ")");
                 topRight = true;
                 topRightX = (int) t.getCenterX();
                 topRightY = (int) t.getCenterY();
+                countCorners++;
 
             }
             if (t.getCode() == 713) {
@@ -2762,6 +2799,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 bottomLeft = true;
                 bottomLeftX = (int) t.getCenterX();
                 bottomLeftY = (int) t.getCenterY();
+                countCorners++;
 
             }
             if (t.getCode() == 793) {
@@ -2769,6 +2807,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 bottomRightX = (int) t.getCenterX();
                 bottomRightY = (int) t.getCenterY();
                 bottomRight = true;
+                countCorners++;
             }
 
 
@@ -2777,11 +2816,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int h = 0, w = 0;
         Mat cropped = null;
 
-        if (topcodePhoto.size() <= 1) {
+        if (topcodePhoto.size() <= 1 || (topcodePhoto.size() >= 1 && containMoreTopcodes(topcodePhoto))) {
             speech.speak( "códigos não reconhecidos",TextToSpeech.QUEUE_FLUSH, null, null);
 
         } else {
-
 
         int beginX = 0, beginY = 0;
         int endX = 0, endY = 0;
@@ -3063,5 +3101,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         return false;
     }
+
+    private boolean containMoreTopcodes(List<TopCode> topcodePhoto){
+        for (TopCode t : topcodePhoto) {
+            if (t.getCode() != 425 || t.getCode() != 805 ||t.getCode() != 713 || t.getCode() != 793) {
+                return true;
+            }
+        }
+
+         return false;
+    }
+
 }
 
