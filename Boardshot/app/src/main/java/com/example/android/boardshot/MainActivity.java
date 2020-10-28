@@ -394,7 +394,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     }
 
-
                     if (recPieces == 1) {
                         //Toast.makeText(MainActivity.this, "recPieces", Toast.LENGTH_SHORT).show();
                         sequenceDB = "";
@@ -527,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
                                 if (!sequenceDB.equals("")) {
-                                    Log.d("Topcodes",sequenceDB);
+                                    Log.d("TopcodesSeq",sequenceDB);
 
                                   if( containsSameNumberofLoopEndsAsBegins(sequenceDB)){
 
@@ -893,7 +892,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             }
             Collections.sort(sortYCoordenate);
-            //Collections.reverse(sortYCoordenate);
+            Collections.reverse(sortYCoordenate);
             for (float f : sortYCoordenate) {
                 for (TopCode t : listaTopCodes) {
                     if (f == t.getCenterY()) {
@@ -1714,6 +1713,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             }
                         });
                         Toast.makeText(getApplicationContext(), sequenceDB, Toast.LENGTH_LONG).show();
+                    }else{
+                        engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
+
                     }
 
 
@@ -1737,7 +1739,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 } else if (ciclo && (speechResult.contains("frente") || speechResult.contains("cima"))) {
                     sequenceDB += "C_";
                     times = true;
-                    engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! já terminaste o ciclo?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    engine.speak("RECEBIDO A INSTRUÇÃO FRENTE!  se já terminaste o ciclo, diz Terminar Ciclo", TextToSpeech.QUEUE_FLUSH, null, null);
                     //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("esquerda")) {
@@ -1758,6 +1760,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     engine.speak("RECEBIDO A INSTRUÇÃO FRENTE! Achas que devia executar essa instrução quantas vezes?", TextToSpeech.QUEUE_FLUSH, null, null);
                     //lauchSpeechRecognition();
 
+                } else if (ciclo && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
+                sequenceDB += getNumberOfTimes(speechResult) + "_";
+                engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
+                //lauchSpeechRecognition();
                 } else if (times && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
                     times = false;
                     sequenceDB += getRepeatedStringByTimesNumber(instrucao, getNumberOfTimes(speechResult));
@@ -1770,10 +1776,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     engine.speak("ACHAS QUE DEVIA EXECUTAR O CICLO QUANTAS VEZES?", TextToSpeech.QUEUE_FLUSH, null, null);
                     //lauchSpeechRecognition();
 
-                } else if (ciclo && (speechResult.contains("vezes") || speechResult.contains("vez"))) {
-                    sequenceDB += getNumberOfTimes(speechResult) + "_";
-                    engine.speak("QUE INSTRUÇÕES ACHAS QUE DEVES REPETIR PARA CONSTRUIR O CICLO? DIZENDO UMA DE CADA VEZ! FRENTE,DIREITA OU ESQUERDA?", TextToSpeech.QUEUE_FLUSH, null, null);
-                    //lauchSpeechRecognition();
+
 
                 } else if ((speechResult.contains("sim") || speechResult.contains("terminar ciclo")) && ciclo) {
                     sequenceDB += "LE_";
@@ -1790,7 +1793,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                 }else if (speechResult.contains("não") && !ciclo) {
                     times = true;
-                    engine.speak("ACHAS QUE DEVA IR PARA A FRENTE OU VIRAR PARA A DIREITA OU  VIRAR  A ESQUERDA OU FAZER UM CICLO?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    engine.speak("Então diz terminar", TextToSpeech.QUEUE_FLUSH, null, null);
                     //lauchSpeechRecognition();
 
                 } else if (speechResult.contains("continuar")) {
@@ -1825,6 +1828,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     }
 
 
+                }else{
+                    engine.speak("Não entendi o que quiseste dizer! Repete por favor!", TextToSpeech.QUEUE_FLUSH, null, null);
                 }
 
 
@@ -2190,7 +2195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             };
             timer = new Timer("Timer");
             long delay = 1;
-            long period = 5000;
+            long period = 30000;
             timer.scheduleAtFixedRate(repeatedTask, delay, period);
             recPieces = 1;
         }
