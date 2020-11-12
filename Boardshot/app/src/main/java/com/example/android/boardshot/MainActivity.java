@@ -2157,7 +2157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public void onLongPress(MotionEvent motionEvent) {
         //Toast.makeText(getApplicationContext(),"LONG PRESS",Toast.LENGTH_LONG).show();
         int levelInt = indexLevelPoints();
-        if (levelInt > 6) {
+        if (levelInt > 6 || Levels.equals("freestyle")) {
             takePicture();
             tutorialPieces = 1;
         }

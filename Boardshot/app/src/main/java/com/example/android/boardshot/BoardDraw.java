@@ -830,6 +830,7 @@ public class BoardDraw extends AppCompatActivity implements View.OnTouchListener
             FileWriter writer = new FileWriter(file);
             writer.append("def f():\n");
             for (String ins: instructions){
+                Log.d("Imprime",ins);
                 if (ins.contains("  ")){
                    String[] array = ins.split("  ");
                     writer.append(array[0]);
