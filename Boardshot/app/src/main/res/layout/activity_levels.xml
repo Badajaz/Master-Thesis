@@ -151,4 +151,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/accelaration"
+        android:layout_width="450dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="19dp"
+        android:backgroundTint="#ff781f"
+        android:gravity="center"
+        android:text="modo acelarado de voz"
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

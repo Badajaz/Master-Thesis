@@ -39,6 +39,7 @@ public class LevelsActivity extends AppCompatActivity {
     private Button freestylebtn;
     private ArrayList<Integer> pointsLevels;
     private ArrayList<Boolean> chegouFim;
+    private Button accelarationbtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class LevelsActivity extends AppCompatActivity {
         btnLevel11 = (Button) findViewById(R.id.level11);
         btnLevel12 = (Button) findViewById(R.id.level12);
         freestylebtn = (Button) findViewById(R.id.freestyle);
+        accelarationbtn = (Button) findViewById(R.id.accelaration);
         Bundle bundle = getIntent().getExtras();
         user = bundle.getString("user");
         invalidateOptionsMenu();
@@ -346,6 +348,21 @@ public class LevelsActivity extends AppCompatActivity {
                         Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
                         bundle.putString("user", user);
                         bundle.putString("levels", "freestyle");
+                        bundle.putIntegerArrayList("pointsList",pointsLevels);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+
+
+                accelarationbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(LevelsActivity.this, MainActivity.class);
+                        bundle.putString("user", user);
+                        bundle.putString("levels", "accelaration");
                         bundle.putIntegerArrayList("pointsList",pointsLevels);
                         intent.putExtras(bundle);
                         startActivity(intent);

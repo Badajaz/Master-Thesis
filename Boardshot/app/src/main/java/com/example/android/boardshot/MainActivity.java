@@ -251,7 +251,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     if (Levels.equals("freestyle")) {
                         gameExplanationFreestyle();
-                    } else {
+                    } else if(Levels.equals("accelaration")){
+                        gameExplanationFreestyle();
+                    }else{
                         gameExplanation();
                     }
                 }
@@ -485,9 +487,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
                             }else{
-                                introSpeach();
-                                while (speechCount < getNumberOfWaitingLines());
-                                lauchSpeechRecognition();
+                                if (Levels.equals("accelaration")){
+
+                                    introSpeach();
+                                    while (speechCount < getNumberOfWaitingLines());
+                                    lauchSpeechRecognitionAccelaration();
+
+                                }else{
+
+                                    introSpeach();
+                                    while (speechCount < getNumberOfWaitingLines());
+                                    lauchSpeechRecognition();
+
+
+                                }
+
+
                             }
 
 
@@ -1833,7 +1848,58 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 }
 
 
-        }
+        }else if (Levels.equals("accelaration")) {
+
+
+                if (speechResult.contains("sim")) {
+                    engine.speak("sequência confirmada", TextToSpeech.QUEUE_FLUSH, null, null);
+                    sequenceDB += "F";
+                    if (!sequenceDB.equals("")) {
+                        Handler mHandler = new Handler(getMainLooper());
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(MainActivity.this, BoardDraw.class);
+                                intent.putExtra("message", boardRec);
+                                intent.putExtra("map", tabuleiro);
+                                intent.putExtra("sequencia", sequenceDB);
+                                intent.putExtra("roboLinha", robotLine);
+                                intent.putExtra("roboColuna", robotCollumn);
+                                intent.putExtra("user", user);
+                                intent.putExtra("levels", Levels);
+                                intent.putExtra("activity", "MainActivity");
+                                startActivity(intent);
+                            }
+                        });
+                    }
+
+                } else if (speechResult.contains("não")) {
+                    sequenceDB = "";
+                    engine.speak("repete a sequência", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognitionAccelaration();
+                } else {
+                    String confirmation = "";
+                    String[] ArrayWordSpeech = speechResult.split(" ");
+                    for (String s : ArrayWordSpeech) {
+
+                        if (s.contains("esquerda")) {
+                            sequenceDB += "E_";
+                            confirmation += "esquerda,";
+
+                        } else if (s.contains("direita")) {
+                            sequenceDB += "D_";
+                            confirmation += "direita,";
+
+                        } else if (s.contains("frente") || s.contains("cima")) {
+                            sequenceDB += "C_";
+                            confirmation += "frente,";
+                        }
+
+                    }
+                    engine.speak("RECEBIDO A SEQUÊNCIA" + confirmation + " confirmas a sequência?", TextToSpeech.QUEUE_FLUSH, null, null);
+                    lauchSpeechRecognitionAccelaration();
+                }
+            }
 
                 /*if (speechResult.contains("terminar ciclo")) {
                     sequenceDB += "LE_";
@@ -1930,7 +1996,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if ((resultCode == ERROR_NETWORK_TIMEOUT || requestCode == ERROR_NETWORK_TIMEOUT) && !terminar) {
             //Toast.makeText(getApplicationContext(), "timeout", Toast.LENGTH_LONG).show();
             Log.d("TIMEOUTSPEECH","TIMEOUT "+terminar);
-            lauchSpeechRecognition();
+            if (Levels.equals("accelaration")){
+
+            }else{
+                lauchSpeechRecognition();
+            }
         }
         //
 
@@ -1956,7 +2026,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }, 8000);
     }
 
-    private void lauchSpeechRecognition2() {
+    private void lauchSpeechRecognitionAccelaration() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -1964,12 +2034,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-PT");
                 speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speach to text");
-                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 20000);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 10000);
+                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, new Long(50000));
+                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, new Long(50000));
                 startActivityForResult(speechIntent, RECOGNIZER_RESULT);
 
             }
-        }, 3000);
+        }, 5000);
     }
 
 
@@ -2403,6 +2473,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         t.cancel();
                     }
                     speechCount++;
+                }else if (Levels.equals("accelaration")) {
+
+                    if (speechCount == 0) {
+                        engine.speak("Indica a sequência que queres executar!", TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else if (speechCount > 0) {
+                        taskTalk.cancel();
+                        t.cancel();
+                    }
+                    speechCount++;
                 }
 
 
@@ -2432,6 +2511,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         } else if (Levels.equals("level5")) {
             number = 5;
         } else if (Levels.equals("freestyle")) {
+            number = 1;
+        }else if (Levels.equals("accelaration")) {
             number = 1;
         }
         return number;
@@ -2519,7 +2600,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             public void run() {
 
                 if (explanationCount == 0) {
-                    speech.speak("Bem vind ao Nível de estilo livre", TextToSpeech.QUEUE_FLUSH, null, null);
+                    if (Levels.equals("freestyle")) {
+                        speech.speak("Bem vind ao Nível de estilo livre", TextToSpeech.QUEUE_FLUSH, null, null);
+                    }else{
+                        speech.speak("Bem vind ao Nível de modo acelarado", TextToSpeech.QUEUE_FLUSH, null, null);
+                    }
                 } else if (explanationCount == 1) {
                     speech.speak("Eu sou o botnik, e o robô é o ozobot!", TextToSpeech.QUEUE_FLUSH, null, null);
                 } else if (explanationCount == 2) {
